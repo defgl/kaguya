@@ -1,9 +1,7 @@
 /*
- * Surge 网络详情
- * 由@Nebulosa-Cat编写
- * 由@Rabbit-Spec翻译
- * 更新日期：2023.04.22
- * 版本：3.5
+ * Surge 网络详情面板
+ * @Nebulosa-Cat
+ * 详情见 README
  */
 
 /**
@@ -15,11 +13,11 @@
 class httpMethod {
   /**
    * 回调函数
-   * @param {*} resolve 
-   * @param {*} reject 
-   * @param {*} error 
-   * @param {*} response 
-   * @param {*} data 
+   * @param {*} resolve
+   * @param {*} reject
+   * @param {*} error
+   * @param {*} response
+   * @param {*} data
    */
   static _httpRequestCallback(resolve, reject, error, response, data) {
     if (error) {
@@ -32,7 +30,7 @@ class httpMethod {
   /**
    * HTTP GET
    * @param {Object} option 选项
-   * @returns 
+   * @returns
    */
   static get(option = {}) {
     return new Promise((resolve, reject) => {
@@ -45,7 +43,7 @@ class httpMethod {
   /**
    * HTTP POST
    * @param {Object} option 选项
-   * @returns 
+   * @returns
    */
   static post(option = {}) {
     return new Promise((resolve, reject) => {
@@ -83,11 +81,6 @@ function randomString(e = 6) {
 }
 
 function getFlagEmoji(countryCode) {
-
-if (countryCode.toUpperCase() == 'TW') {
-    countryCode = 'CN'
-  }
-
   const codePoints = countryCode
     .toUpperCase()
     .split('')
@@ -163,7 +156,7 @@ function getCellularInfo() {
     if ($network.wifi?.ssid == null && radio) {
       cellularInfo = carrierNames[carrierId] ?
         `${carrierNames[carrierId]} | ${radioGeneration[radio]} - ${radio} ` :
-        `蜂窝数据 | ${radioGeneration[radio]} - ${radio}`;
+        `Cellular Data | ${radioGeneration[radio]} - ${radio}`;
     }
   }
   return cellularInfo;
@@ -177,12 +170,12 @@ function getIP() {
   const { v4, v6 } = $network;
   let info = [];
   if (!v4 && !v6) {
-    info = ['网路可能中断', '请手动刷新以重新获取 IP'];
+    info = ['Network may have switched', 'Please refresh to obtain a new IP'];
   } else {
-    if (v4?.primaryAddress) info.push(`设备IP：${v4?.primaryAddress}`);
-    if (v6?.primaryAddress) info.push(`IPv6地址：已分配`);
-    if (v4?.primaryRouter && getSSID()) info.push(`路由器IP：${v4?.primaryRouter}`);
-    if (v6?.primaryRouter && getSSID()) info.push(`IPv6地址：已分配`);
+    if (v4?.primaryAddress) info.push(`v4 @ ${v4?.primaryAddress}`);
+    if (v6?.primaryAddress) info.push(`v6 @ ${v6?.primaryAddress}`);
+    if (v4?.primaryRouter && getSSID()) info.push(`Router v4 @ ${v4?.primaryRouter}`);
+    if (v6?.primaryRouter && getSSID()) info.push(`Router IPv6 @ ${v6?.primaryRouter}`);
   }
   info = info.join("\n");
   return info + "\n";
@@ -203,12 +196,13 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
     $done({
       title: getSSID() ?? getCellularInfo(),
       content:
-        getIP() +
-        `节点IP：${info.query}\n` +
-        `节点ISP：${info.isp}\n` +
-        `节点位置：${getFlagEmoji(info.countryCode)} | ${info.country} - ${info.city}`,
+      `IP : ${getIP()}\n` +
+      'Node IP: ' + info.query + '\n' +
+      'Node ISP: ' + info.isp + '\n' +
+      'Node Loc.: ' + getFlagEmoji(info.countryCode) + ' | ' + info.country + ' - ' + info.city + '\n' +
+      'Node AS: ' + info.as,
       icon: getSSID() ? 'wifi' : 'simcard',
-      'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
+      'icon-color': getSSID() ? '#005CAF' : '#F9BF45',
     });
   }).catch(error => {
     // 网络切换
@@ -229,8 +223,8 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
       // 打印日志
       logger.error(error);
       $done({
-        title: '发生错误',
-        content: '无法获取当前网络信息\n请检查网络状态后重试',
+        title: 'Error Occurred',
+        content: 'Unable to retrieve current network information.\nPlease check your network status and try again.',
         icon: 'wifi.exclamationmark',
         'icon-color': '#CB1B45',
       });
@@ -253,8 +247,8 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
   setTimeout(() => {
     logger.log("Script timeout");
     $done({
-      title: "请求超时",
-      content: "连接请求超时\n请检查网络状态后重试",
+      title: "Request Timeout",
+      content: "The connection request has timed out. Please check your network status and try again.",
       icon: 'wifi.exclamationmark',
       'icon-color': '#CB1B45',
     });
