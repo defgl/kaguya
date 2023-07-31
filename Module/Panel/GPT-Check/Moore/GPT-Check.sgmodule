@@ -13,4 +13,4 @@
 # GPT
 CFGPT = script-name=CFGPT,update-interval=-1
 [Script]
-CFGPT = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/re-mono/main/Surge/Module/Panel/GPT-Check/GPT-Check.js?token=GHSAT0AAAAAACEKPL5FJUAL7WTDAFCA6SS6ZGHM5UA,argument=icon=flag.checkered.2.crossed&iconerr=flag.filled.and.flag.crossed&icon-color=#3EB489&iconerr-color=#FF2D55
+CFGPT = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/GPT-Check/Moore/GPT-Check.js,argument=icon=flag.checkered.2.crossed&iconerr=flag.filled.and.flag.crossed&icon-color=#3EB489&iconerr-color=#FF2D55
