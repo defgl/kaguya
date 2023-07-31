@@ -1,9 +1,9 @@
-#!name=ChatGPT Check
+#!name=ChatGPTCard
 #!desc=We're Vibin' With ChatGPT, Checkin' Its Game In Your Hood, Switchin' Up Icons. No Warp Checks, Straight Up.
 #!author=keywos wuhu_zz 整点猫咪
 
 [Panel]
-ChatGPT-Check = script-name=ChatGPT-Check, update-interval=-1
+ChatGPTCard = script-name=ChatGPTCard, update-interval=-1
 
 [Script]
-ChatGPT-Check = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/GPT-Check/Moore/GPT-Check.js,argument=icon=flag.checkered.2.crossed&iconerr=flag.filled.and.flag.crossed&icon-color=#3EB489&iconerr-color=#FF2D55
+ChatGPTCard = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/ChatGPTCard/ChatGPTCard.js,argument=icon=flag.checkered.2.crossed&iconerr=flag.filled.and.flag.crossed&icon-color=#3EB489&iconerr-color=#FF2D55
