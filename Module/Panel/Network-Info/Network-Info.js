@@ -177,10 +177,9 @@ function getIP() {
     if (v4?.primaryRouter && getSSID()) info.push(`Router v4 @ ${v4?.primaryRouter}`);
     if (v6?.primaryRouter && getSSID()) info.push(`Router IPv6 @ ${v6?.primaryRouter}`);
   }
-  info = info.join("\n");
+  info = info.join("");
   return info + "\n";
 }
-
 /**
  * 获取 IP 信息
  * @param {*} retryTimes // 重试次数
@@ -199,7 +198,7 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
       `IP : ${getIP()}\n` +
       'Node IP: ' + info.query + '\n' +
       'Node ISP: ' + info.isp + '\n' +
-      'Node Loc.: ' + getFlagEmoji(info.countryCode) + ' | ' + info.country + ' - ' + info.city + '\n' +
+      'Node Loc: ' + getFlagEmoji(info.countryCode) + '|' + info.countryCode + '•' + info.city + '\n' +
       'Node AS: ' + info.as,
       icon: getSSID() ? 'wifi' : 'simcard',
       'icon-color': getSSID() ? '#005CAF' : '#F9BF45',
