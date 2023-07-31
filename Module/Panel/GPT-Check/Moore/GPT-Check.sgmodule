@@ -1,16 +1,9 @@
-#!name=ChatGPT Panel
+#!name=ChatGPT Check
 #!desc=We're Vibin' With ChatGPT, Checkin' Its Game In Your Hood, Switchin' Up Icons. No Warp Checks, Straight Up.
 #!author=keywos wuhu_zz 整点猫咪
-# Parameter Description
-# 可选参数"iconerr=xxx" 不支持chatgpt时的图标，内容为任意有效的 SF Symbol Name
-# 可选参数"icon=xxx" 支持chatgpt时的图标，内容为任意有效的 SF Symbol Name，如 bolt.horizontal.circle.fill，详细可以下载app https://apps.apple.com/cn/app/sf-symbols-browser/id1491161336
-# 可选参数"color=xxx" 当使用 icon 字段时，可传入 color 字段控制图标颜色，字段内容为颜色的 HEX 编码。如：color=#007aff
-# 如：argument=icon=lasso.and.sparkles&iconerr=xmark.seal.fill&icon-color=#477FEF&iconerr-color=#D65C51
-
 
 [Panel]
+ChatGPT Check = script-name=ChatGPT Check,update-interval=-1
 
-# GPT
-CFGPT = script-name=CFGPT,update-interval=-1
 [Script]
-CFGPT = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/GPT-Check/Moore/GPT-Check.js,argument=icon=flag.checkered.2.crossed&iconerr=flag.filled.and.flag.crossed&icon-color=#3EB489&iconerr-color=#FF2D55
+ChatGPT Check = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/GPT-Check/Moore/GPT-Check.js,argument=icon=flag.checkered.2.crossed&iconerr=flag.filled.and.flag.crossed&icon-color=#3EB489&iconerr-color=#FF2D55
