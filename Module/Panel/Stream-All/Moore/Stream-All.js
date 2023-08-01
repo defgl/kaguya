@@ -154,7 +154,7 @@ panel_result['content'] = content
         }
         netflix_check_result += `Unlocked for Netflix Originals ➟ ${code2.toUpperCase()}!`;
       } else {
-        netflix_check_result += `Fully unlocked ➟ ${code1.toUpperCase()}!`;
+        netflix_check_result += `Fully unlocked in ${code1.toUpperCase()}!`;
       }
     } catch (error) {
       if (error === 'Not Available') {
