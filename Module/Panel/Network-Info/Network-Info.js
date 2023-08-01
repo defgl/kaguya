@@ -170,15 +170,15 @@ function getIP() {
   const { v4, v6 } = $network;
   let info = [];
   if (!v4 && !v6) {
-    info = ['Network may have switched', 'Please refresh to obtain a new IP'];
+    info = ['Network may be interrupted', 'Please refresh manually to obtain a new IP'];
   } else {
-    if (v4?.primaryAddress) info.push(`v4 @ ${v4?.primaryAddress}`);
-    if (v6?.primaryAddress) info.push(`v6 @ ${v6?.primaryAddress}`);
-    if (v4?.primaryRouter && getSSID()) info.push(`Router v4 @ ${v4?.primaryRouter}`);
-    if (v6?.primaryRouter && getSSID()) info.push(`Router IPv6 @ ${v6?.primaryRouter}`);
+    if (v4?.primaryAddress) info.push(`IP: ${v4?.primaryAddress}`);
+    if (v6?.primaryAddress) info.push(`IPv6: Assigned`);
+    if (v4?.primaryRouter && getSSID()) info.push(`Router v4: ${v4?.primaryRouter}`);
+    if (v6?.primaryRouter && getSSID()) info.push(`Router v6: Assigned`);
   }
-  info = info.join("");
-  return info;
+  info = info.join("\n");
+  return info + "\n";
 }
 /**
  * 获取 IP 信息
@@ -195,13 +195,13 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
     $done({
       title: getSSID() ?? getCellularInfo(),
       content:
-      `IP : ${getIP()}\n` +
-      'Node IP: ' + info.query + '\n' +
-      'Node ISP: ' + info.isp + '\n' +
-      'Node Loc: ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + ' • ' + info.city + '\n' +
-      'Node AS: ' + info.as,
+      {getIP()} +
+      '\nNode IP: ' + info.query +
+      '\nNode ISP: ' + info.isp +
+      '\nNode Loc: ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + ' • ' + info.city +
+      '\nNode AS: ' + info.as,
       icon: getSSID() ? 'wifi' : 'simcard',
-      'icon-color': getSSID() ? '#005CAF' : '#F9BF45',
+      'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
     });
   }).catch(error => {
     // 网络切换
@@ -213,23 +213,30 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
       }
     }
     // 判断是否还有重试机会
-    if (retryTimes > 0) {
-      logger.error(error);
-      logger.log(`Retry after ${retryInterval}ms`);
-      // retryInterval 时间后再次执行该函数
-      setTimeout(() => getNetworkInfo(--retryTimes, retryInterval), retryInterval);
-    } else {
-      // 打印日志
-      logger.error(error);
-      $done({
-        title: 'Error Occurred',
-        content: 'Unable to retrieve current network information.\nPlease check your network status and try again.',
-        icon: 'wifi.exclamationmark',
-        'icon-color': '#CB1B45',
-      });
-    }
+if (String(error).startsWith("Network changed")) {
+  if (getSSID()) {
+    $network.wifi = undefined;
+    $network.v4 = undefined;
+    $network.v6 = undefined;
+  }
+}
+// Check if there are still retry chances
+if (retryTimes > 0) {
+  logger.error(error);
+  logger.log(`Retry after ${retryInterval}ms`);
+  // Execute the function again after retryInterval time
+  setTimeout(() => getNetworkInfo(--retryTimes, retryInterval), retryInterval);
+} else {
+  // Print log
+  logger.error(error);
+  $done({
+    title: 'Error Occurred',
+    content: 'Unable to retrieve current network information.\nPlease check your network status and try again.',
+    icon: 'wifi.exclamationmark',
+    'icon-color': '#CB1B45',
   });
 }
+});
 
 /**
  * 主要逻辑，程序入口
@@ -237,11 +244,11 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
 (() => {
   const retryTimes = 5;
   const retryInterval = 1000;
-  // Surge 脚本超时时间设置为 30s
-  // 提前 500ms 手动结束进程
+  // Set script timeout to 30s (Surge script timeout is 30s)
+  // End the process 500ms in advance
   const surgeMaxTimeout = 29500;
-  // 脚本超时时间
-  // retryTimes * 5000 为每次网络请求超时时间（Surge 网络请求超时为 5s）
+  // Script timeout
+  // retryTimes * 5000 is the timeout for each network request (Surge network request timeout is 5s)
   const scriptTimeout = retryTimes * 5000 + retryTimes * retryInterval;
   setTimeout(() => {
     logger.log("Script timeout");
@@ -253,7 +260,7 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
     });
   }, scriptTimeout > surgeMaxTimeout ? surgeMaxTimeout : scriptTimeout);
 
-  // 获取网络信息
+  // Get network information
   logger.log("Script start");
   getNetworkInfo(retryTimes, retryInterval);
 })();
