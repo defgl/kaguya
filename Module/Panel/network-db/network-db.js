@@ -198,7 +198,7 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
       getIP() +
       'Node IP: ' + info.query +
       '\nNode ISP: ' + info.isp +
-      '\nNode Loc: ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + ' • ' + info.city +
+      '\nNode LOC: ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + ' • ' + info.city +
       '\nNode AS: ' + info.as,
       icon: getSSID() ? 'wifi' : 'simcard',
       'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',

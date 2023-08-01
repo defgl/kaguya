@@ -28,30 +28,26 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 
   ;(async () => {
     let panel_result = {
-      title: '流媒体解锁检测',
+      title: 'Streaming Restriction Detection',
       content: '',
       icon: 'play.tv.fill',
-      'icon-color': '#FF2D55',
+      'icon-color': '#FF69B4',
     }
   let [{ region, status }] = await Promise.all([testDisneyPlus()])
     await Promise.all([check_youtube_premium(),check_netflix()])
       .then((result) => { 
          console.log(result)
  let disney_result=""
-    if (status==STATUS_COMING) {
-        //console.log(1)
-        disney_result="Disney+: 即将登陆~"+region.toUpperCase()
-      } else if (status==STATUS_AVAILABLE){
-        //console.log(2)
-        console.log(region)
-        disney_result="Disney+: 已解锁 ➟ "+region.toUpperCase()
-        // console.log(result["Disney"])
-      } else if (status==STATUS_NOT_AVAILABLE) {
-        //console.log(3)
-        disney_result="Disney+: 未支持 🚫 "
-      } else if (status==STATUS_TIMEOUT) {
-        disney_result="Disney+: 检测超时 🚦"
+      if (status == STATUS_COMING) {
+        disney_result = `Disney+: Coming soon ${region.toUpperCase()}...`;
+      } else if (status == STATUS_AVAILABLE) {
+        disney_result = `Disney+: Unlocked in ${region.toUpperCase()}!`;
+      } else if (status == STATUS_NOT_AVAILABLE) {
+        disney_result = `Disney+: Not supported 🚫`;
+      } else if (status == STATUS_TIMEOUT) {
+        disney_result = `Disney+: Detection timed out 🚦`;
       }
+
 result.push(disney_result)
 console.log(result)
         let content = result.join('\n')
@@ -98,19 +94,14 @@ panel_result['content'] = content
   
     let youtube_check_result = 'YouTube: '
   
-    await inner_check()
-      .then((code) => {
-        if (code === 'Not Available') {
-          youtube_check_result += '不支持解锁'
-        } else {
-          youtube_check_result += '已解锁 ➟ ' + code.toUpperCase()
-        }
-      })
-      .catch((error) => {
-        youtube_check_result += '检测失败，请刷新面板'
-      })
-  
-    return youtube_check_result
+    try {
+      const code = await inner_check();
+      youtube_check_result += code === 'Not Available' ? 'Not supported' : `Unlocked in ${code.toUpperCase()}!`;
+    } catch (error) {
+      youtube_check_result += 'Detection failed, please refresh the panel.';
+    }
+    
+    return youtube_check_result;
   }
 
   async function check_netflix() {
@@ -154,34 +145,26 @@ panel_result['content'] = content
   
     let netflix_check_result = 'Netflix: '
   
-    await inner_check(80062035)
-      .then((code) => {
-        if (code === 'Not Found') {
-          return inner_check(80018499)
+    try {
+      const code1 = await inner_check(80062035);
+      if (code1 === 'Not Found') {
+        const code2 = await inner_check(80018499);
+        if (code2 === 'Not Found') {
+          throw 'Not Available';
         }
-        netflix_check_result += '已完整解锁 ➟ ' + code.toUpperCase()
-        return Promise.reject('BreakSignal')
-      })
-      .then((code) => {
-        if (code === 'Not Found') {
-          return Promise.reject('Not Available')
-        }
-  
-        netflix_check_result += '仅解锁自制剧 ➟ ' + code.toUpperCase()
-        return Promise.reject('BreakSignal')
-      })
-      .catch((error) => {
-        if (error === 'BreakSignal') {
-          return
-        }
-        if (error === 'Not Available') {
-          netflix_check_result += '该节点不支持解锁'
-          return
-        }
-        netflix_check_result += '检测失败，请刷新面板'
-      })
-  
-    return netflix_check_result
+        netflix_check_result += `Unlocked for Netflix Originals ➟ ${code2.toUpperCase()}!`;
+      } else {
+        netflix_check_result += `Fully unlocked ➟ ${code1.toUpperCase()}!`;
+      }
+    } catch (error) {
+      if (error === 'Not Available') {
+        netflix_check_result += 'This node does not support unlocking.';
+      } else {
+        netflix_check_result += 'Detection failed, please refresh the panel.';
+      }
+    }
+    
+    return netflix_check_result;
   }
 
   async function testDisneyPlus() {
@@ -210,7 +193,7 @@ panel_result['content'] = content
         
         // 不支持解锁
         if (error === 'Not Available') {
-          console.log("不支持")
+          console.log("Not Available")
           return { status: STATUS_NOT_AVAILABLE }
         }
         
