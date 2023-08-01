@@ -9,7 +9,7 @@
 network-db=title="",content="",style=info,script-name=network-db.js,update-interval=1
 
 [Script]
-network-db.js=script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/Network-Info/network-db.js,type=generic,timeout=30
+network-db.js=script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/network-db/network-db.js,type=generic,timeout=30
 
 [Host]
 ip-api.com = 208.95.112.1
