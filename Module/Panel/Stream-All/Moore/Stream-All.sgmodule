@@ -5,6 +5,6 @@
 # 版本：2.2
 
 [Panel]
-stream-all = script-name=stream-all, title="Streaming Restriction Detection", content="Please refresh the panel", update-interval=3600
+srd = script-name=srd, title="Streaming Restriction Detection", content="Please refresh the panel", update-interval=3600
 [Script]
-stream-all = type=generic, timeout=15, script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/Stream-All/Moore/Stream-All.js
+srd = type=generic, timeout=15, script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/Stream-All/Moore/Stream-All.js
