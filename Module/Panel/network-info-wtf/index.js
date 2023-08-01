@@ -19,34 +19,30 @@ let content = ''
   let dateTime = Math.floor(traffic.startTime*1000)
   let startTime = timeTransform(dateNow,dateTime)
 
-  if ($trigger == "button") await httpAPI("/v1/profiles/reload");
+  $trigger == "button" && await httpAPI("/v1/profiles/reload");
 
-  if($.isTile()) {
-    await notify('网络信息', '面板', '开始查询')
-  }
+  $.isTile() && await notify('网络信息', '面板', '开始查询')
+
   const [{ CN_IP = '-', CN_ADDR = '-' }, { PROXY_IP = '-', PROXY_ADDR = '-' }] = await Promise.all([getDirectInfo(), getProxyInfo()])
 
   title = `愿君武运昌隆`
   content = `ISP: ${CN_ADDR}\nIP: ${CN_IP}\nProxy ISP: ${PROXY_ADDR}\nProxy IP: ${PROXY_IP}\nStartup Time: ${startTime}`
-    if ($.isTile()) {
-    await notify('网络信息', '面板', '查询完成')
-  } else if(!$.isPanel()) {
-    await notify('网络信息', title, content)
-  }
+
+  $.isTile() ? await notify('网络信息', '面板', '查询完成') : !$.isPanel() && await notify('网络信息', title, content)
 })();
-  .catch(async e => {
-    $.logErr(e)
-    $.logErr($.toStr(e))
-    const msg = `${$.lodash_get(e, 'message') || $.lodash_get(e, 'error') || e}`
-    title = `❌`
-    content = msg
-    await notify('网络信息', title, content)
-  })
-  .finally(async () => {
-    const result = { title, content, ...arg }
-    $.log($.toStr(result))
-    $.done(result)
-  })
+.catch(async e => {
+  $.logErr(e)
+  $.logErr($.toStr(e))
+  const msg = `${$.lodash_get(e, 'message') || $.lodash_get(e, 'error') || e}`
+  title = `❌`
+  content = msg
+  await notify('网络信息', title, content)
+})
+.finally(async () => {
+  const result = { title, content, ...arg }
+  $.log($.toStr(result))
+  $.done(result)
+})
 
 // 通知
 async function notify(title, subt, desc, opts) {
