@@ -5,7 +5,7 @@
 # Panel
 netkpad = type=generic,timeout=60,script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/netpad/index.js,argument=icon=ipad.gen2.landscape&icon-color=#3CB371
 
-netnotification = type=event,event-name=network-changed,timeout=30,script-update-interval=3600,debug=false,enable=true,script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/modules/netpad/event.js
+netnotification = type=event,event-name=network-changed,timeout=30,script-update-interval=3600,debug=false,enable=true,script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/modules/panel/netpad/event.js
 
 [Panel]
 netpad = script-name=netpad,update-interval=1
