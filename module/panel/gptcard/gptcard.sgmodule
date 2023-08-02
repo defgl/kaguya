@@ -3,7 +3,7 @@
 #!author=keywos wuhu_zz 整点猫咪
 
 [Panel]
-GPTCard = script-name=GPTCard, update-interval=-1
+gptcard = script-name=gptcard, update-interval=-1
 
 [script]
-GPTCard = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/gptcard/gptcard.js,argument=icon=teddybear.fill&iconerr=arcade.stick.and.arrow.left.and.arrow.right&icon-color=#483d8b&iconerr-color=#d8bfd8
+gptcard = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/gptcard/gptcard.js,argument=icon=teddybear.fill&iconerr=arcade.stick.and.arrow.left.and.arrow.right&icon-color=#483d8b&iconerr-color=#d8bfd8
