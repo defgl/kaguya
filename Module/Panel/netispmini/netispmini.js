@@ -192,7 +192,7 @@ const defaultData = {
     $done({
       title: outgpt,
       content: local + outbli + outik + entranceIp + outld + day,
-      icon: params.icon,
-      "icon-color":params.color
+      icon: antenna.radiowaves.left.and.right,
+      "icon-color": "#4682B4"
     });
   })();

@@ -18,7 +18,7 @@ $.isTile() && await notify('网络信息', '面板', '开始查询')
 
 const [{ CN_IP = '-', CN_ADDR = '-' }, { PROXY_IP = '-', PROXY_ADDR = '-' }] = await Promise.all([getDirectInfo(), getProxyInfo()])
 
-title = `CN_ADDR`
+title = `${CN_ADDR}`
 content = `IP: ${CN_IP}\nProxy ISP: ${PROXY_ADDR}\nProxy IP: ${PROXY_IP}`
 
 $.isTile() ? await notify('网络信息', '面板', '查询完成') : !$.isPanel() && await notify('网络信息', title, content)
