@@ -70,9 +70,9 @@ Promise.all([(async () => {
                       break
                   }
               }
-              local = "Intranet: " + o + a + "   " + i + ": " + n.tk + "ms\n"
+              local = "LAN: " + o + a + "   " + i + ": " + n.tk + "ms\n"
           } else {
-              local = "Intranet: " + l + a + "   " + i + ": " + n.tk + "ms\n"
+              local = "LAN: " + l + a + "   " + i + ": " + n.tk + "ms\n"
           }
       }
       if (bj) {
@@ -133,9 +133,9 @@ Promise.all([(async () => {
       }
       if (o == pdldip) {
         cn = false;
-        zl = "Direct: "
+        zl = "In: "
       } else {
-        zl = "Landed: ";
+        zl = "Out: ";
         if (!c || p) {
           const t = await tKey(`https://api-v3.${d}${u}.cn/ip?ip=${o}`, 500);
           if (t.code === 0 && t.data.country == "China") {
@@ -169,14 +169,14 @@ Promise.all([(async () => {
       }
       $done({
         title: outgpt,
-        icon: "licenseplate.fill",
+        icon: "minus.plus.and.fluid.batteryblock",
         "icon-color": "#2E8B57",
         content: local + outbli + outik + zl + outld + s
       });
   } catch (t) {
       $done({
           title: outgpt,
-          icon: "licenseplate.fill",
+          icon: "minus.plus.and.fluid.batteryblock",
           "icon-color": "#2E8B57",
           content: local + outbli + outik + outld + zl + day
       })
