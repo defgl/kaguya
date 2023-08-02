@@ -48,6 +48,7 @@ if (days == 0 && hours == 0 && minutes == 0) {
   return `${days}D ${hours}:${minutes}`;
 }
 
+}
 
 function httpAPI(path = "", method = "POST", body = null) {
     return new Promise((resolve) => {
