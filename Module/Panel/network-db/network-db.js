@@ -172,10 +172,27 @@ function getIP() {
   if (!v4 && !v6) {
     info = ['Network may be interrupted', 'Please refresh manually to obtain a new IP'];
   } else {
-    if (v4?.primaryAddress) info.push(`IP: ${v4?.primaryAddress}`);
-    if (v6?.primaryAddress) info.push(`IPv6: Assigned`);
-    if (v4?.primaryRouter && getSSID()) info.push(`Router v4: ${v4?.primaryRouter}`);
-    if (v6?.primaryRouter && getSSID()) info.push(`Router v6: Assigned`);
+    // if (v4?.primaryAddress) info.push(`IP:  ${v4?.primaryAddress}`);
+    // if (v6?.primaryAddress) info.push(`IPv6:  Assigned`);
+    // if (v4?.primaryRouter && getSSID()) info.push(`Router v4: ${v4?.primaryRouter}`);
+    // if (v6?.primaryRouter && getSSID()) info.push(`Router v6: Assigned`);
+    
+    if (v4?.primaryAddress) {
+      if (v6?.primaryAddress) {
+        info.push(`IP:  ${v4?.primaryAddress} @IPV6Assigned`);
+      } else {
+        info.push(`IP:  ${v4?.primaryAddress}`);
+      }
+    }
+
+    if (v4?.primaryRouter && getSSID()) {
+      if (v6?.primaryRouter) {
+        info.push(`Router v4: ${v4?.primaryRouter} @IPV6Assigned`);
+      } else {
+        info.push(`Router v4: ${v4?.primaryRouter}`);
+      }
+    }
+
   }
   info = info.join("\n");
   return info + "\n";
@@ -196,10 +213,11 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
       title: getSSID() ?? getCellularInfo(),
       content:
       getIP() +
-      'Node IP: ' + info.query +
-      '\nNode ISP: ' + info.isp +
-      '\nNode LOC: ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + ' • ' + info.city +
-      '\nNode AS: ' + info.as,
+      `[Outbound]\n` +
+      'IP:  ' + info.query +
+      '\nISP:  ' + info.isp +
+      '\nLOC:  ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + ' • ' + info.city +
+      '\nAS:  ' + info.as,
       icon: getSSID() ? 'wifi' : 'simcard',
       'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
     });

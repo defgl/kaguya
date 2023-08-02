@@ -28,10 +28,10 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 
   ;(async () => {
     let panel_result = {
-      title: 'Streaming Restriction Detection',
+      title: 'Flowin\' with Streamin\' Services',
       content: '',
-      icon: 'play.tv.fill',
-      'icon-color': '#FF69B4',
+      icon: '4k.tv.fill',
+      'icon-color': '#00FF7F',
     }
   let [{ region, status }] = await Promise.all([testDisneyPlus()])
     await Promise.all([check_youtube_premium(),check_netflix()])
@@ -41,7 +41,7 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
       if (status == STATUS_COMING) {
         disney_result = `Disney+: Coming soon ${region.toUpperCase()}...`;
       } else if (status == STATUS_AVAILABLE) {
-        disney_result = `Disney+: Unlocked in ${region.toUpperCase()}!`;
+        disney_result = `Disney+ is all good in ${region.toUpperCase()}!`;
       } else if (status == STATUS_NOT_AVAILABLE) {
         disney_result = `Disney+: Not supported 🚫`;
       } else if (status == STATUS_TIMEOUT) {
@@ -96,7 +96,7 @@ panel_result['content'] = content
   
     try {
       const code = await inner_check();
-      youtube_check_result += code === 'Not Available' ? 'Not supported' : `Unlocked in ${code.toUpperCase()}!`;
+      youtube_check_result += code === 'Not Available' ? 'No dice, homie' : `Unlocked and loaded, ${code.toUpperCase()}!`;
     } catch (error) {
       youtube_check_result += 'Detection failed, please refresh the panel.';
     }
@@ -152,9 +152,9 @@ panel_result['content'] = content
         if (code2 === 'Not Found') {
           throw 'Not Available';
         }
-        netflix_check_result += `Unlocked for Netflix Originals ➟ ${code2.toUpperCase()}!`;
+        netflix_check_result += `Netflix Originals, unlocked and loaded ➟ ${code2.toUpperCase()}!`;
       } else {
-        netflix_check_result += `Fully unlocked in ${code1.toUpperCase()}!`;
+        netflix_check_result += `Fully lit, ${code1.toUpperCase()}!`;
       }
     } catch (error) {
       if (error === 'Not Available') {

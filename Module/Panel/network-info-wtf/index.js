@@ -18,8 +18,8 @@ $.isTile() && await notify('网络信息', '面板', '开始查询')
 
 const [{ CN_IP = '-', CN_ADDR = '-' }, { PROXY_IP = '-', PROXY_ADDR = '-' }] = await Promise.all([getDirectInfo(), getProxyInfo()])
 
-title = `愿君武运昌隆`
-content = `ISP: ${CN_ADDR}\nIP: ${CN_IP}\nProxy ISP: ${PROXY_ADDR}\nProxy IP: ${PROXY_IP}`
+title = `CN_ADDR`
+content = `IP: ${CN_IP}\nProxy ISP: ${PROXY_ADDR}\nProxy IP: ${PROXY_IP}`
 
 $.isTile() ? await notify('网络信息', '面板', '查询完成') : !$.isPanel() && await notify('网络信息', title, content)
 
@@ -96,7 +96,7 @@ async function getProxyInfo() {
   
   try {
     const res = await $.http.get({
-      url: `http://ip-api.com/json?lang=zh-CN`,
+      url: `http://ip-api.com/json`,
       headers: {
         'User-Agent':
           'Mozilla/5.0 (iPhone CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/109.0.0.0',
