@@ -1,0 +1,10 @@
+#!name=Streaming Restriction Detection
+#!desc=Detects streaming service restrictions
+#!system=ios
+# 更新日期：2022.06.26
+# 版本：2.2
+
+[Panel]
+srd = script-name=srd, title="Streaming Restriction Detection", content="Please refresh the panel", update-interval=3600
+[Script]
+srd = type=generic, timeout=15, script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/Stream-All//Stream-All.js
