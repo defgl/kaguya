@@ -6,11 +6,11 @@
 # 版本：3.1
 
 [Panel]
-netdb = script-name=netdb,style=info,update-interval=1
+netdb=title="",content="",style=info,script-name=netdb,style=info,update-interval=1
 
 [Script]
 
-netdb = script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/netdb/netdb.js,type=generic,timeout=30
+netdb=script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/netdb/netdb.js,type=generic,timeout=30
 
 [Host]
 ip-api.com = 208.95.112.1
