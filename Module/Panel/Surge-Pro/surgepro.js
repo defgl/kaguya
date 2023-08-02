@@ -18,8 +18,8 @@ let startTime = timeTransform(dateNow,dateTime)
 if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
   $done({
-    title:"祝君武运昌隆",
-    content:`Startup duration: ${startTime}`,
+    title:"祝君武运昌隆,原君顶峰相会！",
+    content:`Started: ${startTime}`,
 		icon: params.icon,
 		"icon-color":params.color
     });
@@ -38,17 +38,14 @@ let minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
 let leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
 let seconds=Math.round(leave3/1000)
 
-if(days==0){
-
-	if(hours==0){
-	if(minutes==0)return(`${seconds}秒`);
-	return(`${minutes}分${seconds}秒`)
-	}
-	return(`${hours}时${minutes}分${seconds}秒`)
-	}else {
-	return(`${days}天${hours}时${minutes}分`)
-	}
-
+if (days == 0 && hours == 0 && minutes == 0) {
+  return `${seconds}s`;
+} else if (days == 0 && hours == 0) {
+  return `${minutes}:${seconds}`;
+} else if (days == 0) {
+  return `${hours}:${minutes}:${seconds}`;
+} else {
+  return `${days}D ${hours}:${minutes}`;
 }
 
 
