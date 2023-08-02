@@ -6,4 +6,4 @@
 ChatGPTCard = script-name=ChatGPTCard, update-interval=-1
 
 [Script]
-ChatGPTCard = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/ChatGPTCard/ChatGPTCard.js,argument=icon=teddybear.fill&iconerr=teddybear.fill&icon-color=#FF69B4&iconerr-color=#808080
+ChatGPTCard = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/Kaguya/Master/Module/Panel/ChatGPTCard/ChatGPTCard.js,argument=icon=teddybear.fill&iconerr=teddybear.fill&icon-color=#483D8B&iconerr-color=#D8BFD8
