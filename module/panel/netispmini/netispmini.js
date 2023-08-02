@@ -60,8 +60,8 @@ Promise.all([(async () => {
               s = "";
           let l = t["cellular-data"] && t["cellular-data"].radio || "";
           let i = t.v4.primaryAddress,
-              a = t.v6.primaryAddress !== null ? "IPv6:" : "";
-          let o = t.wifi.ssid !== null ? "WiFi: " : "";
+              a = t.v6.primaryAddress !== null ? "IPv6:"  "";
+          let o = t.wifi.ssid !== null ? "WiFi: "  "";
           const n = await tKey(`http://connectivitycheck.platform.hicloud.com/generate_204`, 500);
           if (o !== "") {
               for (let t = 0; t < e.length; t++) {
@@ -169,16 +169,16 @@ Promise.all([(async () => {
       }
       $done({
         title: outgpt,
-        content: local + outbli + outik + zl + outld + s,
         icon: "licenseplate.fill",
-        "icon-color": "#2E8B57"
+        "icon-color": "#2E8B57",
+        content: local + outbli + outik + zl + outld + s
       });
   } catch (t) {
       $done({
           title: outgpt,
-          content: local + outbli + outik + outld + zl + day,
           icon: "licenseplate.fill",
-          "icon-color": "#2E8B57"
+          "icon-color": "#2E8B57",
+          content: local + outbli + outik + outld + zl + day
       })
   }
 })()]);
