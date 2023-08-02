@@ -30,8 +30,8 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
     let panel_result = {
       title: 'Flowin\' with Streamin\' Services',
       content: '',
-      icon: '4k.tv.fill',
-      'icon-color': '#00FF7F',
+      icon: 'tv.and.mediabox.fill',
+      'icon-color': '#4169E1',
     }
   let [{ region, status }] = await Promise.all([testDisneyPlus()])
     await Promise.all([check_youtube_premium(),check_netflix()])
