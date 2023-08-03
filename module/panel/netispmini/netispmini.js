@@ -61,7 +61,7 @@ Promise.all([(async () => {
           let l = t["cellular-data"] && t["cellular-data"].radio || "";
           let i = t.v4.primaryAddress,
               a = t.v6.primaryAddress !== null ? "IPv6:"  "";
-          let o = t.wifi.ssid !== null ? "WiFi: "  "";
+          let o = t.wifi.ssid !== null ? "WiFi: " : "";
           const n = await tKey(`http://connectivitycheck.platform.hicloud.com/generate_204`, 500);
           if (o !== "") {
               for (let t = 0; t < e.length; t++) {
