@@ -51,77 +51,24 @@ async function notify(title, subt, desc, opts) {
   }
 }
 
-async function convertAddressToPinyin(address) {
-  let pinyinAddress = address.replace('中国', '').replace('上海上海', '上海').replace('北京北京', '北京');
-  if (pinyinAddress.includes('电信')) {
-    pinyinAddress = pinyinAddress.replace('电信', 'Telecom');
-  } else if (pinyinAddress.includes('移动')) {
-    pinyinAddress = pinyinAddress.replace('移动', 'Mobile');
-  } else if (pinyinAddress.includes('联通')) {
-    pinyinAddress = pinyinAddress.replace('联通', 'Unicom');
+async function getIPInfo() {
+  const res = await fetch('https://ipapi.co/json/');
+  const data = await res.json();
+
+  return {
+    ip: data.ip,
+    city: data.city, 
+    region: data.region,
+    country: data.country_name
   }
-
-  let pinyinResponse = await $http.get({
-    url: `https://api.zhconvert.org/convert?converter=pinyin&text=${encodeURIComponent(pinyinAddress)}`
-  });
-
-  let pinyinResult = JSON.parse(pinyinResponse.body);
-  return pinyinResult.data.text;
 }
 
 async function getDirectInfo() {
-  let CN_IP;
-  let CN_ADDR;
-  try {
-    const res = await $.http.get({
-      url: `http://mip.chinaz.com`,
-      headers: {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-        "Accept-Language": "zh-CN,zh-TW;q=0.9,zh;q=0.8,en;q=0.7,en-GB;q=0.6,en-US;q=0.5",
-        'User-Agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.14',
-      },
-    });
-    let body = String(res.body);
-    CN_IP = body.match(/您的IP.*?>(.*?)<\//)[1];
-    CN_ADDR = body.match(/地址.*?>(.*?)<\//)[1];
-    let pinyinAddress = await convertAddressToPinyin(CN_ADDR);
-    if (pinyinAddress.includes('电信')) {
-      pinyinAddress = pinyinAddress.replace('电信', 'Telecom');
-    } else if (pinyinAddress.includes('移动')) {
-      pinyinAddress = pinyinAddress.replace('移动', 'Mobile');
-    } else if (pinyinAddress.includes('联通')) {
-      pinyinAddress = pinyinAddress.replace('联通', 'Unicom');
-    }
-    CN_ADDR = pinyinAddress;
-  } catch (e) {
-    $.logErr(e)
-    $.logErr($.toStr(e))
-  }
-  if (!CN_IP || !CN_ADDR) {
-    try {
-      const res = await $http.get({
-        url: 'http://cip.cc',
-        headers: { 'User-Agent': 'curl/7.16.3 (powerpc-apple-darwin9.0) libcurl/7.16.3' },
-      });
-      let body = String(res.body);
-      CN_IP = body.match(/IP\s*(:|：)\s*(.*?)\s/)[2];
-      CN_ADDR = `${body.match(/地址\s*(:|：)\s*(.*)/)[2].replace(/中国\s*/, '') || ''} ${body.match(/运营商\s*(:|：)\s*(.*)/)[2].replace(/中国\s*/, '') || ''}`;
-      let pinyinAddress = await convertAddressToPinyin(CN_ADDR);
-      if (CN_ADDR.includes('电信')) {
-        CN_ADDR = CN_ADDR.replace('电信', 'Telecom');
-      } else if (CN_ADDR.includes('移动')) {
-        CN_ADDR = CN_ADDR.replace('移动', 'Mobile');
-      } else if (CN_ADDR.includes('联通')) {
-        CN_ADDR = CN_ADDR.replace('联通', 'Unicom');
-      }
-      CN_ADDR = pinyinAddress;
-    } catch (e) {
-      $.logErr(e)
-      $.logErr($.toStr(e))
-    }
-  }
-  return { CN_IP, CN_ADDR }
+  const ipInfo = await getIPInfo();
+
+  return {
+    CN_IP: ipInfo.ip,
+   CN_ADDR: `${ipInfo.city}, ${ipInfo.region}, ${ipInfo.suburb}, ${ipInfo.isp}`
 }
 async function getProxyInfo() {
   let PROXY_IP
