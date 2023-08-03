@@ -179,17 +179,19 @@ function getIP() {
     
     if (v4?.primaryAddress) {
       if (v6?.primaryAddress) {
-        info.push(`IP:  ${v4?.primaryAddress} @IPV6Assigned`);
+        info.push(`IPV4 : ${v4?.primaryAddress}`);
+        info.push(`IPV6 : Assigned`);
       } else {
-        info.push(`IP:  ${v4?.primaryAddress}`);
+        info.push(`IPV4 : ${v4?.primaryAddress}`);
       }
     }
-
+    
     if (v4?.primaryRouter && getSSID()) {
       if (v6?.primaryRouter) {
-        info.push(`Router v4: ${v4?.primaryRouter} @IPV6Assigned`);
+        info.push(`RouterIPV4: ${v4?.primaryRouter}`);
+        info.push(`RouterIPV6 : Assigned`);
       } else {
-        info.push(`Router v4: ${v4?.primaryRouter}`);
+        info.push(`RouterIPV4: ${v4?.primaryRouter}`);
       }
     }
 
@@ -213,10 +215,10 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
       title: getSSID() ?? getCellularInfo(),
       content:
       getIP() +
-      `[Outbound]\n` +
+      `[OUTBOUND]\n` +
       'IP:  ' + info.query +
       '\nISP:  ' + info.isp +
-      '\nLOC:  ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + ' • ' + info.city +
+      '\nLOCATION:  ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + ' • ' + '  ' + info.city +
       '\nAS:  ' + info.as,
       icon: getSSID() ? 'wifi' : 'simcard',
       'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',

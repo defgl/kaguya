@@ -19,7 +19,9 @@ $.isTile() && await notify('网络信息', '面板', '开始查询')
 const [{ CN_IP = '-', CN_ADDR = '-' }, { PROXY_IP = '-', PROXY_ADDR = '-' }] = await Promise.all([getDirectInfo(), getProxyInfo()])
 
 title = `${CN_ADDR}`
-content = `IP: ${CN_IP}\nProxy ISP: ${PROXY_ADDR}\nProxy IP: ${PROXY_IP}`
+content = `IP:  ${CN_IP}`
+
+// \nPROXY ISP: ${PROXY_ADDR}\nPROXY IP: ${PROXY_IP}
 
 $.isTile() ? await notify('网络信息', '面板', '查询完成') : !$.isPanel() && await notify('网络信息', title, content)
 
@@ -48,9 +50,28 @@ async function notify(title, subt, desc, opts) {
     $.log('🔕', title, subt, desc, opts)  
   }
 }
+
+async function convertAddressToPinyin(address) {
+  let pinyinAddress = address.replace('中国', '').replace('上海上海', '上海').replace('北京北京', '北京');
+  if (pinyinAddress.includes('电信')) {
+    pinyinAddress = pinyinAddress.replace('电信', 'Telecom');
+  } else if (pinyinAddress.includes('移动')) {
+    pinyinAddress = pinyinAddress.replace('移动', 'Mobile');
+  } else if (pinyinAddress.includes('联通')) {
+    pinyinAddress = pinyinAddress.replace('联通', 'Unicom');
+  }
+
+  let pinyinResponse = await $http.get({
+    url: `https://api.zhconvert.org/convert?converter=pinyin&text=${encodeURIComponent(pinyinAddress)}`
+  });
+
+  let pinyinResult = JSON.parse(pinyinResponse.body);
+  return pinyinResult.data.text;
+}
+
 async function getDirectInfo() {
-  let CN_IP
-  let CN_ADDR
+  let CN_IP;
+  let CN_ADDR;
   try {
     const res = await $.http.get({
       url: `http://mip.chinaz.com`,
@@ -60,29 +81,41 @@ async function getDirectInfo() {
         'User-Agent':
           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.14',
       },
-    })
-    let body = String($.lodash_get(res, 'body'))
-    // try {
-    //   body = JSON.parse(body)
-    // } catch (e) {}
-    CN_IP = body.match(/您的IP.*?>(.*?)<\//)[1]
-    CN_ADDR = body.match(/地址.*?>(.*?)<\//)[1].replace('中国', '').replace('上海上海', '上海').replace('北京北京', '北京')
+    });
+    let body = String(res.body);
+    CN_IP = body.match(/您的IP.*?>(.*?)<\//)[1];
+    CN_ADDR = body.match(/地址.*?>(.*?)<\//)[1];
+    let pinyinAddress = await convertAddressToPinyin(CN_ADDR);
+    if (pinyinAddress.includes('电信')) {
+      pinyinAddress = pinyinAddress.replace('电信', 'Telecom');
+    } else if (pinyinAddress.includes('移动')) {
+      pinyinAddress = pinyinAddress.replace('移动', 'Mobile');
+    } else if (pinyinAddress.includes('联通')) {
+      pinyinAddress = pinyinAddress.replace('联通', 'Unicom');
+    }
+    CN_ADDR = pinyinAddress;
   } catch (e) {
     $.logErr(e)
     $.logErr($.toStr(e))
   }
   if (!CN_IP || !CN_ADDR) {
     try {
-      const res = await $.http.get({
+      const res = await $http.get({
         url: 'http://cip.cc',
         headers: { 'User-Agent': 'curl/7.16.3 (powerpc-apple-darwin9.0) libcurl/7.16.3' },
-      })
-      let body = String($.lodash_get(res, 'body'))
-      // try {
-      //   body = JSON.parse(body)
-      // } catch (e) {}
-      CN_IP = body.match(/IP\s*(:|：)\s*(.*?)\s/)[2]
-      CN_ADDR = `${body.match(/地址\s*(:|：)\s*(.*)/)[2].replace(/中国\s*/, '') || ''} ${body.match(/运营商\s*(:|：)\s*(.*)/)[2].replace(/中国\s*/, '') || ''}`
+      });
+      let body = String(res.body);
+      CN_IP = body.match(/IP\s*(:|：)\s*(.*?)\s/)[2];
+      CN_ADDR = `${body.match(/地址\s*(:|：)\s*(.*)/)[2].replace(/中国\s*/, '') || ''} ${body.match(/运营商\s*(:|：)\s*(.*)/)[2].replace(/中国\s*/, '') || ''}`;
+      let pinyinAddress = await convertAddressToPinyin(CN_ADDR);
+      if (CN_ADDR.includes('电信')) {
+        CN_ADDR = CN_ADDR.replace('电信', 'Telecom');
+      } else if (CN_ADDR.includes('移动')) {
+        CN_ADDR = CN_ADDR.replace('移动', 'Mobile');
+      } else if (CN_ADDR.includes('联通')) {
+        CN_ADDR = CN_ADDR.replace('联通', 'Unicom');
+      }
+      CN_ADDR = pinyinAddress;
     } catch (e) {
       $.logErr(e)
       $.logErr($.toStr(e))
@@ -128,7 +161,7 @@ async function getProxyInfo() {
         body = JSON.parse(body)
       } catch (e) {}
       PROXY_IP = $.lodash_get(body, 'YourFuckingIPAddress')
-      PROXY_ADDR = [$.lodash_get(body, 'YourFuckingCity'), $.lodash_get(body, 'YourFuckingISP')].join('\n')
+      PROXY_ADDR = [$.lodash_get(body, 'YourFuckingLocation'), $.lodash_get(body, 'YourFuckingISP')].join('\n')
     } catch (e) {
       $.logErr(e)
       $.logErr($.toStr(e))
