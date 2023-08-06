@@ -30,8 +30,8 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
     let panel_result = {
       title: 'Flowin\' with Streamin\' Services',
       content: '',
-      icon: 'tv.and.mediabox.fill',
-      'icon-color': '#4169E1',
+      icon: 'visionpro.badge.play.fill',
+      'icon-color': '#FFB6C1',
     }
   let [{ region, status }] = await Promise.all([testDisneyPlus()])
     await Promise.all([check_youtube_premium(),check_netflix()])
@@ -39,13 +39,13 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
          console.log(result)
  let disney_result=""
       if (status == STATUS_COMING) {
-        disney_result = `Disney+:  Coming soon 🌍 ${region.toUpperCase()}...`;
+        disney_result = `Disney+: ON THE WAY 🌍 ${region.toUpperCase()}...`;
       } else if (status == STATUS_AVAILABLE) {
-        disney_result = `Disney+:  is all good in 🌍 ${region.toUpperCase()}...`;
+        disney_result = `Disney+: Unlocked ✅ REGION: ${region.toUpperCase()}...`;
       } else if (status == STATUS_NOT_AVAILABLE) {
-        disney_result = `Disney+:  Not supported 🚫`;
+        disney_result = `Disney+: NOT SUPPORTED 🚫`;
       } else if (status == STATUS_TIMEOUT) {
-        disney_result = `Disney+:  Detection timed out 🚦`;
+        disney_result = `Disney+: TIMED OUT 🚦`;
       }
 
 result.push(disney_result)
@@ -96,9 +96,9 @@ panel_result['content'] = content
   
     try {
       const code = await inner_check();
-      youtube_check_result += code === 'Not Available' ? 'No dice, homie' : `Unlocked and loaded, ${code.toUpperCase()}!`;
+      youtube_check_result += code === 'Not Available' ? 'NO DICE, HOMIE' : `UNLOCKED & LOADED, REGION: ${code.toUpperCase()}!`;
     } catch (error) {
-      youtube_check_result += 'Detection failed, please refresh the panel.';
+      youtube_check_result += 'FAILED TO DETECT, PLEASE REFRESH THE PANEL.';
     }
     
     return youtube_check_result;
@@ -152,15 +152,15 @@ panel_result['content'] = content
         if (code2 === 'Not Found') {
           throw 'Not Available';
         }
-        netflix_check_result += ` Netflix Originals, unlocked and loaded ➟ 🔥 ${code2.toUpperCase()}!`;
+        netflix_check_result += ` ONLY ORIGINALS, REGION: ${code2.toUpperCase()}!`;
       } else {
-        netflix_check_result += ` Fully lit, 🔥 ${code1.toUpperCase()}!`;
+        netflix_check_result += ` ALL THE WAY TO GO, REGION: ${code1.toUpperCase()}!`;
       }
     } catch (error) {
       if (error === 'Not Available') {
-        netflix_check_result += 'This node does not support unlocking.';
+        netflix_check_result += 'NOT AVAILABLE';
       } else {
-        netflix_check_result += 'Detection failed, please refresh the panel.';
+        netflix_check_result += 'FAILED TO DETECT, PLEASE REFRESH THE PANEL.';
       }
     }
     

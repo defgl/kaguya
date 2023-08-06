@@ -28,8 +28,7 @@ Promise.all([(async () => {
   try {
       const t = await tKey("http://ip-api.com/json", 1200);
       let e = new Date;
-      let s = "  " + (e.getMonth() + 1) + "." + e.getDate() + " " + e.getHours() + ":" + e.getMinutes();
-      if (t.status === "success") {
+      let s = "  " + e.getDate() + "/" + (e.getMonth() + 1) + " " + e.getHours() + ":" + e.getMinutes();      if (t.status === "success") {
           let {
               country: e,
               countryCode: s,
@@ -50,7 +49,7 @@ Promise.all([(async () => {
           } else {
               c = o + " " + a
           }
-          outld = e + " " + s + ":   " + l + ": " + n + "ms\n" + c
+          outld = e  + ":   " + l + ": " + n + "ms\n" + c
       } else {
           outld = t + "\n"
       }
@@ -70,9 +69,9 @@ Promise.all([(async () => {
                       break
                   }
               }
-              local = "LAN: " + o + a + "   " + i + ": " + n.tk + "ms\n"
+              local = "LAN: " o + a + "  " + i + ": " + n.tk + "ms\n"
           } else {
-              local = "LAN: " + l + a + "   " + i + ": " + n.tk + "ms\n"
+              local = "LAN: " l + a + "  " + i + ": " + n.tk + "ms\n"
           }
       }
       if (bj) {
@@ -102,11 +101,11 @@ Promise.all([(async () => {
           } = l,
               o = i.indexOf(t),
               n = "";
-              n = `GPT: ${t} ${o === -1 ? "\u2714" : "\u2716"}`;
+              n = `GPT: ${t} ${o === -1 ? "✔️" : "✖️"}`;
           if (s = "plus") {
               s = "Plus"
           }
-          outgpt = n + "       ➟     Priv: " + s + "   " + e + "ms"
+          outgpt = n + "   🔜 🔜 🔜  Priv: " + s + "   " + e + "ms"
       } else {
           outgpt = "ChatGPT " + l
       }
