@@ -172,34 +172,14 @@ function getIP() {
   if (!v4 && !v6) {
     info = ['Network may be interrupted', 'Please refresh manually to obtain a new IP'];
   } else {
-    // if (v4?.primaryAddress) info.push(`IP:  ${v4?.primaryAddress}`);
-    // if (v6?.primaryAddress) info.push(`IPv6:  Assigned`);
-    // if (v4?.primaryRouter && getSSID()) info.push(`Router v4: ${v4?.primaryRouter}`);
-    // if (v6?.primaryRouter && getSSID()) info.push(`Router v6: Assigned`);
-    
-    if (v4?.primaryAddress) {
-      if (v6?.primaryAddress) {
-        // info.push(`IPV4 : ${v4?.primaryAddress}`);
-        // info.push(`IPV6 : Assigned`);
-        info.push(`IPv4 : ${v4?.primaryAddress} | IPv6 : Assigned`);
-      } else {
-        info.push(`IPv4 : ${v4?.primaryAddress}`);
-      }
-    }
-    
-    if (v4?.primaryRouter && getSSID()) {
-      if (v6?.primaryRouter) {
-        // info.push(`ROUTERV4: ${v4?.primaryRouter}`);
-        // info.push(`RouterV6 : Assigned`);
-        info.push(`RouterIP : ${v4?.primaryAddress} | IPv6 : Assigned`);
-      } else {
-        info.push(`RouterIP: ${v4?.primaryRouter}`);
-      }
-    }
-
+    if (v4?.primaryAddress) info.push(`IPv4:${v4?.primaryAddress}`);
+    if (v6?.primaryAddress) info.push(`IPv6:Assigned`);
+    if (v4?.primaryRouter && getSSID()) info.push(`Router Addr:${v4?.primaryRouter}`);
+    if (v6?.primaryRouter && getSSID()) info.push(`Router Addr:Assigned`);
   }
   info = info.join("\n");
   return info + "\n";
+}
 }
 /**
  * 获取 IP 信息
