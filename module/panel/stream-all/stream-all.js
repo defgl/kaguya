@@ -41,7 +41,7 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
       if (status == STATUS_COMING) {
         disney_result = `Disney+: ON THE WAY 🌍 ${region.toUpperCase()}...`;
       } else if (status == STATUS_AVAILABLE) {
-        disney_result = `Disney+: Unlocked ✅ REGION: ${region.toUpperCase()}...`;
+        disney_result = `Disney+: Unlocked ✅ , REGION: ${region.toUpperCase()}...`;
       } else if (status == STATUS_NOT_AVAILABLE) {
         disney_result = `Disney+: NOT SUPPORTED 🚫`;
       } else if (status == STATUS_TIMEOUT) {
@@ -96,7 +96,7 @@ panel_result['content'] = content
   
     try {
       const code = await inner_check();
-      youtube_check_result += code === 'Not Available' ? 'NO DICE, HOMIE' : `UNLOCKED & LOADED, REGION: ${code.toUpperCase()}!`;
+      youtube_check_result += code === 'Not Available' ? 'NO DICE, HOMIE' : `UNLOCKED ✅ , REGION: ${code.toUpperCase()}`;
     } catch (error) {
       youtube_check_result += 'FAILED TO DETECT, PLEASE REFRESH THE PANEL.';
     }
@@ -154,7 +154,7 @@ panel_result['content'] = content
         }
         netflix_check_result += ` ONLY ORIGINALS, REGION: ${code2.toUpperCase()}!`;
       } else {
-        netflix_check_result += ` ALL THE WAY TO GO, REGION: ${code1.toUpperCase()}!`;
+        netflix_check_result += ` ALL UNLOCKED ✅, REGION: ${code1.toUpperCase()}!`;
       }
     } catch (error) {
       if (error === 'Not Available') {

@@ -179,8 +179,9 @@ function getIP() {
     
     if (v4?.primaryAddress) {
       if (v6?.primaryAddress) {
-        info.push(`IPV4 : ${v4?.primaryAddress}`);
-        info.push(`IPV6 : Assigned`);
+        // info.push(`IPV4 : ${v4?.primaryAddress}`);
+        // info.push(`IPV6 : Assigned`);
+        info.push(`IPV4 : ${v4?.primaryAddress} | IPV6 : Assigned`);
       } else {
         info.push(`IPV4 : ${v4?.primaryAddress}`);
       }
@@ -188,10 +189,11 @@ function getIP() {
     
     if (v4?.primaryRouter && getSSID()) {
       if (v6?.primaryRouter) {
-        info.push(`RouterIPV4: ${v4?.primaryRouter}`);
-        info.push(`RouterIPV6 : Assigned`);
+        // info.push(`ROUTERV4: ${v4?.primaryRouter}`);
+        // info.push(`RouterV6 : Assigned`);
+        info.push(`ROUTERV4 : ${v4?.primaryAddress} | RouterV6 : Assigned`);
       } else {
-        info.push(`RouterIPV4: ${v4?.primaryRouter}`);
+        info.push(`ROUTERV4: ${v4?.primaryRouter}`);
       }
     }
 
@@ -215,11 +217,11 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
       title: getSSID() ?? getCellularInfo(),
       content:
       getIP() +
-      `[OUTBOUND]\n` +
-      'IP:  ' + info.query +
-      '\nISP:  ' + info.isp +
-      '\nLOCATION:  ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + ' • ' + '  ' + info.city +
-      '\nAS:  ' + info.as,
+      // `[OUTBOUND]\n` +
+      '🌐 IP:  ' + info.query +
+      '\n🌐 ISP:  ' + info.isp +
+      '\n🌐 LOCATION:  ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode  + '  ' + ' • ' + '  ' + info.city +
+      '\n🌐 AS INFO:  ' + info.as,
       icon: getSSID() ? 'wifi' : 'simcard',
       'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
     });

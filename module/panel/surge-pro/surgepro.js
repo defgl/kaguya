@@ -19,7 +19,7 @@ if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
   $done({
     title:"祝君武运昌隆,原君顶峰相会！",
-    content:`Started: ${startTime}`,
+    content:`START TIME: ${startTime}`,
 		icon: params.icon,
 		"icon-color":params.color
     });
