@@ -80,21 +80,51 @@ async function getDirectInfo() {
 	let CN_ADDR;
 	let CN_ADDR_EN;
 	try {
-	  const res = await $.http.get({
-		url: 'https://forge.speedtest.cn/api/location/info',
+	  const res1 = await $.http.get({
+		url: 'https://2023.ip138.com/',
 		headers: {
 		  'User-Agent':
 			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.14',
 		},
 	  });
-	  const info = JSON.parse(res.body);
-	  CN_IP = info.ip;
-	  CN_ADDR = [info.province, info.city, info.isp].filter(Boolean).join(' ');
+	  const html = res1.body;
+	  const ipRegex = /您的iP地址是：\[(\d+\.\d+\.\d+\.\d+)\]/;
+	  const addrRegex = /来自：(.+)/;
+	  const ipMatch = html.match(ipRegex);
+	  const addrMatch = html.match(addrRegex);
+	  CN_IP = ipMatch ? ipMatch[1] : '';
+	  CN_ADDR = addrMatch ? addrMatch[1] : '';
 	  // 翻译CN_ADDR
 	  CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '17bd2d86-a5df-9998-ff34-28075a83bc49:fx' }))[0];
+	  if (!CN_IP || !CN_ADDR) {
+		throw new Error('Failed to get IP address or address information from https://2023.ip138.com/');
+	  }
 	} catch (e) {
 	  $.logErr(e);
 	  $.logErr($.toStr(e));
+	  try {
+		const res2 = await $.http.get({
+		  url: 'https://forge.speedtest.cn/api/location/info',
+		  headers: {
+			'User-Agent':
+			  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.14',
+		  },
+		});
+		const info = JSON.parse(res2.body);
+		CN_IP = info.ip;
+		CN_ADDR = [info.province, info.city, info.isp].filter(Boolean).join(' ');
+		// 翻译CN_ADDR
+		CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '17bd2d86-a5df-9998-ff34-28075a83bc49:fx' }))[0];
+		if (!CN_IP || !CN_ADDR) {
+		  throw new Error('Failed to get IP address or address information from https://forge.speedtest.cn/api/location/info');
+		}
+	  } catch (e) {
+		$.logErr(e);
+		$.logErr($.toStr(e));
+		CN_IP = '';
+		CN_ADDR = '';
+		CN_ADDR_EN = '';
+	  }
 	}
 	return { CN_IP, CN_ADDR, CN_ADDR_EN };
   }

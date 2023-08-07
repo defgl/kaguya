@@ -39,13 +39,13 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
          console.log(result)
  let disney_result=""
  if (status == STATUS_COMING) {
-  disney_result = `Disney+: on the way ${getFlagEmoji(region)} ${region.toUpperCase()}...`;
+  disney_result = `Disney+: Coming Soon ${getFlagEmoji(region)} `;
 } else if (status == STATUS_AVAILABLE) {
-  disney_result = `Disney+: unlocked, ${getFlagEmoji(region)} ${region.toUpperCase()}...`;
+  disney_result = `Disney+: Unlocked, ${getFlagEmoji(region)} `;
 } else if (status == STATUS_NOT_AVAILABLE) {
-  disney_result = `Disney+: not supported`;
+  disney_result = `Disney+: Not Supported`;
 } else if (status == STATUS_TIMEOUT) {
-  disney_result = `Disney+: timed out`;
+  disney_result = `Disney+: Timeout`;
 }
 
 result.push(disney_result)
@@ -92,13 +92,13 @@ panel_result['content'] = content
       })
     }
   
-    let youtube_check_result = 'YouTube:  '
+    let youtube_check_result = 'YouTube: '
   
     try {
       const code = await inner_check();
-      youtube_check_result += code === 'Not Available' ? 'not available' : `unlocked, ${getFlagEmoji(code)} ${code.toUpperCase()}`;
+      youtube_check_result += code === 'Not Available' ? 'Not Available' : `Unlocked, ${getFlagEmoji(code)}}`;
     } catch (error) {
-      youtube_check_result += 'failed to detect, please refresh the panel.';
+      youtube_check_result += 'Failed to detect, please refresh the panel.';
     }
     
     return youtube_check_result;
@@ -152,15 +152,15 @@ panel_result['content'] = content
         if (code2 === 'Not Found') {
           throw 'Not Available';
         }
-        netflix_check_result += `only originals, ${getFlagEmoji(code2)} ${code2.toUpperCase()}!`;
+        netflix_check_result += `OriginalSeries Unlocked, ${getFlagEmoji(code2)}`;
       } else {
-        netflix_check_result += `all unlocked, ${getFlagEmoji(code1)} ${code1.toUpperCase()}!`;
+        netflix_check_result += `Fully Unlocked, ${getFlagEmoji(code1)}`;
       }
     } catch (error) {
       if (error === 'Not Available') {
-        netflix_check_result += 'not available';
+        netflix_check_result += 'Not Available';
       } else {
-        netflix_check_result += 'failed to detect, please refresh the panel.';
+        netflix_check_result += 'Failed to detect, please refresh the panel.';
       }
     }
     
