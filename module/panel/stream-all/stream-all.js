@@ -38,15 +38,15 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
       .then((result) => { 
          console.log(result)
  let disney_result=""
-      if (status == STATUS_COMING) {
-        disney_result = `Disney+: ON THE WAY 🌍 ${region.toUpperCase()}...`;
-      } else if (status == STATUS_AVAILABLE) {
-        disney_result = `Disney+: Unlocked ✅ , REGION: ${region.toUpperCase()}...`;
-      } else if (status == STATUS_NOT_AVAILABLE) {
-        disney_result = `Disney+: NOT SUPPORTED 🚫`;
-      } else if (status == STATUS_TIMEOUT) {
-        disney_result = `Disney+: TIMED OUT 🚦`;
-      }
+ if (status == STATUS_COMING) {
+  disney_result = `Disney+: on the way ${getFlagEmoji(region)} ${region.toUpperCase()}...`;
+} else if (status == STATUS_AVAILABLE) {
+  disney_result = `Disney+: unlocked, ${getFlagEmoji(region)} ${region.toUpperCase()}...`;
+} else if (status == STATUS_NOT_AVAILABLE) {
+  disney_result = `Disney+: not supported`;
+} else if (status == STATUS_TIMEOUT) {
+  disney_result = `Disney+: timed out`;
+}
 
 result.push(disney_result)
 console.log(result)
@@ -96,9 +96,9 @@ panel_result['content'] = content
   
     try {
       const code = await inner_check();
-      youtube_check_result += code === 'Not Available' ? 'NO DICE, HOMIE' : `UNLOCKED ✅ , REGION: ${code.toUpperCase()}`;
+      youtube_check_result += code === 'Not Available' ? 'not available' : `unlocked, ${getFlagEmoji(code)} ${code.toUpperCase()}`;
     } catch (error) {
-      youtube_check_result += 'FAILED TO DETECT, PLEASE REFRESH THE PANEL.';
+      youtube_check_result += 'failed to detect, please refresh the panel.';
     }
     
     return youtube_check_result;
@@ -152,15 +152,15 @@ panel_result['content'] = content
         if (code2 === 'Not Found') {
           throw 'Not Available';
         }
-        netflix_check_result += ` ONLY ORIGINALS, REGION: ${code2.toUpperCase()}!`;
+        netflix_check_result += `only originals, ${getFlagEmoji(code2)} ${code2.toUpperCase()}!`;
       } else {
-        netflix_check_result += ` ALL UNLOCKED ✅, REGION: ${code1.toUpperCase()}!`;
+        netflix_check_result += `all unlocked, ${getFlagEmoji(code1)} ${code1.toUpperCase()}!`;
       }
     } catch (error) {
       if (error === 'Not Available') {
-        netflix_check_result += 'NOT AVAILABLE';
+        netflix_check_result += 'not available';
       } else {
-        netflix_check_result += 'FAILED TO DETECT, PLEASE REFRESH THE PANEL.';
+        netflix_check_result += 'failed to detect, please refresh the panel.';
       }
     }
     
@@ -193,12 +193,12 @@ panel_result['content'] = content
         
         // 不支持解锁
         if (error === 'Not Available') {
-          console.log("Not Available")
+          console.log("not Available")
           return { status: STATUS_NOT_AVAILABLE }
         }
         
         // 检测超时
-        if (error === 'Timeout') {
+        if (error === 'timeout') {
           return { status: STATUS_TIMEOUT }
         }
         
@@ -309,4 +309,12 @@ panel_result['content'] = content
             reject('Timeout')
           }, delay)
         })
+      }
+
+      function getFlagEmoji(countryCode) {
+        const codePoints = countryCode
+          .toUpperCase()
+          .split('')
+          .map((char) => 127397 + char.charCodeAt());
+        return String.fromCodePoint(...codePoints);
       }
