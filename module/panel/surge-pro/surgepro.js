@@ -6,18 +6,18 @@
  * 版本：1.5
 */
 
-let params = getparams($argument)
+let params = getParams($argument)
 
 !(async () => {
   /* 时间获取 */
-  let traffic = (await httpapi("/v1/traffic", "get"));
-  let datenow = new date();
-  let datetime = math.floor(traffic.starttime * 1000);
-  let starttime = timetransform(datenow, datetime);
+  let traffic = (await httpAPI("/v1/traffic", "get"));
+  let datenow = new Date();
+  let datetime = Math.floor(traffic.starttime * 1000);
+  let starttime = timeTransform(datenow, datetime);
 
   let titlecontent = await fetchtitlecontent();
 
-  if ($trigger == "button") await httpapi("/v1/profiles/reload");
+  if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
   $done({
     title: titlecontent,
@@ -29,9 +29,9 @@ let params = getparams($argument)
 })();
 
 async function fetchtitlecontent() {
-  return new promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     let url = 'https://zj.v.api.aa1.cn/api/wenan-shici/?type=json';
-    $httpclient.get(url, function(error, response, data) {
+    $httpClient.get(url, function(error, response, data) {
       if (error) {
         reject(`error: ${error.message}`);
         return;
@@ -40,7 +40,7 @@ async function fetchtitlecontent() {
         reject(`failed to fetch data. http status: ${response.status}`);
         return;
       }
-      let jsondata = json.parse(data);
+      let jsondata = JSON.parse(data);
       let fulltext = jsondata.msg;
       let extractedtext = fulltext.split("。——")[0] + "。";
       resolve(extractedtext);

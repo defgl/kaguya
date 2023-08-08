@@ -69,10 +69,10 @@ Promise.all([(async () => {
                       break
                   }
               }
-              local = "LAN: " o + a + "  " + i + ": " + n.tk + "ms\n"
-          } else {
-              local = "LAN: " l + a + "  " + i + ": " + n.tk + "ms\n"
-          }
+              local = "LAN:" + o + a + " " + i + "\n"
+            } else {
+              local = "LAN:" + l + a + " " + i + "\n"
+            }
       }
       if (bj) {
           const t = await tKey("https://api.live.bilibili.com/ip_service/v1/ip_service/get_ip_addr", 500);
@@ -85,9 +85,9 @@ Promise.all([(async () => {
               } = t.data,
                   a = t.tk;
               i = i.replace(/.*广电.*/g, "广电");
-              outbli = `Local: ${s}${i}:   ${e}: ${a}ms\n`;
+              outbli = "Bilibili: " + s + i + ":   " + e + ": " + a + "ms\n"
             } else {
-              outbli = `Biliapi: ${t}\n`;
+                outbli = "Biliapi " + t + "\n"
           }
       }
       const l = await tKey("http://chat.openai.com/cdn-cgi/trace", 1e3);
@@ -145,10 +145,10 @@ Promise.all([(async () => {
             } = t.data,
             i = t.tk;
             s = sK(s, 4);
-            outik = `Entry: ${e}${s}:   ${o}: ${i}ms\n`;
+            outik = "入口:" + e + s + ":" + o + ": " + i + "ms\n"
           } else {
-            cn = false;
-            outik = `Entry IPA: ${t}\n`;
+              cn = false;
+              outik = "入口IPA" + t + "\n"
           }
         }
         if ((!c || isv6) && !cn) {
@@ -160,9 +160,9 @@ Promise.all([(async () => {
               org: l,
               tk: i
             } = t;
-            outik = `Entry: ${s}${l}:   ${o}: ${i}ms\n`;
+            outik = "入口:" + s + l + ":" + o + "\n"
           } else {
-            outik = `Entry IPB: ${t}\n`;
+              outik = "入口IPB" + t + "\n"
           }
         }
       }
