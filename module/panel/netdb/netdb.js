@@ -167,18 +167,20 @@ function getSSID() {
 }
 
 function getIP() {
-  const { externalIP } = $network;
+  const { v4, v6 } = $network;
   let info = [];
-  if (!externalIP) {
-    info = ['网路可能中断', '请手动刷新以重新获取 IP'];
+  if (!v4 && !v6) {
+    info = ['Network may be interrupted', 'Please refresh manually to obtain a new IP'];
   } else {
-    info.push(`外网IP：${externalIP}`);
-  }
-  if (getSSID()) {
-    const { primaryRouter } = $network;
-    if (primaryRouter) {
-      info.push(`路由器IP：${primaryRouter}`);
+    // if (v4?.primaryAddress) info.push(`IP:${v4?.primaryAddress}`);
+    // if (v6?.primaryAddress) info.push(`IP:${v6?.primaryAddress}`);
+    if (v6?.primaryAddress) {
+      info.push(`IP:${v6?.primaryAddress}`);
+    } else if (v4?.primaryAddress) {
+      info.push(`IP:${v4?.primaryAddress}`);
     }
+    if (v4?.primaryRouter && getSSID()) info.push(`RouterIP:${v4?.primaryRouter}`);
+    // if (v6?.primaryRouter && getSSID()) info.push(`RouterIP:Assigned`);
   }
   info = info.join("\n");
   return info + "\n";

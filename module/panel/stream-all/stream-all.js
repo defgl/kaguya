@@ -26,39 +26,58 @@ const STATUS_ERROR = -2
 const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36'
 
-;(async () => {
-  let panel_result = {
-    title: "Flowin' with Streamin' Services",
-    content: '',
-    icon: 'visionpro.badge.play.fill',
-    'icon-color': '#FFB6C1',
-  }
-  let [{ region, status }] = await Promise.all([testDisneyPlus()])
-  await Promise.all([check_youtube_premium(), check_netflix()])
-    .then((result) => {
-      console.log(result)
-      let disney_result = ''
-      if (status == STATUS_COMING) {
-        disney_result = `Disney+: Coming Soon • ${getFlagEmoji(region)} `
-      } else if (status == STATUS_AVAILABLE) {
-        disney_result = `Disney+: Available • ${getFlagEmoji(region)} `
-      } else if (status == STATUS_NOT_AVAILABLE) {
-        disney_result = `Disney+: Not Supported`
-      } else if (status == STATUS_TIMEOUT) {
-        disney_result = `Disney+: Timeout`
-      }
+  ;(async () => {
+    let panel_result = {
+      title: "",
+      content: '',
+      icon: 'visionpro.badge.play.fill',
+      'icon-color': '#FFB6C1',
+    }
+  
+    // 使用Promise来获取text内容
+    let fetchTextContent = new Promise((resolve, reject) => {
+      let url = 'https://v.api.aa1.cn/api/api-wenan-yingwen/index.php?type=json';
+      $httpClient.get(url, function(error, response, data) {
+        if (error) {
+          reject(error);
+          return;
+        }
+        if (response.status !== 200) {
+          reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+          return;
+        }
+        let jsonData = JSON.parse(data);
+        resolve(jsonData.text);
+      });
+    });
+  
+    // 使用await来获取text内容并设置为title
+    panel_result.title = await fetchTextContent;
+  
+    let [{ region, status }] = await Promise.all([testDisneyPlus()])
+    await Promise.all([check_youtube_premium(), check_netflix()])
+      .then((result) => {
+        let disney_result = '';
+        if (status == STATUS_COMING) {
+          disney_result = `Disney+: Coming Soon  -  ${getFlagEmoji(region)} `;
+        } else if (status == STATUS_AVAILABLE) {
+          disney_result = `Disney+: Available  -  ${getFlagEmoji(region)} `;
+        } else if (status == STATUS_NOT_AVAILABLE) {
+          disney_result = `Disney+: Not Supported`;
+        } else if (status == STATUS_TIMEOUT) {
+          disney_result = `Disney+: Timeout`;
+        }
+  
+        result.push(disney_result);
+        let content = result.join('\n');
+        panel_result['content'] = content;
+      })
+      .finally(() => {
+        $done(panel_result);
+      });
+  })();
+  
 
-      result.push(disney_result)
-      console.log(result)
-      let content = result.join('\n')
-      console.log(content)
-
-      panel_result['content'] = content
-    })
-    .finally(() => {
-      $done(panel_result)
-    })
-})()
 async function check_youtube_premium() {
   let inner_check = () => {
     return new Promise((resolve, reject) => {
@@ -99,7 +118,7 @@ async function check_youtube_premium() {
     youtube_check_result +=
       code === 'Not Available'
         ? 'Not Available'
-        : `Available • ${getFlagEmoji(code)}`
+        : `Available  -  ${getFlagEmoji(code)}`
   } catch (error) {
     youtube_check_result += 'Failed to detect, please refresh the panel.'
   }
@@ -155,9 +174,9 @@ async function check_netflix() {
       if (code2 === 'Not Found') {
         throw 'Not Available'
       }
-      netflix_check_result += `Originals Available • ${getFlagEmoji(code2)}`;
+      netflix_check_result += `Originals Available  -  ${getFlagEmoji(code2)}`;
     } else {
-      netflix_check_result += `All Content Available • ${getFlagEmoji(code1)}`
+      netflix_check_result += `All Content Available  -  ${getFlagEmoji(code1)}`
     }
   } catch (error) {
     if (error === 'Not Available') {

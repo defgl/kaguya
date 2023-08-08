@@ -6,25 +6,47 @@
  * 版本：1.5
 */
 
-let params = getParams($argument)
+let params = getparams($argument)
 
 !(async () => {
-/* 时间获取 */
-let traffic = (await httpAPI("/v1/traffic","GET"))
-let dateNow = new Date()
-let dateTime = Math.floor(traffic.startTime*1000)
-let startTime = timeTransform(dateNow,dateTime)
+  /* 时间获取 */
+  let traffic = (await httpapi("/v1/traffic", "get"));
+  let datenow = new date();
+  let datetime = math.floor(traffic.starttime * 1000);
+  let starttime = timetransform(datenow, datetime);
 
-if ($trigger == "button") await httpAPI("/v1/profiles/reload");
+  let titlecontent = await fetchtitlecontent();
+
+  if ($trigger == "button") await httpapi("/v1/profiles/reload");
 
   $done({
-    title:"祝君武运昌隆,原君顶峰相会！",
-    content:`START TIME: ${startTime}`,
-		icon: params.icon,
-		"icon-color":params.color
-    });
+    title: titlecontent,
+    content: `start time: ${starttime}`,
+    icon: params.icon,
+    "icon-color": params.color
+  });
 
 })();
+
+async function fetchtitlecontent() {
+  return new promise((resolve, reject) => {
+    let url = 'https://zj.v.api.aa1.cn/api/wenan-shici/?type=json';
+    $httpclient.get(url, function(error, response, data) {
+      if (error) {
+        reject(`error: ${error.message}`);
+        return;
+      }
+      if (response.status !== 200) {
+        reject(`failed to fetch data. http status: ${response.status}`);
+        return;
+      }
+      let jsondata = json.parse(data);
+      let fulltext = jsondata.msg;
+      let extractedtext = fulltext.split("。——")[0] + "。";
+      resolve(extractedtext);
+    });
+  });
+}
 
 function timeTransform(dateNow,dateTime) {
 let dateDiff = dateNow - dateTime;
