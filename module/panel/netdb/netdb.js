@@ -167,19 +167,21 @@ function getSSID() {
 }
 
 function getIP() {
-  const { v4, v6 } = $network;
+  const { externalIP } = $network;
   let info = [];
-  if (!v4 && !v6) {
-    info = ['Network may be interrupted', 'Please refresh manually to obtain a new IP'];
+  if (!externalIP) {
+    info = ['网路可能中断', '请手动刷新以重新获取 IP'];
   } else {
-    if (v4?.primaryAddress) info.push(`IPv4:${v4?.primaryAddress}`);
-    if (v6?.primaryAddress) info.push(`IPv6:Assigned`);
-    if (v4?.primaryRouter && getSSID()) info.push(`Router Addr:${v4?.primaryRouter}`);
-    if (v6?.primaryRouter && getSSID()) info.push(`Router Addr:Assigned`);
+    info.push(`外网IP：${externalIP}`);
+  }
+  if (getSSID()) {
+    const { primaryRouter } = $network;
+    if (primaryRouter) {
+      info.push(`路由器IP：${primaryRouter}`);
+    }
   }
   info = info.join("\n");
   return info + "\n";
-}
 }
 /**
  * 获取 IP 信息

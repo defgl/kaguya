@@ -80,6 +80,25 @@ async function getDirectInfo() {
 	let CN_ADDR;
 	let CN_ADDR_EN;
 	try {
+		const res1 = await $.http.get({
+		  url: 'http://v4.ip.zxinc.org/info.php?type=jsonp',
+		  headers: {
+			'User-Agent':
+			  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.14',
+		  },
+		});
+		const data = JSON.parse(res1.body.match(/\((.*)\)/)[1]).data;
+		CN_IP = data.myip;
+		CN_ADDR = [data.local, data.country].filter(Boolean).join(', ');
+		// 翻译CN_ADDR
+		CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '17bd2d86-a5df-9998-ff34-28075a83bc49:fx' }))[0];
+		if (!CN_IP || !CN_ADDR) {
+		  throw new Error('Failed to get IP address or address information from http://v4.ip.zxinc.org/info.php?type=jsonp');
+		}
+	} catch (e) {
+		$.logErr(e);
+		$.logErr($.toStr(e));
+	try {
 	  const res1 = await $.http.get({
 		url: 'https://2023.ip138.com/',
 		headers: {
