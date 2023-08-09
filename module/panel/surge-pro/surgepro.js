@@ -21,7 +21,7 @@ let params = getParams($argument)
 
   $done({
     title: titlecontent,
-    content: `start time: ${starttime}`,
+    content: `start time: ${startTime}`,
     icon: params.icon,
     "icon-color": params.color
   });
