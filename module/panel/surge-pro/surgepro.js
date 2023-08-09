@@ -10,10 +10,10 @@ let params = getParams($argument)
 
 !(async () => {
   /* 时间获取 */
-  let traffic = (await httpAPI("/v1/traffic", "get"));
-  let datenow = new Date();
-  let datetime = Math.floor(traffic.starttime * 1000);
-  let starttime = timeTransform(datenow, datetime);
+  let traffic = (await httpAPI("/v1/traffic","GET"))
+  let dateNow = new Date()
+  let dateTime = Math.floor(traffic.startTime*1000)
+  let startTime = timeTransform(dateNow,dateTime)
 
   let titlecontent = await fetchtitlecontent();
 
@@ -60,15 +60,16 @@ let minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
 let leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
 let seconds=Math.round(leave3/1000)
 
-if (days == 0 && hours == 0 && minutes == 0) {
-  return `${seconds}s`;
-} else if (days == 0 && hours == 0) {
-  return `${minutes}:${seconds}`;
-} else if (days == 0) {
-  return `${hours}:${minutes}:${seconds}`;
-} else {
-  return `${days}D ${hours}:${minutes}`;
-}
+if(days==0){
+
+	if(hours==0){
+	if(minutes==0)return(`${seconds}秒`);
+	return(`${minutes}分${seconds}秒`)
+	}
+	return(`${hours}时${minutes}分${seconds}秒`)
+	}else {
+	return(`${days}天${hours}时${minutes}分`)
+	}
 
 }
 
