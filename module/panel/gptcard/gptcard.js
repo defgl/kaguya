@@ -55,12 +55,12 @@ $httpClient.get(url, function(error, response, data){
   let l = tf.indexOf(cf.loc);
   let gpt, iconUsed;
   if (l !== -1) {
-  gpt = "GPT: ✅";
+  gpt = "GPT: ⚡︎";
   iconUsed = icon ? icon : undefined;
   iconCol = iconColor ? iconColor : undefined;
 
   } else {
-  gpt = "GPT: ❌";
+  gpt = "GPT: ⚠︎";
   iconUsed = iconerr ? iconerr : undefined;
   iconCol = iconerrColor ? iconerrColor : undefined;
 
