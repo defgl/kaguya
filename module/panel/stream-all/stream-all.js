@@ -109,29 +109,23 @@ async function check_youtube_premium() {
         resolve(region)
       })
     })
+
   }
 
-  async function inner_check() {
-    // 在这里添加检查 YouTube 是否可用的代码
-    // 如果可用，返回视频的代码（例如：US）
-    // 如果不可用，返回字符串 'Not Available'
+  let youtube_check_result = 'YouTube:  '
+
+  try {
+    const code = await inner_check()
+    youtube_check_result +=
+      code === 'Not Available'
+        ? ' ⛔️'
+        : ` ✅  -  ${code.toUpperCase()}`
+  } catch (error) {
+    youtube_check_result += 'Failed to detect, please refresh the panel.'
   }
-  
-  async function check_youtube() {
-    let youtube_check_result = 'YouTube:  '
-  
-    try {
-      const code = await inner_check()
-      youtube_check_result +=
-        code === 'Not Available'
-          ? ' ⛔️'
-          : ` ✅  -  ${code.toUpperCase()}`
-    } catch (error) {
-      youtube_check_result += 'Failed to detect, please refresh the panel.'
-    }
-  
-    return youtube_check_result
-  }
+
+  return youtube_check_result
+}
 
 async function check_netflix() {
   let inner_check = (filmId) => {
