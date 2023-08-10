@@ -6,7 +6,10 @@
  * 版本：1.5
 */
 
-let params = getParams($argument)
+// let params = getParams($argument)
+
+const icon = "bubbles.and.sparkles.fill";
+const color = "#f6c970";
 
 !(async () => {
   /* 时间获取 */
@@ -21,17 +24,16 @@ let params = getParams($argument)
 
   $done({
     title: titlecontent,
-    content: `Started: ${startTime}`,
+    content: `Started: ${startTime}\n${dnsContent}`,
     icon: params.icon,
     "icon-color": params.color
-  });
+});
 
 })();
 
 async function fetchtitlecontent() {
   return new Promise((resolve, reject) => {
-    // let url = 'https://zj.v.api.aa1.cn/api/wenan-shici/?type=json';
-    let url = 'https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json';
+    let url = 'https://zj.v.api.aa1.cn/api/wenan-shici/?type=json';
     $httpClient.get(url, function(error, response, data) {
       if (error) {
         reject(`error: ${error.message}`);
@@ -61,18 +63,38 @@ let minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
 let leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
 let seconds=Math.round(leave3/1000)
 
-if(days==0){
-
-	if(hours==0){
-	if(minutes==0)return(`${seconds}秒`);
-	return(`${minutes}分${seconds}秒`)
-	}
-	return(`${hours}时${minutes}分${seconds}秒`)
-	}else {
-	return(`${days}天${hours}时${minutes}分`)
-	}
+if (days == 0 && hours == 0 && minutes == 0) {
+  return `${seconds}s`;
+} else if (days == 0 && hours == 0) {
+  return `${minutes}:${seconds}`;
+} else if (days == 0) {
+  return `${hours}:${minutes}:${seconds}`;
+} else {
+  return `${days}D ${hours}:${minutes}`;
+}
 
 }
+
+
+!(async () => {
+  let showServer = true,
+      dnsCache;
+  if (typeof $argument != "undefined") {
+      let arg = Object.fromEntries($argument.split("&").map((item) => item.split("=")));
+      if (arg.title) panel.title = arg.title;
+      if (arg.icon) panel.icon = arg.icon;
+      if (arg.color) panel["icon-color"] = arg.color;
+      if (arg.server == "false") showServer = false;
+  }
+  if (showServer) {
+      dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
+      dnsCache = [...new Set(dnsCache.map((d) => d.server))].toString().replace(/,/g, "\n");
+  }
+  if ($trigger == "button") await httpAPI("/v1/dns/flush");
+  let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
+  dnsContent = `Ping DNS: ${delay}ms${dnsCache ? `\nserver:\n${dnsCache}` : ""}`;
+})();
+
 
 function httpAPI(path = "", method = "POST", body = null) {
     return new Promise((resolve) => {
@@ -82,11 +104,11 @@ function httpAPI(path = "", method = "POST", body = null) {
     });
 }
 
-function getParams(param) {
-  return Object.fromEntries(
-    $argument
-      .split("&")
-      .map((item) => item.split("="))
-      .map(([k, v]) => [k, decodeURIComponent(v)])
-  );
-}
+// function getParams(param) {
+//   return Object.fromEntries(
+//     $argument
+//       .split("&")
+//       .map((item) => item.split("="))
+//       .map(([k, v]) => [k, decodeURIComponent(v)])
+//   );
+// }

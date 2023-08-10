@@ -47,7 +47,7 @@ const UA =
           return;
         }
         let jsonData = JSON.parse(data);
-        resolve(jsonData.text);
+        resolve(jsonData.yiyan);
       });
     });
   
@@ -63,7 +63,7 @@ const UA =
         } else if (status == STATUS_AVAILABLE) {
           disney_result = `Disney+:  ☑️  -  ${region.toUpperCase()}`;
         } else if (status == STATUS_NOT_AVAILABLE) {
-          disney_result = `Disney+:  ❌`;
+          disney_result = `Disney+:  ✘`;
         } else if (status == STATUS_TIMEOUT) {
           disney_result = `Disney+:  Timeout`;
         }
@@ -109,7 +109,6 @@ async function check_youtube_premium() {
         resolve(region)
       })
     })
-
   }
 
   let youtube_check_result = 'YouTube:  '

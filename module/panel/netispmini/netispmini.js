@@ -80,7 +80,7 @@ Promise.all([
         }
       }
       const l = await tKey("http://chat.openai.com/cdn-cgi/trace", 1e3)
-      const i = ["CN", "HK", "IR", "KP", "RU", "VE", "BY"]
+      const i = ["CN", "TW", "HK", "IR", "KP", "RU", "VE", "BY"]
       if (typeof l !== "string") {
         let { loc: t, tk: e, warp: s, ip: a } = l,
           o = i.indexOf(t),
@@ -89,7 +89,7 @@ Promise.all([
         if ((s = "plus")) {
           s = "Plus"
         }
-        outgpt = n + " - Priv:" + s + e + "ms"
+        outgpt = n + " - Priv:" + s + "   " + e + "ms"
       } else {
         outgpt = "ChatGPT " + l
       }
