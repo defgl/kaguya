@@ -6,8 +6,7 @@
  * 版本：1.5
 */
 
-const icon = "bubbles.and.sparkles.fill";
-const color = "#f6c970";
+let params = getParams($argument)
 
 !(async () => {
   /* 时间获取 */
@@ -22,7 +21,7 @@ const color = "#f6c970";
 
   $done({
     title: titlecontent,
-    content: `start time: ${startTime}`,
+    content: `StartTime: ${startTime}`,
     icon: params.icon,
     "icon-color": params.color
   });
@@ -61,6 +60,7 @@ let minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
 let leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
 let seconds=Math.round(leave3/1000)
 
+
 if (days == 0 && hours == 0 && minutes == 0) {
   return `${seconds}s`;
 } else if (days == 0 && hours == 0) {
@@ -79,4 +79,13 @@ function httpAPI(path = "", method = "POST", body = null) {
             resolve(result);
         });
     });
+}
+
+function getParams(param) {
+  return Object.fromEntries(
+    $argument
+      .split("&")
+      .map((item) => item.split("="))
+      .map(([k, v]) => [k, decodeURIComponent(v)])
+  );
 }
