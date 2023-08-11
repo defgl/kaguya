@@ -8,4 +8,4 @@
 surgepro = script-name=surgepro,update-interval=1
 
 [Script]
-surgepro = type=generic,timeout=10,script-path= https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Module/Panel/Surge-Pro/Moore/SurgePro.js ,argument=icon=paperplane.circle&color=#f6c970
+surgepro = type=generic,timeout=10,script-path= https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/surge-pro/surgepro.js ,argument=icon=paperplane.circle&color=#f6c970
