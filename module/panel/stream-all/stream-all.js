@@ -33,26 +33,26 @@ const UA =
       icon: 'visionpro.badge.play.fill',
       'icon-color': '#FFB6C1',
     }
-  
-    // 使用Promise来获取text内容
-    let fetchTextContent = new Promise((resolve, reject) => {
-      let url = 'https://v.api.aa1.cn/api/api-wenan-mingrenmingyan/index.php?aa1=json';
-      $httpClient.get(url, function(error, response, data) {
-        if (error) {
-          reject(error);
-          return;
-        }
-        if (response.status !== 200) {
-          reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-          return;
-        }
-        let jsonData = JSON.parse(data);
-        resolve(jsonData.mingrenmingyan);
+
+      // 使用Promise来获取text内容
+      let fetchTextContent = new Promise((resolve, reject) => {
+        let url = 'https://zj.v.api.aa1.cn/api/wenan-mj/?type=json';
+        $httpClient.get(url, function(error, response, data) {
+          if (error) {
+            reject(error);
+            return;
+          }
+          if (response.status !== 200) {
+            reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+            return;
+          }
+          let jsonData = JSON.parse(data);
+          resolve(jsonData.msg);
+        });
       });
-    });
-  
-    // 使用await来获取text内容并设置为title
-    panel_result.title = await fetchTextContent;
+    
+      // 使用await来获取text内容并设置为title
+      panel_result.title = await fetchTextContent;
   
     let [{ region, status }] = await Promise.all([testDisneyPlus()])
     await Promise.all([check_youtube_premium(), check_netflix()])
