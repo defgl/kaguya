@@ -7,22 +7,21 @@
  */
 
 !(async () => {
-  // let showServer = true,
-  //     dnsCache;
-  // if (showServer) {
-  //     dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
-  //     dnsCache = [...new Set(dnsCache.map((d) => d.server))].toString().replace(/,/g, "\n");
-  // }
-  // if ($trigger == "button") await httpAPI("/v1/dns/flush");
-  // let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
 
   let titlecontent = await fetchtitlecontent();
 
-  if ($trigger == "button") await httpAPI("/v1/profiles/reload");
+  if ($trigger == "button") {
+    await httpAPI("/v1/profiles/reload");
+    await httpAPI("/v1/dns/flush");
+  }
+
+  let dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
+  dnsCache = [...new Set(dnsCache.map((d) => d.server))].toString().replace(/,/g, "\n");
+  let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
 
   $done({
     title: titlecontent,
-    // content: `Flush: ${delay}ms${dnsCache ? `\nserver:\n${dnsCache}` : ""}`,
+    content: `Ping DNS: ${delay}ms${dnsCache ? `\nserver:\n${dnsCache}` : ""}`,
     icon: 'wifi.exclamationmark',
     'icon-color': '#CB1B45',
   });
@@ -55,4 +54,5 @@ async function fetchtitlecontent() {
       resolve(extractedtext);
     });
   });
+}
 }
