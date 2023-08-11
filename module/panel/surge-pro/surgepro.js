@@ -6,8 +6,6 @@
  * 版本：1.5
 */
 
-let params = getParams($argument)
-
 !(async () => {
   /* 时间获取 */
   let traffic = (await httpAPI("/v1/traffic","GET"))
@@ -79,13 +77,4 @@ function httpAPI(path = "", method = "POST", body = null) {
             resolve(result);
         });
     });
-}
-
-function getParams(param) {
-  return Object.fromEntries(
-    $argument
-      .split("&")
-      .map((item) => item.split("="))
-      .map(([k, v]) => [k, decodeURIComponent(v)])
-  );
 }
