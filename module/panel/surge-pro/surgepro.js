@@ -21,7 +21,7 @@ let params = getParams($argument)
 
   $done({
     title: titlecontent,
-    content: `StartTime: ${startTime}`,
+    content: `Start time: ${startTime}`,
     icon: params.icon,
     "icon-color": params.color
   });
@@ -30,7 +30,7 @@ let params = getParams($argument)
 
 async function fetchtitlecontent() {
   return new Promise((resolve, reject) => {
-    let url = 'https://zj.v.api.aa1.cn/api/wenan-shici/?type=json';
+    let url = 'https://zj.v.api.aa1.cn/api/wenan-mj/?type=json';
     $httpClient.get(url, function(error, response, data) {
       if (error) {
         reject(`error: ${error.message}`);
