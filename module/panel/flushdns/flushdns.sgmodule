@@ -1,11 +1,11 @@
 #!name=flushDNS
-#!desc=快速清除Surge的DNS缓存
+#!desc=Quickly flush Surge's DNS cache
 #!system=ios
 # 更新日期：2022.08.24
 # 版本：2.1
 
 [Panel]
-flushDNS = script-name=flushdns,update-interval=600
+flushdns = script-name=flushdns,update-interval=600
 
 [Script]
-flushDNS = type=generic,timeout=10,script-path=https://raw.githubusercontent.com/anyawa/kaguya/Master/module/panel/flushdns/flushdns.js
+flushdns = type=generic,timeout=10,script-path=https://raw.githubusercontent.com/anyawa/kaguya/Master/module/panel/flushdns/flushdns.js
