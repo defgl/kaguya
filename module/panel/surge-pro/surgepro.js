@@ -6,43 +6,46 @@
  * 版本：1.5
 */
 
-let params = getParams($argument)
+let params = getParams($argument);
 
 !(async () => {
-  let showServer = true,
-  dnsCache;
-if (typeof $argument != "undefined") {
-  let arg = Object.fromEntries($argument.split("&").map((item) => item.split("=")));
-  if (arg.title) panel.title = arg.title;
-  if (arg.icon) panel.icon = arg.icon;
-  if (arg.color) panel["icon-color"] = arg.color;
-  if (arg.server == "false") showServer = false;
-}
-if (showServer) {
-  dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
-  dnsCache = [...new Set(dnsCache.map((d) => d.server))].toString().replace(/,/g, "\n");
-}
-if ($trigger == "button") await httpAPI("/v1/dns/flush");
-let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
-
-  /* 时间获取 */
-  let traffic = (await httpAPI("/v1/traffic","GET"))
-  let dateNow = new Date()
-  let dateTime = Math.floor(traffic.startTime*1000)
-  let startTime = timeTransform(dateNow,dateTime)
+  // 时间获取
+  let traffic = await httpAPI("/v1/traffic", "GET");
+  let dateNow = new Date();
+  let dateTime = Math.floor(traffic.startTime * 1000);
+  let startTime = timeTransform(dateNow, dateTime);
 
   let titlecontent = await fetchtitlecontent();
 
   if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
+  /* Flush DNS */
+  let showServer = true;
+  let dnsCache;
+
+  if (typeof $argument != "undefined") {
+    let arg = Object.fromEntries($argument.split("&").map((item) => item.split("=")));
+    if (arg.title) panel.title = arg.title;
+    if (arg.icon) panel.icon = arg.icon;
+    if (arg.color) panel["icon-color"] = arg.color;
+    if (arg.server == "false") showServer = false;
+  }
+
+  if (showServer) {
+    dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
+    dnsCache = [...new Set(dnsCache.map((d) => d.server))].toString().replace(/,/g, "\n");
+  }
+
+  if ($trigger == "button") await httpAPI("/v1/dns/flush");
+  let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
+  panel.content = `DNS Flush: ${delay}ms${dnsCache ? `\nserver:\n${dnsCache}` : ""}`;
+
   $done({
     title: titlecontent,
-    content: `StartTime: ${startTime}\nPing DNS: ${delay}ms${dnsCache ? `\nserver:\n${dnsCache}` : ""}`,
+    content: `StartTime: ${startTime}\n${panel.content}`,
     icon: params.icon,
     "icon-color": params.color
   });
-
-
 })();
 
 async function fetchtitlecontent() {
@@ -64,6 +67,8 @@ async function fetchtitlecontent() {
     });
   });
 }
+
+// Rest of the code remains the same
 
 function timeTransform(dateNow,dateTime) {
 let dateDiff = dateNow - dateTime;
