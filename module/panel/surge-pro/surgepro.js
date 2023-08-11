@@ -9,6 +9,22 @@
 let params = getParams($argument)
 
 !(async () => {
+  let showServer = true,
+  dnsCache;
+if (typeof $argument != "undefined") {
+  let arg = Object.fromEntries($argument.split("&").map((item) => item.split("=")));
+  if (arg.title) panel.title = arg.title;
+  if (arg.icon) panel.icon = arg.icon;
+  if (arg.color) panel["icon-color"] = arg.color;
+  if (arg.server == "false") showServer = false;
+}
+if (showServer) {
+  dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
+  dnsCache = [...new Set(dnsCache.map((d) => d.server))].toString().replace(/,/g, "\n");
+}
+if ($trigger == "button") await httpAPI("/v1/dns/flush");
+let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
+
   /* 时间获取 */
   let traffic = (await httpAPI("/v1/traffic","GET"))
   let dateNow = new Date()
@@ -21,10 +37,11 @@ let params = getParams($argument)
 
   $done({
     title: titlecontent,
-    content: `StartTime: ${startTime}`,
+    content: `StartTime: ${startTime}\nPing DNS: ${delay}ms${dnsCache ? `\nserver:\n${dnsCache}` : ""}`,
     icon: params.icon,
     "icon-color": params.color
   });
+
 
 })();
 
