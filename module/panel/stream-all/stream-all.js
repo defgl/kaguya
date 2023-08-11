@@ -36,7 +36,7 @@ const UA =
   
     // 使用Promise来获取text内容
     let fetchTextContent = new Promise((resolve, reject) => {
-      let url = 'https://v.api.aa1.cn/api/yiyan/index.php?type=json';
+      let url = 'https://v.api.aa1.cn/api/api-wenan-mingrenmingyan/index.php?aa1=json';
       $httpClient.get(url, function(error, response, data) {
         if (error) {
           reject(error);
@@ -47,7 +47,7 @@ const UA =
           return;
         }
         let jsonData = JSON.parse(data);
-        resolve(jsonData.yiyan);
+        resolve(jsonData.mingrenmingyan);
       });
     });
   
@@ -61,7 +61,7 @@ const UA =
         if (status == STATUS_COMING) {
           disney_result = `Disney+:  Coming Soon  -  ${region.toUpperCase()}`;
         } else if (status == STATUS_AVAILABLE) {
-          disney_result = `Disney+:  ☑️  -  ${region.toUpperCase()}`;
+          disney_result = `Disney+:  ✔︎  -  ${region.toUpperCase()}`;
         } else if (status == STATUS_NOT_AVAILABLE) {
           disney_result = `Disney+:  ✘`;
         } else if (status == STATUS_TIMEOUT) {
@@ -117,8 +117,8 @@ async function check_youtube_premium() {
     const code = await inner_check()
     youtube_check_result +=
       code === 'Not Available'
-        ? ' ⛔️'
-        : ` ✅  -  ${code.toUpperCase()}`
+        ? ' ✘'
+        : ` ✔︎  -  ${code.toUpperCase()}`
   } catch (error) {
     youtube_check_result += 'Failed to detect, please refresh the panel.'
   }
@@ -174,13 +174,13 @@ async function check_netflix() {
       if (code2 === 'Not Found') {
         throw 'Not Available'
       }
-      netflix_check_result += ` 🟡  -  ${code2.toUpperCase()}`;
+      netflix_check_result += ` ﹅  ☛  ${code2.toUpperCase()}`;
     } else {
-      netflix_check_result += ` 🟢  -  ${code1.toUpperCase()}`
+      netflix_check_result += ` ✔︎  ☞  ${code1.toUpperCase()}`
     }
   } catch (error) {
     if (error === 'Not Available') {
-      netflix_check_result += ' 🔴 '
+      netflix_check_result += ' ✘ '
     } else {
       netflix_check_result += 'Failed to detect, please refresh the panel.'
     }
