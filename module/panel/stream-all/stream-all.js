@@ -36,7 +36,8 @@ const UA =
 
       // 使用Promise来获取text内容
       let fetchTextContent = new Promise((resolve, reject) => {
-        let url = 'https://zj.v.api.aa1.cn/api/wenan-mj/?type=json';
+        // let url = 'https://zj.v.api.aa1.cn/api/wenan-mj/?type=json';
+        let url = ' https://v.api.aa1.cn/api/api-wenan-yingwen/index.php?type=json';
         $httpClient.get(url, function(error, response, data) {
           if (error) {
             reject(error);
@@ -47,7 +48,7 @@ const UA =
             return;
           }
           let jsonData = JSON.parse(data);
-          resolve(jsonData.msg);
+          resolve(jsonData.text);
         });
       });
     
