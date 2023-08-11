@@ -44,7 +44,7 @@ function httpAPI(path = "", method = "POST", body = null) {
 
 async function fetchtitlecontent() {
   return new Promise((resolve, reject) => {
-    let url = 'https://zj.v.api.aa1.cn/api/wenan-shici/?type=json';
+    let url = 'https://api.sfhzb.cn/api/wenrou.php';
     $httpClient.get(url, function(error, response, data) {
       if (error) {
         reject(`error: ${error.message}`);
@@ -54,9 +54,8 @@ async function fetchtitlecontent() {
         reject(`failed to fetch data. http status: ${response.status}`);
         return;
       }
-      let jsondata = JSON.parse(data);
-      let fulltext = jsondata.msg;
-      let extractedtext = fulltext.split("。——")[0] + "。";
+      let regex = /━━━━━━━━━\n(.+)\n━━━━━━━━━/;
+      let extractedtext = data.match(regex)[1];
       resolve(extractedtext);
     });
   });
