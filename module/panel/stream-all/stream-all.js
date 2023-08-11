@@ -61,7 +61,7 @@ const UA =
         if (status == STATUS_COMING) {
           disney_result = `Disney+:  Coming Soon  -  ${region.toUpperCase()}`;
         } else if (status == STATUS_AVAILABLE) {
-          disney_result = `Disney+:  ✔︎  -  ${region.toUpperCase()}`;
+          disney_result = `Disney+:  ✔︎  ☛  ${region.toUpperCase()}`;
         } else if (status == STATUS_NOT_AVAILABLE) {
           disney_result = `Disney+:  ✘`;
         } else if (status == STATUS_TIMEOUT) {
