@@ -9,6 +9,7 @@
 !(async () => {
 
   let titlecontent = await fetchtitlecontent();
+  let showServer = false;
 
   if ($trigger == "button") {
     await httpAPI("/v1/profiles/reload");
@@ -21,9 +22,9 @@
 
   $done({
     title: titlecontent,
-    content: `Ping DNS: ${delay}ms${dnsCache ? `\nserver:\n${dnsCache}` : ""}`,
-    icon: 'wifi.exclamationmark',
-    'icon-color': '#CB1B45',
+    content: `Flush: ${delay}ms${dnsCache ? `\nserver:\n${dnsCache}` : ""}`,
+    icon: 'arcade.stick.and.arrow.right',
+    'icon-color': '#B22222',
   });
 
 })();
