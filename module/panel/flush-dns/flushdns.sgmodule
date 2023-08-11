@@ -8,4 +8,4 @@
 flushdns = script-name=flushdns,update-interval=600
 
 [Script]
-flushdns = type=generic,timeout=10,script-path=https://raw.githubusercontent.com/anyawa/kaguya/Master/module/panel/flush-dns/flush-dns.js
+flushdns = type=generic,timeout=10,script-path=https://raw.githubusercontent.com/anyawa/kaguya/Master/module/panel/flushdns/flushdns.js
