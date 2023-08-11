@@ -7,9 +7,13 @@
  */
 
 !(async () => {
-    let panel = { title: "Flush DNS" },
-        showServer = true,
-        dnsCache;
+
+    let titlecontent = await fetchtitlecontent();
+    let showServer = true;
+    let dnsCache;
+    
+    let panel = { title: titlecontent };
+    
     if (typeof $argument != "undefined") {
         let arg = Object.fromEntries($argument.split("&").map((item) => item.split("=")));
         if (arg.title) panel.title = arg.title;
@@ -34,3 +38,27 @@ function httpAPI(path = "", method = "POST", body = null) {
         });
     });
 }
+
+function fetchtitlecontent() {
+    return new Promise((resolve, reject) => {
+      let url = 'https://zj.v.api.aa1.cn/api/wenan-shici/?type=json';
+      $httpClient.get(url, function(error, response, data) {
+        if (error) {
+          reject(`error: ${error.message}`);
+          return;
+        }
+        if (response.status !== 200) {
+          reject(`failed to fetch data. http status: ${response.status}`);
+          return;
+        }
+        let regex = /━━━━━━━━━\n([\s\S]*?)\n━━━━━━━━━/;
+        let match = regex.exec(data);
+        if (match) {
+          let extractedtext = match[1];
+          resolve(extractedtext);
+        } else {
+          reject(`failed to extract data from response`);
+        }
+      });
+    });
+  }
