@@ -58,11 +58,11 @@ const UA =
       .then((result) => {
         let disney_result = '';
         if (status == STATUS_COMING) {
-          disney_result = `Disney+:  Coming Soon  →  ${getFlagEmoji(region)} `;
+          disney_result = `Disney+:    Coming Soon  →  ${getFlagEmoji(region)} `;
         } else if (status == STATUS_AVAILABLE) {
-          disney_result = `Disney+:   👍🏼   →   ${getFlagEmoji(region)} `;
+          disney_result = `Disney+:    👍🏼   →   ${getFlagEmoji(region)} `;
         } else if (status == STATUS_NOT_AVAILABLE) {
-          disney_result = `Disney+:   👎🏿`;
+          disney_result = `Disney+:    👎🏿`;
         } else if (status == STATUS_TIMEOUT) {
           disney_result = `Disney+:  Timeout`;
         }
@@ -116,8 +116,8 @@ async function check_youtube_premium() {
     const code = await inner_check()
     youtube_check_result +=
       code === 'Not Available'
-        ? ' 👍🏼'
-        : ` 👎🏿  |  ${getFlagEmoji(code)}`
+        ? ' 👎🏿'
+        : ` 👍🏼  |  ${getFlagEmoji(code)}`
   } catch (error) {
     youtube_check_result += 'Failed to detect, please refresh the panel.'
   }
@@ -173,13 +173,13 @@ async function check_netflix() {
       if (code2 === 'Not Found') {
         throw 'Not Available'
       }
-      netflix_check_result += `  👍🏽   →   ${getFlagEmoji(code2)}`;
+      netflix_check_result += `   👍🏽   →   ${getFlagEmoji(code2)}`;
     } else {
-      netflix_check_result += `  👍🏼   →   ${getFlagEmoji(code1)}`
+      netflix_check_result += `   👍🏼   →   ${getFlagEmoji(code1)}`
     }
   } catch (error) {
     if (error === 'Not Available') {
-      netflix_check_result += ' 👎🏿 '
+      netflix_check_result += '   👎🏿 '
     } else {
       netflix_check_result += 'Failed to detect, please refresh the panel.'
     }
