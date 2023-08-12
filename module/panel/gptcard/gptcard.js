@@ -33,7 +33,7 @@ async function fetchtitlecontent() {
 }
 
 // 定义 icon
-let icon = 'ev.charger.arrowtriangle.left.fill';
+let icon = 'bolt.heart.fill';
 let iconColor = '#4169E1';
 
 // 发送 HTTP 请求获取所在地信息
@@ -58,9 +58,9 @@ $httpClient.get(url, async function(error, response, data){
   let l = tf.indexOf(cf.loc);
   let gpt;
   if (l !== -1) {
-  gpt = "GPT: ☻☻☻";
+  gpt = "Secretary Misaka: 🫦";
   } else {
-  gpt = "GPT: ☹︎☺︎☺︎";
+  gpt = "Secretary Misaka: 💄";
   }
 
   // 获取 Warp 状态
