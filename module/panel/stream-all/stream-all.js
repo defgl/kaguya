@@ -30,7 +30,7 @@ const UA =
     let panel_result = {
       title: "",
       content: '',
-      icon: 'visionpro.badge.play.fill',
+      icon: 'ev.plug.ac.gb.t.fill',
       'icon-color': '#FFB6C1',
     }
 

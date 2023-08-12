@@ -52,15 +52,15 @@ $httpClient.get(url, async function(error, response, data){
   }, {});
   let ip = cf.ip;
   let warp = cf.warp;
-  let loc = getCountryFlagEmoji(cf.loc) + cf.loc;
+  let loc = cf.loc.toUpperCase() + " - " + getCountryFlagEmoji(cf.loc);
 
   // 判断 ChatGPT 是否支持该国家/地区
   let l = tf.indexOf(cf.loc);
   let gpt;
   if (l !== -1) {
-  gpt = "GPT: ✔️";
+  gpt = "GPT: 👍🏻";
   } else {
-  gpt = "GPT: ✖️";
+  gpt = "GPT: 👎🏻";
   }
 
   // 获取 Warp 状态
@@ -81,7 +81,7 @@ $httpClient.get(url, async function(error, response, data){
   // 组装通知数据
   let body = {
     title: title,
-    content: `${gpt}   区域: ${loc}`,
+    content: `${gpt} | ${loc}`,
     icon: icon,
     'icon-color': iconColor
   };

@@ -28,8 +28,8 @@
   $done({
     title: titlecontent,
     content: `Flush: ${delay}ms${dnsCache ? `\nserver:\n${dnsCache}` : ""}`,
-    icon: 'arcade.stick.and.arrow.right',
-    'icon-color': '#B22222',
+    icon: 'arcade.stick.and.arrow.left.and.arrow.right',
+    'icon-color': '#CD853F',
   });
 
 })();
