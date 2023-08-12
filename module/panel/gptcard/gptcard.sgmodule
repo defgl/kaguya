@@ -6,4 +6,4 @@
 gptcard = script-name=gptcard, update-interval=-1
 
 [script]
-gptcard = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/gptcard/gptcard.js
+gptcard = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/kaguya/Master/module/panel/gptcard/gptcard.js

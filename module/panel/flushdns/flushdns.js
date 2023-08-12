@@ -11,14 +11,14 @@
   let titlecontent = await fetchtitlecontent();
   let showServer = false;
 
-  if (showServer) {
-    dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
-    dnsCache = [...new Set(dnsCache.map((d) => d.server))].toString().replace(/,/g, "\n");
-}
-
   if ($trigger == "button") {
     await httpAPI("/v1/profiles/reload");
     await httpAPI("/v1/dns/flush");
+  }
+
+  if (showServer) {
+    let dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
+    dnsCache = [...new Set(dnsCache.map((d) => d.server))].toString().replace(/,/g, "\n");
   }
 
   let dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
