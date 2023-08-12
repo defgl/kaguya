@@ -1,9 +1,8 @@
 #!name=gptcard
 #!desc=We're Vibin' With ChatGPT, Checkin' Its Game In Your Hood, Switchin' Up Icons. No Warp Checks, Straight Up.
-#!author=keywos wuhu_zz 整点猫咪
 
 [Panel]
 gptcard = script-name=gptcard, update-interval=-1
 
 [script]
-gptcard = type=generic,timeout=6,script-path=https://raw.githubusercontent.com/anyawa/kaguya/Master/module/panel/gptcard/gptcard.js
+gptcard = type=generic,timeout=6,script-path= https://raw.githubusercontent.com/anyawa/kaguya/Master/module/panel/gptcard/gptcard.js
