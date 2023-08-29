@@ -35,7 +35,7 @@ const UA =
     }
 
     let fetchTextContent = new Promise((resolve, reject) => {
-      let url = 'https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json';
+      let url = 'https://v.api.aa1.cn/api/api-renjian/?type=json';
       $httpClient.get(url, function(error, response, data) {
         if (error) {
           reject(error);
@@ -46,9 +46,11 @@ const UA =
           return;
         }
         let jsonData = JSON.parse(data);
-        resolve(jsonData[0].qinggan);
+        // 访问数组的第一个元素，并获取其 'qinggan' 字段
+        resolve(jsonData.renjian);
       });
     });
+    
     
       // 使用await来获取text内容并设置为title
       panel_result.title = await fetchTextContent;
