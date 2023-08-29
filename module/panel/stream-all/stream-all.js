@@ -34,8 +34,25 @@ const UA =
       'icon-color': '#2F4F4F',
     }
 
+    //let fetchTextContent = new Promise((resolve, reject) => {
+    //  let url = 'https://v.api.aa1.cn/api/api-wenan-yingwen/index.php?type=json';
+    //  $httpClient.get(url, function(error, response, data) {
+    //    if (error) {
+    //      reject(error);
+    //      return;
+    //    }
+    //    if (response.status !== 200) {
+    //      reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+    //      return;
+    //    }
+    //    let jsonData = JSON.parse(data);
+    //    // 访问数组的第一个元素，并获取其 'qinggan' 字段
+    //    resolve(jsonData.text);
+    //  });
+    //});
+
     let fetchTextContent = new Promise((resolve, reject) => {
-      let url = 'https://v.api.aa1.cn/api/api-wenan-yingwen/index.php?type=json';
+      let url = 'https://zj.v.api.aa1.cn/api/wenan-mj/?type=json';
       $httpClient.get(url, function(error, response, data) {
         if (error) {
           reject(error);
@@ -46,12 +63,10 @@ const UA =
           return;
         }
         let jsonData = JSON.parse(data);
-        // 访问数组的第一个元素，并获取其 'qinggan' 字段
-        resolve(jsonData.text);
+        resolve(jsonData.msg);
       });
     });
-    
-    
+
       // 使用await来获取text内容并设置为title
       panel_result.title = await fetchTextContent;
   
