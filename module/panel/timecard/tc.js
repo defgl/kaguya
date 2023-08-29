@@ -832,14 +832,11 @@ var tlist = {
       66 :"但曾相见便相知，相见何如不见时。安得与君相诀绝，免教辛苦作相思。"
     };
   
-    if (r < 1 / 3) {
-      return 'nowlunar';
-    } else if (r < 2 / 3) {
-      return 'nowsolar';
-    } else {
-      let randomIndex = Math.floor(Math.random() * 8) + 1;
-      return dic[randomIndex];
-    }
+    if (Math.random() < 0.5) {
+        return 'nowlunar';
+      } else {
+        return 'nowsolar';
+      }
   }
   
   $done({
