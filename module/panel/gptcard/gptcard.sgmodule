@@ -6,7 +6,3 @@ gptcard = script-name=gptcard, update-interval=-1
 
 [Script]
 gptcard = type=generic,timeout=6,script-path= https://raw.githubusercontent.com/anyawa/kaguya/Master/module/panel/gptcard/gptcard.js
-
-[MITM]
-hostname = v.api.aa1.cn
-skip-common-name-verify = v.api.aa1.cn
