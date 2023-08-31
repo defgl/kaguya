@@ -60,9 +60,9 @@ $httpClient.get(url, async function(error, response, data){
   let l = tf.indexOf(cf.loc);
   let gpt;
   if (l !== -1) {
-  gpt = "Secretary Misaka: 🫦";
-  } else {
   gpt = "Secretary Misaka: 💄";
+  } else {
+  gpt = "Secretary Misaka: 👡";
   }
 
   // 获取 Warp 状态
@@ -77,7 +77,7 @@ $httpClient.get(url, async function(error, response, data){
   // 获取标题
   let title = await fetchtitlecontent().catch(error => {
     console.error(error);
-    return 'ChatGPT';  // 如果获取失败，使用默认标题
+    return '🤦🏼‍♀️';  // 如果获取失败，使用默认标题
   });
 
   // 组装通知数据
