@@ -73,13 +73,13 @@ var tlist = {
   //>图标依次切换乌龟、兔子、闹钟、礼品盒
   function icon_now(num){
     if(num<=7 && num>3 ){
-      return "hare"
+      return "moonphase.waxing.crescent.inverse"
     }else if(num<=3 && num>0){
-      return "timer"
+      return "moonphase.waxing.gibbous.inverse"
     }else if(num==0){
-      return "gift"
+      return "moonphase.full.moon.inverse"
     }else{
-      return "tortoise"
+      return "moonphase.new.moon.inverse"
     }
   }
   
@@ -774,9 +774,13 @@ async function fetchLunarInfo() {
         const match = /日([\s\S]*?)━━━━━━━━━/.exec(data);
 
         if (match) {
-          let result = match[1].trim();  // 去掉前后空白
-          result = result.replace("节气：", " ");  // 替换 "节气："
-          resolve(result);
+            let result = match[1].trim(); // 去掉前后空白
+            result = result.replace("节气：", ""); // 删除 "节气："
+            result = result.replace(/\n+/g, "｜"); // 将所有连续的换行符替换为单个 "｜"
+            result = result.replace("农历", ""); // 删除 "农历"
+            result = result.replace(/^\｜|｜$/g, ""); // 删除开始和结尾处的 "｜"
+            result = result.replace(/｜\s+/g, "｜"); // 删除 "｜" 后面的多余空格
+            resolve(result);
         } else {
           console.error("Failed to extract content between '日' and '━━━━━━━━━'");
           reject(new Error("Failed to extract content between '日' and '━━━━━━━━━'"));
