@@ -20,7 +20,7 @@ let params = getParams($argument)
   if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
   $done({
-    title: `｜ ${titlecontent}`,
+    title: titlecontent,
     content: `StartTime: ${startTime}`,
     icon: params.icon,
     "icon-color": params.color
