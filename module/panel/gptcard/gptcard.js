@@ -58,9 +58,9 @@ $httpClient.get(url, async function(error, response, data){
   let l = tf.indexOf(cf.loc);
   let gpt;
   if (l !== -1) {
-  gpt = "Secretary Misaka: 𝚕𝚒 𝚢𝚘 𝚗𝚎";
+  gpt = "𝓜𝓲𝓼𝓪𝓴𝓪: 𝚕𝚒 𝚢𝚘 𝚗𝚎";
   } else {
-  gpt = "Secretary Misaka: 𝚖𝚊𝚍𝚘 𝚢𝚘";
+  gpt = "𝓜𝓲𝓼𝓪𝓴𝓪: 𝚖𝚊𝚍𝚘 𝚢𝚘";
   }
 
   // 获取 Warp 状态
