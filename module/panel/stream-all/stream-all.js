@@ -76,13 +76,13 @@ const UA =
         let disney_result = '';
 
         if (status === STATUS_COMING) {
-          disney_result = `｜Disney+: Coming Soon ~ ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
+          disney_result = `DISNEYPLUS: Coming Soon ~ ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
         } else if (status === STATUS_AVAILABLE) {
-          disney_result = `｜Disney+: 👍🏼 - ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
+          disney_result = `DISNEYPLUS: 👍🏼 - ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
         } else if (status === STATUS_NOT_AVAILABLE) {
-          disney_result = `｜Disney+: 👎🏿`;
+          disney_result = `DISNEYPLUS: 👎🏿`;
         } else if (status === STATUS_TIMEOUT) {
-          disney_result = `｜Disney+: Timeout`;
+          disney_result = `DISNEYPLUS: Timeout`;
         }
   
         result.push(disney_result);
@@ -128,7 +128,7 @@ async function check_youtube_premium() {
     })
   }
 
-  let youtube_check_result = '｜YouTube: '
+  let youtube_check_result = 'YOUTUBE: '
 
   try {
     const code = await inner_check();
@@ -183,7 +183,7 @@ async function check_netflix() {
     })
   }
 
-  let netflix_check_result = '｜Netflix: '
+  let netflix_check_result = 'NETFLIX: '
 
   try {
     const code1 = await inner_check(80062035);
