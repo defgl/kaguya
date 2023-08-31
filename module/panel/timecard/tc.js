@@ -753,7 +753,40 @@ var tlist = {
 
 var lunar = calendar.solar2lunar();
 var nowsolar = lunar.cMonth + '月' + lunar.cDay + '日（' + lunar.astro + '）';
-var nowlunar = lunar.IMonthCn + lunar.IDayCn + ' ' + lunar.gzYear + lunar.gzMonth + lunar.gzDay + ' ' + lunar.Animal + '年';
+// var nowlunar = lunar.IMonthCn + lunar.IDayCn + ' ' + lunar.gzYear + lunar.gzMonth + lunar.gzDay + ' ' + lunar.Animal + '年';
+
+async function fetchLunarInfo() {
+    return new Promise((resolve, reject) => {
+      let url = 'https://api.sfhzb.cn/api/nl.php';
+      $httpClient.get(url, function(error, response, data) {
+        if (error) {
+          console.error("Network error:", error);
+          reject(error);
+          return;
+        }
+        if (response.status !== 200) {
+          console.error(`Failed to fetch data. HTTP Status: ${response.status}`);
+          reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+          return;
+        }
+
+        // 使用正则表达式提取 "日" 和 "━━━━━━━━━" 之间的内容
+        const match = /日([\s\S]*?)━━━━━━━━━/.exec(data);
+
+        if (match) {
+          let result = match[1].trim();  // 去掉前后空白
+          result = result.replace("节气：", " ");  // 替换 "节气："
+          resolve(result);
+        } else {
+          console.error("Failed to extract content between '日' and '━━━━━━━━━'");
+          reject(new Error("Failed to extract content between '日' and '━━━━━━━━━'"));
+        }
+      });
+    });
+}
+
+
+  
 
 function getRandomPoem() {
   const poems = [
@@ -830,25 +863,39 @@ function getRandomPoem() {
   return poems[randomIndex];
 }
 
-function title_random() {
-  const randomChoice = Math.floor(Math.random() * 3);
-  
-  switch (randomChoice) {
-    case 0:
-      return nowsolar;
-    case 1:
-      return nowlunar;
-    case 2:
-      return getRandomPoem();
-    default:
-      return "Unknown";
+async function title_random() {
+    const randomChoice = Math.floor(Math.random() * 3);
+    
+    switch (randomChoice) {
+      case 0:
+        return nowsolar;
+      case 1:
+        try {
+          const lunarInfo = await fetchLunarInfo();
+          return lunarInfo;
+        } catch (error) {
+          console.error("Failed to fetch lunar info:", error);
+          return "Unknown Lunar Info";
+        }
+      case 2:
+        return getRandomPoem();
+      default:
+        return "Unknown";
+    }
   }
-}
 
-console.log(title_random());
-
-  $done({
-  title:title_random(tnumcount(Number(nowlist))),
-  icon:icon_now(tnumcount(Number(nowlist))),
-  content:tlist[nowlist][0]+":"+today(tnumcount(nowlist))+","+tlist[Number(nowlist) + Number(1)][0] +":"+ tnumcount(Number(nowlist) + Number(1))+ "天,"+tlist[Number(nowlist) + Number(2)][0]+":"+tnumcount(Number(nowlist) + Number(2))+"天"
+// 使用示例
+title_random()
+  .then(title => {
+    console.log("Generated title:", title);
+    // 这里你可以继续执行其他代码，例如 $done(...)
+    $done({
+      title: title,  // 这里用到了上面 Promise 解析出的 title
+      icon: icon_now(tnumcount(Number(nowlist))),
+      content: `${tlist[nowlist][0]}:${today(tnumcount(nowlist))},${tlist[Number(nowlist) + Number(1)][0]}:${tnumcount(Number(nowlist) + Number(1))}天,${tlist[Number(nowlist) + Number(2)][0]}:${tnumcount(Number(nowlist) + Number(2))}天`
+    });
   })
+  .catch(error => {
+    console.error("Failed to generate title:", error);
+    // 在这里你可以处理错误
+  });
