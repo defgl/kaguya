@@ -73,13 +73,13 @@ var tlist = {
   //>图标依次切换乌龟、兔子、闹钟、礼品盒
   function icon_now(num){
     if(num<=7 && num>3 ){
-      return "moonphase.waxing.crescent.inverse"
+      return "sun.min.fill"
     }else if(num<=3 && num>0){
-      return "moonphase.waxing.gibbous.inverse"
+      return "sun.max.fill"
     }else if(num==0){
-      return "moonphase.full.moon.inverse"
+      return "tree.circle.fill"
     }else{
-      return "moonphase.new.moon.inverse"
+      return "leaf.circle.fill"
     }
   }
   
