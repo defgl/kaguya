@@ -18,7 +18,7 @@ let content = ''
   let { CN_IP = '-', CN_ADDR = '-', CN_ADDR_EN = '-' } = await getDirectInfo()
 
   title = `${CN_ADDR_EN}`
-  content = `IP:${CN_IP}\nTime:${new Date().toTimeString().split(' ')[0]}`
+  content = `𝕀ℙ:${CN_IP}\n𝕋𝕚𝕞𝕖:${new Date().toTimeString().split(' ')[0]}`
   if ($.isTile()) {
     await notify('网络信息', '面板', '查询完成')
   } else if(!$.isPanel()) {
