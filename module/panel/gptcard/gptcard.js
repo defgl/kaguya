@@ -9,8 +9,6 @@ iconerr-color：不能使用时图标颜色
 注⚠️：当想要自定义图标，必须要本地编辑，即保存在主配置中
 */
 
-// @http-ignore-tls-errors true
-
 let url = "http://chat.openai.com/cdn-cgi/trace";
 let tf=["T1","XX","AL","DZ","AD","AO","AG","AR","AM","AU","AT","AZ","BS","BD","BB","BE","BZ","BJ","BT","BA","BW","BR","BG","BF","CV","CA","CL","CO","KM","CR","HR","CY","DK","DJ","DM","DO","EC","SV","EE","FJ","FI","FR","GA","GM","GE","DE","GH","GR","GD","GT","GN","GW","GY","HT","HN","HU","IS","IN","ID","IQ","IE","IL","IT","JM","JP","JO","KZ","KE","KI","KW","KG","LV","LB","LS","LR","LI","LT","LU","MG","MW","MY","MV","ML","MT","MH","MR","MU","MX","MC","MN","ME","MA","MZ","MM","NA","NR","NP","NL","NZ","NI","NE","NG","MK","NO","OM","PK","PW","PA","PG","PE","PH","PL","PT","QA","RO","RW","KN","LC","VC","WS","SM","ST","SN","RS","SC","SL","SG","SK","SI","SB","ZA","ES","LK","SR","SE","CH","TH","TG","TO","TT","TN","TR","TV","UG","AE","US","UY","VU","ZM","BO","BN","CG","CZ","VA","FM","MD","PS","KR","TW","TZ","TL","GB"];
 let tff=["plus","on"];
@@ -60,9 +58,9 @@ $httpClient.get(url, async function(error, response, data){
   let l = tf.indexOf(cf.loc);
   let gpt;
   if (l !== -1) {
-  gpt = "Secretary Misaka: 💄";
+  gpt = "Secretary Misaka: 𝚕𝚒 𝚢𝚘 𝚗𝚎";
   } else {
-  gpt = "Secretary Misaka: 👡";
+  gpt = "Secretary Misaka: 𝚖𝚊𝚍𝚘 𝚢𝚘";
   }
 
   // 获取 Warp 状态
@@ -77,7 +75,7 @@ $httpClient.get(url, async function(error, response, data){
   // 获取标题
   let title = await fetchtitlecontent().catch(error => {
     console.error(error);
-    return '🤦🏼‍♀️';  // 如果获取失败，使用默认标题
+    return 'もう、好きだよね〜';  // 如果获取失败，使用默认标题
   });
 
   // 组装通知数据
