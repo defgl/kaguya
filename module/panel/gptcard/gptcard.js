@@ -81,7 +81,7 @@ $httpClient.get(url, async function(error, response, data){
   // 组装通知数据
   let body = {
     title: title,
-    content: `${gpt}   |   ${loc}`,
+    content: `${gpt} ～ ${loc}`,
     icon: icon,
     'icon-color': iconColor
   };
