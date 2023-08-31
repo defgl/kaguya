@@ -74,18 +74,19 @@ const UA =
     await Promise.all([check_youtube_premium(), check_netflix()])
       .then((result) => {
         let disney_result = '';
-        if (status == STATUS_COMING) {
-          disney_result = `Disney+:    Coming Soon  -  ${getFlagEmoji(region)} `;
-        } else if (status == STATUS_AVAILABLE) {
-          disney_result = `Disney+:    🫱🏻   -   ${getFlagEmoji(region)} `;
-        } else if (status == STATUS_NOT_AVAILABLE) {
-          disney_result = `Disney+:    👎🏿`;
-        } else if (status == STATUS_TIMEOUT) {
-          disney_result = `Disney+:  Timeout`;
+
+        if (status === STATUS_COMING) {
+          disney_result = `Disney+: Coming Soon ~ ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
+        } else if (status === STATUS_AVAILABLE) {
+          disney_result = `Disney+: 👍🏼 - ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
+        } else if (status === STATUS_NOT_AVAILABLE) {
+          disney_result = `Disney+: 👎🏿`;
+        } else if (status === STATUS_TIMEOUT) {
+          disney_result = `Disney+: Timeout`;
         }
   
         result.push(disney_result);
-        let content = result.join('\n');
+        let content = result.join(' | ');
         panel_result['content'] = content;
       })
       .finally(() => {
@@ -127,17 +128,18 @@ async function check_youtube_premium() {
     })
   }
 
-  let youtube_check_result = 'YouTube:  '
+  let youtube_check_result = 'YouTube: '
 
   try {
-    const code = await inner_check()
+    const code = await inner_check();
     youtube_check_result +=
       code === 'Not Available'
         ? ' 👎🏿'
-        : ` 🫱🏽   -   ${getFlagEmoji(code)}`
+        : ` 👍🏼 - ${code.toUpperCase()} • ${getFlagEmoji(code)}`;
   } catch (error) {
-    youtube_check_result += 'Failed to detect, please refresh the panel.'
+    youtube_check_result += 'Failed to detect, please refresh the panel.';
   }
+  
 
   return youtube_check_result
 }
@@ -181,26 +183,27 @@ async function check_netflix() {
     })
   }
 
-  let netflix_check_result = 'Netflix:  '
+  let netflix_check_result = 'Netflix: '
 
   try {
-    const code1 = await inner_check(80062035)
+    const code1 = await inner_check(80062035);
     if (code1 === 'Not Found') {
-      const code2 = await inner_check(80018499)
+      const code2 = await inner_check(80018499);
       if (code2 === 'Not Found') {
-        throw 'Not Available'
+        throw 'Not Available';
       }
-      netflix_check_result += `    🫱🏾   -   ${getFlagEmoji(code2)}`;
+      netflix_check_result += ` 🫱🏾 - ${code2.toUpperCase()} • ${getFlagEmoji(code2)}`;
     } else {
-      netflix_check_result += `    🫱🏻   -   ${getFlagEmoji(code1)}`
+      netflix_check_result += ` 👍🏼 - ${code1.toUpperCase()} • ${getFlagEmoji(code1)}`;
     }
   } catch (error) {
     if (error === 'Not Available') {
-      netflix_check_result += '   👎🏿 '
+      netflix_check_result += ' 👎🏿 ';
     } else {
-      netflix_check_result += 'Failed to detect, please refresh the panel.'
+      netflix_check_result += 'Failed to detect, please refresh the panel.';
     }
   }
+  
 
   return netflix_check_result
 }
