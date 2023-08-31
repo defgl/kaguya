@@ -202,10 +202,10 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
       content:
       getIP() +
       // `[OUTBOUND]\n` +
-      'Node:  ' + info.query +
+      'Node:' + info.query +
       // '\nNOde ISP:  ' + info.isp +
-      '\nIRR:  ' + info.as +
-      '\nLocation:  ' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + '  -  ' + info.city,
+      '\nIRR:' + info.as +
+      '\nLocation:' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + '  -  ' + info.city,
       icon: getSSID() ? 'wifi' : 'simcard',
       'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
     });

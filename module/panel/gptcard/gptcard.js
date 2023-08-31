@@ -35,7 +35,7 @@ async function fetchtitlecontent() {
 }
 
 // 定义 icon
-let icon = 'bolt.heart.fill';
+let icon = 'heart.rectangle';
 let iconColor = '#4169E1';
 
 // 发送 HTTP 请求获取所在地信息
