@@ -175,9 +175,9 @@ function getIP() {
     // if (v4?.primaryAddress) info.push(`IP:${v4?.primaryAddress}`);
     // if (v6?.primaryAddress) info.push(`IP:${v6?.primaryAddress}`);
     if (v6?.primaryAddress) {
-      info.push(`𝗜𝗣:${v6?.primaryAddress}`);
+      info.push(`𝓘𝓟:${v6?.primaryAddress}`);
     } else if (v4?.primaryAddress) {
-      info.push(`𝗜𝗣:${v4?.primaryAddress}`);
+      info.push(`𝓘𝓟:${v4?.primaryAddress}`);
     }
     if (v4?.primaryRouter && getSSID()) info.push(`RouterIP:${v4?.primaryRouter}`);
     // if (v6?.primaryRouter && getSSID()) info.push(`RouterIP:Assigned`);
@@ -190,60 +190,7 @@ function getIP() {
  * @param {*} retryTimes // 重试次数
  * @param {*} retryInterval // 重试间隔 ms
  */
-function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
-  // 发送网络请求
-  httpMethod.get('http://ip-api.com/json').then(response => {
-    if (Number(response.status) > 300) {
-      throw new Error(`Request error with http status code: ${response.status}\n${response.data}`);
-    }
-    const info = JSON.parse(response.data);
-    $done({
-      title: getSSID() ?? getCellularInfo(),
-      content:
-      getIP() +
-      // `[OUTBOUND]\n` +
-      'ПӨDΣ:' + info.query +
-      // '\nNOde ISP:  ' + info.isp +
-      '\n𝐀𝐒:' + info.as +
-      '\n𝙻𝚘𝚌𝚊𝚝𝚒𝚘𝚗:' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + '  -  ' + info.city,
-      icon: getSSID() ? 'wifi' : 'simcard',
-      'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
-    });
-  }).catch(error => {
-    // 网络切换
-    if (String(error).startsWith("Network changed")) {
-      if (getSSID()) {
-        $network.wifi = undefined;
-        $network.v4 = undefined;
-        $network.v6 = undefined;
-      }
-    }
-    // 判断是否还有重试机会
-if (String(error).startsWith("Network changed")) {
-  if (getSSID()) {
-    $network.wifi = undefined;
-    $network.v4 = undefined;
-    $network.v6 = undefined;
-  }
-}
-// Check if there are still retry chances
-if (retryTimes > 0) {
-  logger.error(error);
-  logger.log(`Retry after ${retryInterval}ms`);
-  // Execute the function again after retryInterval time
-  setTimeout(() => getNetworkInfo(--retryTimes, retryInterval), retryInterval);
-} else {
-  // Print log
-  logger.error(error);
-  $done({
-    title: 'Error Occurred',
-    content: 'Unable to retrieve current network information.\nPlease check your network status and try again.',
-    icon: 'wifi.exclamationmark',
-    'icon-color': '#CB1B45',
-  });
-}
-});
-}
+
 /**
  * 主要逻辑，程序入口
  */
