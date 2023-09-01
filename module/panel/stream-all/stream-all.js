@@ -76,13 +76,13 @@ const UA =
         let disney_result = '';
 
         if (status === STATUS_COMING) {
-          disney_result = `DISNEYPLUS: Coming Soon ~ ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
+          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: Coming Soon , ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
         } else if (status === STATUS_AVAILABLE) {
-          disney_result = `DISNEYPLUS: 👍🏼 - ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
+          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: 👍🏼 , ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
         } else if (status === STATUS_NOT_AVAILABLE) {
-          disney_result = `DISNEYPLUS: 👎🏿`;
+          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: 👎🏿`;
         } else if (status === STATUS_TIMEOUT) {
-          disney_result = `DISNEYPLUS: Timeout`;
+          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: Timeout`;
         }
   
         result.push(disney_result);
@@ -128,14 +128,14 @@ async function check_youtube_premium() {
     })
   }
 
-  let youtube_check_result = 'YOUTUBE: '
+  let youtube_check_result = '𝚈𝙾𝚄𝚃𝚄𝙱𝙴: '
 
   try {
     const code = await inner_check();
     youtube_check_result +=
       code === 'Not Available'
         ? ' 👎🏿'
-        : ` 👍🏼 - ${code.toUpperCase()} • ${getFlagEmoji(code)}`;
+        : ` 👍🏼 , ${code.toUpperCase()} • ${getFlagEmoji(code)}`;
   } catch (error) {
     youtube_check_result += 'Failed to detect, please refresh the panel.';
   }
@@ -183,7 +183,7 @@ async function check_netflix() {
     })
   }
 
-  let netflix_check_result = 'NETFLIX: '
+  let netflix_check_result = '𝙽𝙴𝚃𝙵𝙻𝙸𝚇: '
 
   try {
     const code1 = await inner_check(80062035);
@@ -192,9 +192,9 @@ async function check_netflix() {
       if (code2 === 'Not Found') {
         throw 'Not Available';
       }
-      netflix_check_result += ` 🫱🏾 - ${code2.toUpperCase()} • ${getFlagEmoji(code2)}`;
+      netflix_check_result += ` 🫱🏾 , ${code2.toUpperCase()} • ${getFlagEmoji(code2)}`;
     } else {
-      netflix_check_result += ` 👍🏼 - ${code1.toUpperCase()} • ${getFlagEmoji(code1)}`;
+      netflix_check_result += ` 👍🏼 , ${code1.toUpperCase()} • ${getFlagEmoji(code1)}`;
     }
   } catch (error) {
     if (error === 'Not Available') {

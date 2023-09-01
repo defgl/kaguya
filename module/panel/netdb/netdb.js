@@ -166,31 +166,103 @@ function getSSID() {
   return $network.wifi?.ssid;
 }
 
+function toMathSansBoldItalic(str) {
+  const base = '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉';
+  const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  
+  for (let i = 0; i < str.length; i++) {
+    let char = str[i];
+    let index = alphabet.indexOf(char);
+    
+    if (index !== -1) {
+      result += base[index];
+    } else {
+      result += char;
+    }
+  }
+  
+  return result;
+}
+
 function getIP() {
   const { v4, v6 } = $network;
   let info = [];
   if (!v4 && !v6) {
     info = ['Network may be interrupted', 'Please refresh manually to obtain a new IP'];
   } else {
-    // if (v4?.primaryAddress) info.push(`IP:${v4?.primaryAddress}`);
-    // if (v6?.primaryAddress) info.push(`IP:${v6?.primaryAddress}`);
     if (v6?.primaryAddress) {
-      info.push(`𝓘𝓟:${v6?.primaryAddress}`);
+      let transformedV6 = toMathSansBoldItalic(v6?.primaryAddress);
+      info.push(`𝓘𝓟:${transformedV6}`);
     } else if (v4?.primaryAddress) {
-      info.push(`𝓘𝓟:${v4?.primaryAddress}`);
+      let transformedV4 = toMathSansBoldItalic(v4?.primaryAddress);
+      info.push(`𝓘𝓟:${transformedV4}`);
     }
     if (v4?.primaryRouter && getSSID()) info.push(`RouterIP:${v4?.primaryRouter}`);
-    // if (v6?.primaryRouter && getSSID()) info.push(`RouterIP:Assigned`);
   }
   info = info.join("\n");
   return info + "\n";
 }
+
 /**
  * 获取 IP 信息
  * @param {*} retryTimes // 重试次数
  * @param {*} retryInterval // 重试间隔 ms
  */
-
+function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
+  // 发送网络请求
+  httpMethod.get('http://ip-api.com/json').then(response => {
+    if (Number(response.status) > 300) {
+      throw new Error(`Request error with http status code: ${response.status}\n${response.data}`);
+    }
+    const info = JSON.parse(response.data);
+    $done({
+      title: getSSID() ?? getCellularInfo(),
+      content:
+      getIP() +
+      // `[OUTBOUND]\n` +
+      '𝓝𝓸𝓭𝓮:' + info.query +
+      // '\nNOde ISP:  ' + info.isp +
+      '\n𝓐𝓢:' + info.as +
+      '\n𝓛𝓸𝓬𝓪𝓽𝓲𝓸𝓷:' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + '  -  ' + info.city,
+      icon: getSSID() ? 'wifi' : 'simcard',
+      'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
+    });
+  }).catch(error => {
+    // 网络切换
+    if (String(error).startsWith("Network changed")) {
+      if (getSSID()) {
+        $network.wifi = undefined;
+        $network.v4 = undefined;
+        $network.v6 = undefined;
+      }
+    }
+    // 判断是否还有重试机会
+if (String(error).startsWith("Network changed")) {
+  if (getSSID()) {
+    $network.wifi = undefined;
+    $network.v4 = undefined;
+    $network.v6 = undefined;
+  }
+}
+// Check if there are still retry chances
+if (retryTimes > 0) {
+  logger.error(error);
+  logger.log(`Retry after ${retryInterval}ms`);
+  // Execute the function again after retryInterval time
+  setTimeout(() => getNetworkInfo(--retryTimes, retryInterval), retryInterval);
+} else {
+  // Print log
+  logger.error(error);
+  $done({
+    title: 'Error Occurred',
+    content: 'Unable to retrieve current network information.\nPlease check your network status and try again.',
+    icon: 'wifi.exclamationmark',
+    'icon-color': '#CB1B45',
+  });
+}
+});
+}
 /**
  * 主要逻辑，程序入口
  */
