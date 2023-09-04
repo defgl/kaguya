@@ -170,16 +170,6 @@ function getIP() {
   const { v4, v6 } = $network;
   let info = [];
 
-  const TABLE = {
-    "monospace-regular": ["𝟶", "𝟷", "𝟸", "𝟹", "𝟺", "𝟻", "𝟼", "𝟽", "𝟾", "𝟿", "𝚊", "𝚋", "𝚌", "𝚍", "𝚎", "𝚏", "𝚐", "𝚑", "𝚒", "𝚓", "𝚔", "𝚕", "𝚖", "𝚗", "𝚘", "𝚙", "𝚚", "𝚛", "𝚜", "𝚝", "𝚞", "𝚟", "𝚠", "𝚡", "𝚢", "𝚣", "𝙰", "𝙱", "𝙲", "𝙳", "𝙴", "𝙵", "𝙶", "𝙷", "𝙸", "𝙹", "𝙺", "𝙻", "𝙼", "𝙽", "𝙾", "𝙿", "𝚀", "𝚁", "𝚂", "𝚃", "𝚄", "𝚅", "𝚆", "𝚇", "𝚈", "𝚉"],
-  };
-
-  const INDEX = {};
-  // Populate the INDEX object dynamically based on the ASCII codes of characters
-  for (let i = 48; i <= 57; i++) INDEX[i] = i - 48; // numbers 0-9
-  for (let i = 65; i <= 90; i++) INDEX[i] = i - 65 + 36; // uppercase A-Z
-  for (let i = 97; i <= 122; i++) INDEX[i] = i - 97 + 10; // lowercase a-z
-
   if (!v4 && !v6) {
     info = ['Network may be interrupted', 'Please refresh manually to obtain a new IP'];
   } else {
@@ -212,6 +202,18 @@ function getIP() {
   return info + "\n";
 }
 
+// 字体表
+const TABLE = {
+  "monospace-regular": ["𝟶", "𝟷", "𝟸", "𝟹", "𝟺", "𝟻", "𝟼", "𝟽", "𝟾", "𝟿", "𝚊", "𝚋", "𝚌", "𝚍", "𝚎", "𝚏", "𝚐", "𝚑", "𝚒", "𝚓", "𝚔", "𝚕", "𝚖", "𝚗", "𝚘", "𝚙", "𝚚", "𝚛", "𝚜", "𝚝", "𝚞", "𝚟", "𝚠", "𝚡", "𝚢", "𝚣", "𝙰", "𝙱", "𝙲", "𝙳", "𝙴", "𝙵", "𝙶", "𝙷", "𝙸", "𝙹", "𝙺", "𝙻", "𝙼", "𝙽", "𝙾", "𝙿", "𝚀", "𝚁", "𝚂", "𝚃", "𝚄", "𝚅", "𝚆", "𝚇", "𝚈", "𝚉"],
+};
+
+// 索引对象
+const INDEX = {};
+for (let i = 48; i <= 57; i++) INDEX[i] = i - 48; // 数字 0-9
+for (let i = 65; i <= 90; i++) INDEX[i] = i - 65 + 36; // 大写字母 A-Z
+for (let i = 97; i <= 122; i++) INDEX[i] = i - 97 + 10; // 小写字母 a-z
+
+// 字体转换函数
 function transformFont(str, table, index) {
   return [...(str || '')].map(c => {
     const code = c.charCodeAt(0).toString();
@@ -226,14 +228,7 @@ function transformFont(str, table, index) {
  * @param {*} retryInterval // 重试间隔 ms
  */
 function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
-  const TABLE = {
-    "monospace-regular": ["𝟶", "𝟷", "𝟸", "𝟹", "𝟺", "𝟻", "𝟼", "𝟽", "𝟾", "𝟿", "𝚊", "𝚋", "𝚌", "𝚍", "𝚎", "𝚏", "𝚐", "𝚑", "𝚒", "𝚓", "𝚔", "𝚕", "𝚖", "𝚗", "𝚘", "𝚙", "𝚚", "𝚛", "𝚜", "𝚝", "𝚞", "𝚟", "𝚠", "𝚡", "𝚢", "𝚣", "𝙰", "𝙱", "𝙲", "𝙳", "𝙴", "𝙵", "𝙶", "𝙷", "𝙸", "𝙹", "𝙺", "𝙻", "𝙼", "𝙽", "𝙾", "𝙿", "𝚀", "𝚁", "𝚂", "𝚃", "𝚄", "𝚅", "𝚆", "𝚇", "𝚈", "𝚉"],
-  };
-  const INDEX = {};
-  // Populate the INDEX object dynamically based on the ASCII codes of characters
-  for (let i = 48; i <= 57; i++) INDEX[i] = i - 48; // numbers 0-9
-  for (let i = 65; i <= 90; i++) INDEX[i] = i - 65 + 36; // uppercase A-Z
-  for (let i = 97; i <= 122; i++) INDEX[i] = i - 97 + 10; // lowercase a-z
+
   // 发送网络请求
   httpMethod.get('http://ip-api.com/json').then(response => {
     if (Number(response.status) > 300) {
