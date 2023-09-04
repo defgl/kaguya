@@ -73,16 +73,16 @@ const UA =
     let [{ region, status }] = await Promise.all([testDisneyPlus()])
     await Promise.all([check_youtube_premium(), check_netflix()])
       .then((result) => {
-        let disney_result = '';
+        let disney_result = '𝔻𝕚𝕤𝕟𝕖𝕪 ℙ𝕝𝕦𝕤: ';
 
         if (status === STATUS_COMING) {
-          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: 𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗 𝚒𝚗 ${getFlagEmoji(region)}`;
+          disney_result = `𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗 𝚒𝚗 ${getFlagEmoji(region)}`;
         } else if (status === STATUS_AVAILABLE) {
-          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎 𝚒𝚗 ${getFlagEmoji(region)}`;
+          disney_result = `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎 𝚒𝚗 ${getFlagEmoji(region)}`;
         } else if (status === STATUS_NOT_AVAILABLE) {
-          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: 𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎`;
+          disney_result = `𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎`;
         } else if (status === STATUS_TIMEOUT) {
-          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: Timeout`;
+          disney_result = `Timeout`;
         }
   
         result.push(disney_result);
@@ -128,7 +128,7 @@ async function check_youtube_premium() {
     })
   }
 
-  let youtube_check_result = '𝚈𝙾𝚄𝚃𝚄𝙱𝙴: '
+  let youtube_check_result = '𝕐𝕠𝕦𝕋𝕦𝕓𝕖: '
 
   try {
     const code = await inner_check();
@@ -185,7 +185,7 @@ async function check_netflix() {
     })
   }
 
-  let netflix_check_result = '𝙽𝙴𝚃𝙵𝙻𝙸𝚇: '
+  let netflix_check_result = 'ℕ𝔽𝕃𝕏: '
 
   try {
     const code1 = await inner_check(80062035);
