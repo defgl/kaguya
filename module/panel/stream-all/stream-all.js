@@ -76,11 +76,11 @@ const UA =
         let disney_result = '';
 
         if (status === STATUS_COMING) {
-          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: Coming Soon , ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
+          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: 𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗 𝚒𝚗 ${region.toUpperCase()} | ${getFlagEmoji(region)}`;
         } else if (status === STATUS_AVAILABLE) {
-          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: 👍🏼 , ${region.toUpperCase()} • ${getFlagEmoji(region)}`;
+          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎 𝚒𝚗 ${region.toUpperCase()} | ${getFlagEmoji(region)}`;
         } else if (status === STATUS_NOT_AVAILABLE) {
-          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: 👎🏿`;
+          disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: 𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎`;
         } else if (status === STATUS_TIMEOUT) {
           disney_result = `𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: Timeout`;
         }
@@ -128,21 +128,21 @@ async function check_youtube_premium() {
     })
   }
 
-  let youtube_check_result = '𝚈𝙾𝚄𝚃𝚄𝙱𝙴: '
+  let youtube_check_result = 'YouTube: ';
 
   try {
     const code = await inner_check();
-    youtube_check_result +=
-      code === 'Not Available'
-        ? ' 👎🏿'
-        : ` 👍🏼 , ${code.toUpperCase()} • ${getFlagEmoji(code)}`;
+    if (code === 'Not Available') {
+      youtube_check_result += '𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎';
+    } else {
+      const flag = getFlagEmoji(code);
+      youtube_check_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎 𝚒𝚗 ${code.toUpperCase()} ${flag}`;
+    }
   } catch (error) {
-    youtube_check_result += 'Failed to detect, please refresh the panel.';
+    youtube_check_result += '𝙿𝚕𝚎𝚊𝚜𝚎 𝚁𝚎𝚏𝚛𝚎𝚜𝚑 𝚃𝚑𝚎 𝙿𝚊𝚗𝚎𝚕 𝙰𝚐𝚊𝚒𝚗';
   }
   
-
-  return youtube_check_result
-}
+  return youtube_check_result;
 
 async function check_netflix() {
   let inner_check = (filmId) => {
@@ -192,19 +192,18 @@ async function check_netflix() {
       if (code2 === 'Not Found') {
         throw 'Not Available';
       }
-      netflix_check_result += ` 🫱🏾 , ${code2.toUpperCase()} • ${getFlagEmoji(code2)}`;
+      netflix_check_result += `𝙽𝙵𝙻𝚇 𝙾𝚛𝚒𝚐𝚒𝚗𝚊𝚕𝚜 𝙾𝚗𝚕𝚢 𝚒𝚗 ${code2.toUpperCase()} ${getFlagEmoji(code2)}`;
     } else {
-      netflix_check_result += ` 👍🏼 , ${code1.toUpperCase()} • ${getFlagEmoji(code1)}`;
+      netflix_check_result += ` 𝙰𝚕𝚕 𝚄𝚗𝚕𝚘𝚌𝚔𝚎𝚍 𝚒𝚗 ${code1.toUpperCase()} • ${getFlagEmoji(code1)}`;
     }
   } catch (error) {
     if (error === 'Not Available') {
       netflix_check_result += ' 👎🏿 ';
     } else {
-      netflix_check_result += 'Failed to detect, please refresh the panel.';
+      netflix_check_result += '𝙿𝚕𝚎𝚊𝚜𝚎 𝚁𝚎𝚏𝚛𝚎𝚜𝚑 𝚃𝚑𝚎 𝙿𝚊𝚗𝚎𝚕 𝙰𝚐𝚊𝚒𝚗';
     }
   }
   
-
   return netflix_check_result
 }
 

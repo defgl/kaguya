@@ -167,8 +167,8 @@ function getSSID() {
 }
 
 function toMathSansBoldItalic(str) {
-  const base = '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉';
-  const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const base = '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿';
+  const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = '';
   
   for (let i = 0; i < str.length; i++) {
@@ -198,7 +198,7 @@ function getIP() {
       let transformedV4 = toMathSansBoldItalic(v4?.primaryAddress);
       info.push(`𝓘𝓟:${transformedV4}`);
     }
-    if (v4?.primaryRouter && getSSID()) info.push(`RouterIP:${v4?.primaryRouter}`);
+    if (v4?.primaryRouter && getSSID()) info.push(`𝓡𝓸𝓾𝓽𝓮𝓻𝓘𝓟:${v4?.primaryRouter}`);
   }
   info = info.join("\n");
   return info + "\n";

@@ -28,7 +28,7 @@
   $done({
     title: titlecontent,
     // content: `𝙵𝚕𝚞𝚜𝚑: ${delay}𝚖𝚜${dnsCache ? `\nserver:\n${dnsCache}` : ""}`,
-    content: `𝙵𝚕𝚞𝚜𝚑: ${delay}𝚖𝚜`,
+    content: `𝙵𝚕𝚞𝚜𝚑: ${delay} 𝚖𝚜`,
     icon: 'arcade.stick.and.arrow.left.and.arrow.right',
     'icon-color': '#CD853F',
   });
