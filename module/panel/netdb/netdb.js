@@ -166,42 +166,58 @@ function getSSID() {
   return $network.wifi?.ssid;
 }
 
-function toMathSansBoldItalic(str) {
-  const base = '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉';
-  const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let result = '';
-  
-  for (let i = 0; i < str.length; i++) {
-    let char = str[i];
-    let index = alphabet.indexOf(char);
-    
-    if (index !== -1) {
-      result += base[index];
-    } else {
-      result += char;
-    }
-  }
-  
-  return result;
-}
-
 function getIP() {
   const { v4, v6 } = $network;
   let info = [];
+
+  const TABLE = {
+    "monospace-regular": ["𝟶", "𝟷", "𝟸", "𝟹", "𝟺", "𝟻", "𝟼", "𝟽", "𝟾", "𝟿", "𝚊", "𝚋", "𝚌", "𝚍", "𝚎", "𝚏", "𝚐", "𝚑", "𝚒", "𝚓", "𝚔", "𝚕", "𝚖", "𝚗", "𝚘", "𝚙", "𝚚", "𝚛", "𝚜", "𝚝", "𝚞", "𝚟", "𝚠", "𝚡", "𝚢", "𝚣", "𝙰", "𝙱", "𝙲", "𝙳", "𝙴", "𝙵", "𝙶", "𝙷", "𝙸", "𝙹", "𝙺", "𝙻", "𝙼", "𝙽", "𝙾", "𝙿", "𝚀", "𝚁", "𝚂", "𝚃", "𝚄", "𝚅", "𝚆", "𝚇", "𝚈", "𝚉"],
+  };
+
+  const INDEX = {};
+  // Populate the INDEX object dynamically based on the ASCII codes of characters
+  for (let i = 48; i <= 57; i++) INDEX[i] = i - 48; // numbers 0-9
+  for (let i = 65; i <= 90; i++) INDEX[i] = i - 65 + 36; // uppercase A-Z
+  for (let i = 97; i <= 122; i++) INDEX[i] = i - 97 + 10; // lowercase a-z
+
   if (!v4 && !v6) {
     info = ['Network may be interrupted', 'Please refresh manually to obtain a new IP'];
   } else {
-    if (v6?.primaryAddress) {
-      let transformedV6 = toMathSansBoldItalic(v6?.primaryAddress);
-      info.push(`𝓘𝓟:${transformedV6}`);
-    } else if (v4?.primaryAddress) {
-      let transformedV4 = toMathSansBoldItalic(v4?.primaryAddress);
-      info.push(`𝓘𝓟:${transformedV4}`);
+    let ipv6 = v6?.primaryAddress;
+    let ipv4 = v4?.primaryAddress;
+    let router = v4?.primaryRouter;
+
+    // Print the original IPs
+    console.log("Original IPv6: ", ipv6);
+    console.log("Original IPv4: ", ipv4);
+    console.log("Original Router IP: ", router);
+
+    // Transform IPs
+    ipv6 = transformFont(ipv6, TABLE, INDEX);
+    ipv4 = transformFont(ipv4, TABLE, INDEX);
+    router = transformFont(router, TABLE, INDEX);
+
+    if (ipv6) {
+      info.push(`𝕀ℙ:${ipv6}`);
+    } else if (ipv4) {
+      info.push(`𝕀ℙ:${ipv4}`);
     }
-    if (v4?.primaryRouter && getSSID()) info.push(`RouterIP:${v4?.primaryRouter}`);
+
+    if (router && getSSID()) {
+      info.push(`ℝ𝕠𝕦𝕥𝕖𝕣:${router}`);
+    }
   }
+
   info = info.join("\n");
   return info + "\n";
+}
+
+function transformFont(str, table, index) {
+  return [...(str || '')].map(c => {
+    const code = c.charCodeAt(0).toString();
+    const idx = index[code];
+    return table["monospace-regular"][idx] || c;
+  }).join('');
 }
 
 /**
@@ -210,24 +226,42 @@ function getIP() {
  * @param {*} retryInterval // 重试间隔 ms
  */
 function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
+  const TABLE = {
+    "monospace-regular": ["𝟶", "𝟷", "𝟸", "𝟹", "𝟺", "𝟻", "𝟼", "𝟽", "𝟾", "𝟿", "𝚊", "𝚋", "𝚌", "𝚍", "𝚎", "𝚏", "𝚐", "𝚑", "𝚒", "𝚓", "𝚔", "𝚕", "𝚖", "𝚗", "𝚘", "𝚙", "𝚚", "𝚛", "𝚜", "𝚝", "𝚞", "𝚟", "𝚠", "𝚡", "𝚢", "𝚣", "𝙰", "𝙱", "𝙲", "𝙳", "𝙴", "𝙵", "𝙶", "𝙷", "𝙸", "𝙹", "𝙺", "𝙻", "𝙼", "𝙽", "𝙾", "𝙿", "𝚀", "𝚁", "𝚂", "𝚃", "𝚄", "𝚅", "𝚆", "𝚇", "𝚈", "𝚉"],
+  };
+  const INDEX = {};
+  // Populate the INDEX object dynamically based on the ASCII codes of characters
+  for (let i = 48; i <= 57; i++) INDEX[i] = i - 48; // numbers 0-9
+  for (let i = 65; i <= 90; i++) INDEX[i] = i - 65 + 36; // uppercase A-Z
+  for (let i = 97; i <= 122; i++) INDEX[i] = i - 97 + 10; // lowercase a-z
   // 发送网络请求
   httpMethod.get('http://ip-api.com/json').then(response => {
     if (Number(response.status) > 300) {
       throw new Error(`Request error with http status code: ${response.status}\n${response.data}`);
     }
     const info = JSON.parse(response.data);
-    $done({
-      title: getSSID() ?? getCellularInfo(),
-      content:
-      getIP() +
-      // `[OUTBOUND]\n` +
-      '𝓝𝓸𝓭𝓮:' + info.query +
-      // '\nNOde ISP:  ' + info.isp +
-      '\n𝓐𝓢:' + info.as +
-      '\n𝓛𝓸𝓬𝓪𝓽𝓲𝓸𝓷:' + getFlagEmoji(info.countryCode) + ' | ' + info.countryCode + '  -  ' + info.city,
-      icon: getSSID() ? 'wifi' : 'simcard',
-      'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
-    });
+     // 字体转换
+     const transformedQuery = transformFont(info.query, TABLE, INDEX);
+     const transformedAs = transformFont(info.as, TABLE, INDEX);
+     const transformedCountryCode = transformFont(info.countryCode, TABLE, INDEX);
+     const transformedCity = transformFont(info.city, TABLE, INDEX);
+ 
+     // 打印转换后的信息
+     console.log("Transformed Node IP: ", transformedQuery);
+     console.log("Transformed IRR: ", transformedAs);
+     console.log("Transformed Country Code: ", transformedCountryCode);
+     console.log("Transformed City: ", transformedCity);
+ 
+     $done({
+       title: getSSID() ?? getCellularInfo(),
+       content:
+         getIP() +
+         'Node:' + transformedQuery +
+         '\nIRR:' + transformedAs +
+         '\nLocation:' + getFlagEmoji(info.countryCode) + ' | ' + transformedCountryCode + '  -  ' + transformedCity,
+       icon: getSSID() ? 'wifi' : 'simcard',
+       'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
+     });
   }).catch(error => {
     // 网络切换
     if (String(error).startsWith("Network changed")) {
