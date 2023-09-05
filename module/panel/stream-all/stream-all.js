@@ -89,7 +89,7 @@ const UA =
     let [{ region, status }] = await Promise.all([testDisneyPlus()])
     await Promise.all([check_youtube_premium(), check_netflix()])
       .then((result) => {
-        let disney_result = '∂ρℓυѕ: ';
+        let disney_result = '🅳🅿🅻🆄🆂: ';
 
         if (status === STATUS_COMING) {
           disney_result += `𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗   ⟹   ${getFlagEmoji(region)}`;
@@ -144,7 +144,7 @@ async function check_youtube_premium() {
     })
   }
 
-  let youtube_check_result = 'тυвє: '
+  let youtube_check_result = '𝙔𝙤𝙪𝙏𝙪𝙗𝙚: '
 
   try {
     const code = await inner_check();
@@ -201,7 +201,7 @@ async function check_netflix() {
     })
   }
 
-  let netflix_check_result = 'ηƒℓχ: '
+  let netflix_check_result = 'ＮＦＬＸ: '
 
   try {
     const code1 = await inner_check(80062035);
@@ -216,7 +216,7 @@ async function check_netflix() {
     }
   } catch (error) {
     if (error === 'Not Available') {
-      netflix_check_result += ' 𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎 ';
+      netflix_check_result += '𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎 ';
     } else {
       netflix_check_result += '𝙿𝚕𝚎𝚊𝚜𝚎 𝚁𝚎𝚏𝚛𝚎𝚜𝚑 𝚃𝚑𝚎 𝙿𝚊𝚗𝚎𝚕 𝙰𝚐𝚊𝚒𝚗';
     }
