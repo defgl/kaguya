@@ -27,7 +27,7 @@ async function fetchtitlecontent() {
         return;
       }
       let jsonData = JSON.parse(data);
-      resolve(jsonData.anwei);
+      resolve(jsonData[0].anwei);
     });
   });
 }
@@ -58,9 +58,9 @@ $httpClient.get(url, async function(error, response, data){
   let l = tf.indexOf(cf.loc);
   let gpt;
   if (l !== -1) {
-  gpt = "𝓜𝓲𝓼𝓪𝓴𝓪: 𝚕𝚒 𝚢𝚘 𝚗𝚎";
+  gpt = "𝓂𝒾𝓈𝒶𝓀𝒶: 𝚕𝚒 𝚢𝚘 𝚗𝚎";
   } else {
-  gpt = "𝓜𝓲𝓼𝓪𝓴𝓪: 𝚖𝚊𝚍𝚘 𝚢𝚘";
+  gpt = "𝓂𝒾𝓈𝒶𝓀𝒶: 𝚖𝚊𝚍𝚘 𝚢𝚘";
   }
 
   // 获取 Warp 状态
