@@ -251,9 +251,9 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
        title: getSSID() ?? getCellularInfo(),
        content:
          getIP() +
-         'ℕ𝕆𝔻𝔼:' + transformedQuery +
-         '\n𝕀ℝℝ:' + transformedAs +
-         '\n𝕃𝕆ℂ𝔸𝕋𝕀𝕆ℕ:' + getFlagEmoji(info.countryCode) + ' | ' + transformedCountryCode + '  -  ' + transformedCity,
+         '𝙽𝚘𝚍𝚎:' + transformedQuery +
+         '\n𝙸𝚁𝚁:' + transformedAs +
+         '\n𝙻𝙾𝙲𝙰𝚃𝙸𝙾𝙽:' + getFlagEmoji(info.countryCode) + ' | ' + transformedCountryCode + '  -  ' + transformedCity,
        icon: getSSID() ? 'wifi' : 'simcard',
        'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
      });
