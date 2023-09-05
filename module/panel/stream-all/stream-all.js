@@ -51,8 +51,24 @@ const UA =
     //  });
     //});
 
+    // let fetchTextContent = new Promise((resolve, reject) => {
+    //   let url = 'https://zj.v.api.aa1.cn/api/wenan-mj/?type=json';
+    //   $httpClient.get(url, function(error, response, data) {
+    //     if (error) {
+    //       reject(error);
+    //       return;
+    //     }
+    //     if (response.status !== 200) {
+    //       reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+    //       return;
+    //     }
+    //     let jsonData = JSON.parse(data);
+    //     resolve(jsonData.msg);
+    //   });
+    // });
+
     let fetchTextContent = new Promise((resolve, reject) => {
-      let url = 'https://zj.v.api.aa1.cn/api/wenan-mj/?type=json';
+      let url = 'https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json';
       $httpClient.get(url, function(error, response, data) {
         if (error) {
           reject(error);
@@ -63,7 +79,7 @@ const UA =
           return;
         }
         let jsonData = JSON.parse(data);
-        resolve(jsonData.msg);
+        resolve(jsonData[0].qinggan);
       });
     });
 
@@ -76,9 +92,9 @@ const UA =
         let disney_result = '𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: ';
 
         if (status === STATUS_COMING) {
-          disney_result += `𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗   ➜   ${getFlagEmoji(region)}`;
+          disney_result += `𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗   ⟹   ${getFlagEmoji(region)}`;
         } else if (status === STATUS_AVAILABLE) {
-          disney_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎   ➜   ${getFlagEmoji(region)}`;
+          disney_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎   ⟹   ${getFlagEmoji(region)}`;
         } else if (status === STATUS_NOT_AVAILABLE) {
           disney_result += `𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎`;
         } else if (status === STATUS_TIMEOUT) {
@@ -128,7 +144,7 @@ async function check_youtube_premium() {
     })
   }
 
-  let youtube_check_result = '𝚈𝚘𝚞𝚃𝚞𝚋𝚎:'
+  let youtube_check_result = '𝚈𝚘𝚞𝚃𝚞𝚋𝚎: '
 
   try {
     const code = await inner_check();
@@ -136,7 +152,7 @@ async function check_youtube_premium() {
       youtube_check_result += '𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎';
     } else {
       const flag = getFlagEmoji(code);
-      youtube_check_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎   ➜   ${flag}`;
+      youtube_check_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎   ⟹   ${flag}`;
     }
   } catch (error) {
     youtube_check_result += '𝙿𝚕𝚎𝚊𝚜𝚎 𝚁𝚎𝚏𝚛𝚎𝚜𝚑 𝚃𝚑𝚎 𝙿𝚊𝚗𝚎𝚕 𝙰𝚐𝚊𝚒𝚗';
@@ -194,9 +210,9 @@ async function check_netflix() {
       if (code2 === 'Not Found') {
         throw 'Not Available';
       }
-      netflix_check_result += `𝙽𝙵𝙻𝚇 𝙾𝚛𝚒𝚐𝚒𝚗𝚊𝚕𝚜 𝙾𝚗𝚕𝚢   ➜   ${getFlagEmoji(code2)}`;
+      netflix_check_result += `𝙽𝙵𝙻𝚇 𝙾𝚛𝚒𝚐𝚒𝚗𝚊𝚕𝚜 𝙾𝚗𝚕𝚢   ⟹   ${getFlagEmoji(code2)}`;
     } else {
-      netflix_check_result += ` 𝙰𝚕𝚕 𝚄𝚗𝚕𝚘𝚌𝚔𝚎𝚍   ➜   ${getFlagEmoji(code1)}`;
+      netflix_check_result += ` 𝙰𝚕𝚕 𝚄𝚗𝚕𝚘𝚌𝚔𝚎𝚍   ⟹   ${getFlagEmoji(code1)}`;
     }
   } catch (error) {
     if (error === 'Not Available') {
