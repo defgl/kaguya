@@ -89,7 +89,7 @@ const UA =
     let [{ region, status }] = await Promise.all([testDisneyPlus()])
     await Promise.all([check_youtube_premium(), check_netflix()])
       .then((result) => {
-        let disney_result = '𝙳𝙸𝚂𝙽𝙴𝚈𝙿𝙻𝚄𝚂: ';
+        let disney_result = '∂ρℓυѕ: ';
 
         if (status === STATUS_COMING) {
           disney_result += `𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗   ⟹   ${getFlagEmoji(region)}`;
@@ -144,7 +144,7 @@ async function check_youtube_premium() {
     })
   }
 
-  let youtube_check_result = '𝚈𝚘𝚞𝚃𝚞𝚋𝚎: '
+  let youtube_check_result = 'тυвє: '
 
   try {
     const code = await inner_check();
@@ -201,7 +201,7 @@ async function check_netflix() {
     })
   }
 
-  let netflix_check_result = '𝙽𝙵𝙻𝚇: '
+  let netflix_check_result = 'ηƒℓχ: '
 
   try {
     const code1 = await inner_check(80062035);
@@ -212,7 +212,7 @@ async function check_netflix() {
       }
       netflix_check_result += `𝙽𝙵𝙻𝚇 𝙾𝚛𝚒𝚐𝚒𝚗𝚊𝚕𝚜 𝙾𝚗𝚕𝚢   ⟹   ${getFlagEmoji(code2)}`;
     } else {
-      netflix_check_result += ` 𝙰𝚕𝚕 𝚄𝚗𝚕𝚘𝚌𝚔𝚎𝚍   ⟹   ${getFlagEmoji(code1)}`;
+      netflix_check_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎   ⟹   ${getFlagEmoji(code1)}`;
     }
   } catch (error) {
     if (error === 'Not Available') {

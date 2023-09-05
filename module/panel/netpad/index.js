@@ -17,8 +17,20 @@ let content = ''
   }
   let { CN_IP = '-', CN_ADDR = '-', CN_ADDR_EN = '-' } = await getDirectInfo()
 
+  // 打印原始的 CN_IP 和时间
+  console.log("Original CN_IP: ", CN_IP);
+  console.log("Original Time: ", new Date().toTimeString().split(' ')[0]);
+
+  // 字体转换
+  const transformedCN_IP = transformFont(CN_IP, TABLE, INDEX);
+  const transformedTime = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
+
+  // 打印转换后的 CN_IP 和时间
+  console.log("Transformed CN_IP: ", transformedCN_IP);
+  console.log("Transformed Time: ", transformedTime);
+
   title = `${CN_ADDR_EN}`
-  content = `𝙸𝙿 :${CN_IP}\n𝚃𝚒𝚖𝚎: ${new Date().toTimeString().split(' ')[0]}`
+  content = `𝙸𝙿:${transformedCN_IP}\n𝚃𝚒𝚖𝚎:${transformedTime}`
   if ($.isTile()) {
     await notify('网络信息', '面板', '查询完成')
   } else if(!$.isPanel()) {
@@ -256,3 +268,24 @@ async function Fetch(request = {}) {
 	//$.log(`🚧 ${$.name}, Fetch Ruled Reqeust`, `Response:${JSON.stringify(response)}`, "");
 	return response;
 };
+
+// 字体表
+const TABLE = {
+	"monospace-regular": ["𝟶", "𝟷", "𝟸", "𝟹", "𝟺", "𝟻", "𝟼", "𝟽", "𝟾", "𝟿", "𝚊", "𝚋", "𝚌", "𝚍", "𝚎", "𝚏", "𝚐", "𝚑", "𝚒", "𝚓", "𝚔", "𝚕", "𝚖", "𝚗", "𝚘", "𝚙", "𝚚", "𝚛", "𝚜", "𝚝", "𝚞", "𝚟", "𝚠", "𝚡", "𝚢", "𝚣", "𝙰", "𝙱", "𝙲", "𝙳", "𝙴", "𝙵", "𝙶", "𝙷", "𝙸", "𝙹", "𝙺", "𝙻", "𝙼", "𝙽", "𝙾", "𝙿", "𝚀", "𝚁", "𝚂", "𝚃", "𝚄", "𝚅", "𝚆", "𝚇", "𝚈", "𝚉"],
+  };
+  
+  // 索引对象
+  const INDEX = {};
+  for (let i = 48; i <= 57; i++) INDEX[i] = i - 48; // 数字 0-9
+  for (let i = 65; i <= 90; i++) INDEX[i] = i - 65 + 36; // 大写字母 A-Z
+  for (let i = 97; i <= 122; i++) INDEX[i] = i - 97 + 10; // 小写字母 a-z
+  
+  // 字体转换函数
+  function transformFont(str, table, index) {
+	return [...(str || '')].map(c => {
+	  const code = c.charCodeAt(0).toString();
+	  const idx = index[code];
+	  return table["monospace-regular"][idx] || c;
+	}).join('');
+  }
+  
