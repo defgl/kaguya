@@ -92,9 +92,9 @@ const UA =
         let disney_result = '𝐃𝐈𝐒𝐍𝐄𝐘+:  ';
 
         if (status === STATUS_COMING) {
-          disney_result += `𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗   ᗒ   ${getFlagEmoji(region)}`;
+          disney_result += `𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗 𝚒𝚗 ${getFlagEmoji(region)}`;
         } else if (status === STATUS_AVAILABLE) {
-          disney_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎   ᗒ   ${getFlagEmoji(region)}`;
+          disney_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎 𝚒𝚗 ${getFlagEmoji(region)}`;
         } else if (status === STATUS_NOT_AVAILABLE) {
           disney_result += `𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎`;
         } else if (status === STATUS_TIMEOUT) {
@@ -152,7 +152,7 @@ async function check_youtube_premium() {
       youtube_check_result += '𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎';
     } else {
       const flag = getFlagEmoji(code);
-      youtube_check_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎   ᗒ   ${flag}`;
+      youtube_check_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎 𝚒𝚗 ${flag}`;
     }
   } catch (error) {
     youtube_check_result += '𝙿𝚕𝚎𝚊𝚜𝚎 𝚁𝚎𝚏𝚛𝚎𝚜𝚑 𝚃𝚑𝚎 𝙿𝚊𝚗𝚎𝚕 𝙰𝚐𝚊𝚒𝚗';
@@ -210,9 +210,9 @@ async function check_netflix() {
       if (code2 === 'Not Found') {
         throw 'Not Available';
       }
-      netflix_check_result += `𝙽𝙵𝙻𝚇 𝙾𝚛𝚒𝚐𝚒𝚗𝚊𝚕𝚜 𝙾𝚗𝚕𝚢   ᗒ   ${getFlagEmoji(code2)}`;
+      netflix_check_result += `𝙽𝙵𝙻𝚇 𝙾𝚛𝚒𝚐𝚒𝚗𝚊𝚕𝚜 𝙾𝚗𝚕𝚢 𝚒𝚗 ${getFlagEmoji(code2)}`;
     } else {
-      netflix_check_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎   ᗒ   ${getFlagEmoji(code1)}`;
+      netflix_check_result += `𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎 𝚒𝚗 ${getFlagEmoji(code1)}`;
     }
   } catch (error) {
     if (error === 'Not Available') {
