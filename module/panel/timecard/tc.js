@@ -79,7 +79,7 @@ var tlist = {
     }else if(num==0){
       return "tree.circle.fill"
     }else{
-      return "leaf.circle.fill"
+      return "lizard.circle"
     }
   }
   
