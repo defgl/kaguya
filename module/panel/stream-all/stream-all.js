@@ -110,7 +110,7 @@ const UA =
     let [{ region, status }] = await Promise.all([testDisneyPlus()])
     await Promise.all([check_youtube_premium(), check_netflix()])
       .then((result) => {
-        let disney_result = '𝗗𝗶𝘀𝗻𝗲𝘆𝗣𝗹𝘂𝘀:  ';
+        let disney_result = '𝔻𝕚𝕤𝕟𝕖𝕪+:  ';
 
         if (status === STATUS_COMING) {
           disney_result += `𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗 ～ ${getFlagEmoji(region)}`;
@@ -165,7 +165,7 @@ async function check_youtube_premium() {
     })
   }
 
-  let youtube_check_result = '𝗬𝗼𝘂𝗧𝘂𝗯𝗲:  '
+  let youtube_check_result = '𝕐𝕠𝕦𝕋𝕦𝕓𝕖:  '
 
   try {
     const code = await inner_check();
@@ -222,7 +222,7 @@ async function check_netflix() {
     })
   }
 
-  let netflix_check_result = '𝗡𝗘𝗧𝗙𝗟𝗜𝗫:  '
+  let netflix_check_result = 'ℕ𝔼𝕋𝔽𝕃𝕀𝕏:  '
 
   try {
     const code1 = await inner_check(80062035);

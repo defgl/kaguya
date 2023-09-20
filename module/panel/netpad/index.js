@@ -24,12 +24,15 @@ let content = ''
   // 字体转换
   const transformedCN_IP = transformFont(CN_IP, TABLE, INDEX);
   const transformedTime = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
+  const transformedCN_IP = transformFont(CN_ADDR_EN, TABLE, INDEX);
+
 
   // 打印转换后的 CN_IP 和时间
   console.log("Transformed CN_IP: ", transformedCN_IP);
   console.log("Transformed Time: ", transformedTime);
+  console.log("Transformed CN_ADDR_EN: ", transformedCN_ADDR_EN);
 
-  title = `${CN_ADDR_EN}`
+  title = `${transformedCN_ADDR_EN}`
   content = `𝙸𝙿:${transformedCN_IP}\n𝚃𝚒𝚖𝚎:${transformedTime}`
   if ($.isTile()) {
     await notify('网络信息', '面板', '查询完成')
