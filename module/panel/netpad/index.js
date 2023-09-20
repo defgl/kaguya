@@ -24,7 +24,7 @@ let content = ''
   // 字体转换
   const transformedCN_IP = transformFont(CN_IP, TABLE, INDEX);
   const transformedTime = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
-  const transformedCN_IP = transformFont(CN_ADDR_EN, TABLE, INDEX);
+  const transformedCN_ADDR_EN = transformFont(CN_ADDR_EN, TABLE, INDEX);
 
 
   // 打印转换后的 CN_IP 和时间
