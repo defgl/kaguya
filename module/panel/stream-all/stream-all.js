@@ -97,7 +97,7 @@ const UA =
         let jsonData = JSON.parse(data);
         let vhan = jsonData.data.vhan;
         let source = jsonData.data.source;
-        let result = `${vhan} —— ${source}`;
+        let result = `${vhan} — ${source}`;
         resolve(result);
       });
     });
