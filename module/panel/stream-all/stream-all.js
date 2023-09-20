@@ -67,8 +67,24 @@ const UA =
     //   });
     // });
 
+    // let fetchTextContent = new Promise((resolve, reject) => {
+    //   let url = 'https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json';
+    //   $httpClient.get(url, function(error, response, data) {
+    //     if (error) {
+    //       reject(error);
+    //       return;
+    //     }
+    //     if (response.status !== 200) {
+    //       reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+    //       return;
+    //     }
+    //     let jsonData = JSON.parse(data);
+    //     resolve(jsonData[0].qinggan);
+    //   });
+    // });
+
     let fetchTextContent = new Promise((resolve, reject) => {
-      let url = 'https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json';
+      let url = 'https://api.vvhan.com/api/ian?type=json&cl=ac';
       $httpClient.get(url, function(error, response, data) {
         if (error) {
           reject(error);
@@ -79,9 +95,14 @@ const UA =
           return;
         }
         let jsonData = JSON.parse(data);
-        resolve(jsonData[0].qinggan);
+        let vhan = jsonData.data.vhan;
+        let source = jsonData.data.source;
+        let result = `${vhan} —— ${source}`;
+        resolve(result);
       });
     });
+
+
 
       // 使用await来获取text内容并设置为title
       panel_result.title = await fetchTextContent;
