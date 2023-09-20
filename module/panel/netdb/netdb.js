@@ -240,15 +240,17 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
      const transformedAs = transformFont(info.as, TABLE, INDEX);
      const transformedCountryCode = transformFont(info.countryCode, TABLE, INDEX);
      const transformedCity = transformFont(info.city, TABLE, INDEX);
+     const transformedTitle = transformFont(getSSID() || getCellularInfo(), TABLE, INDEX);
  
      // 打印转换后的信息
      console.log("Transformed Node IP: ", transformedQuery);
      console.log("Transformed IRR: ", transformedAs);
      console.log("Transformed Country Code: ", transformedCountryCode);
      console.log("Transformed City: ", transformedCity);
+     console.log("Transformed Title: ", transformedTitle);
  
      $done({
-       title: getSSID() ?? getCellularInfo(),
+       title: transformedTitle,
        content:
          getIP() +
          '𝙿𝚁𝙾𝚇𝚈:' + transformedQuery +
