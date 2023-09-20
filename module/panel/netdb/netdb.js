@@ -188,13 +188,13 @@ function getIP() {
     router = transformFont(router, TABLE, INDEX);
 
     if (ipv6) {
-      info.push(`IPʋ6:${ipv6}`);
+      info.push(`𝙸𝙿𝚅𝟼:${ipv6}`);
     } else if (ipv4) {
-      info.push(`IPʋ4:${ipv4}`);
+      info.push(`𝙸𝙿𝚅𝟺:${ipv4}`);
     }
 
     if (router && getSSID()) {
-      info.push(`Rσυƚҽɾ IP:${router}`);
+      info.push(`𝚁𝙾𝚄𝚃𝙴𝚁:${router}`);
     }
   }
 
@@ -251,9 +251,9 @@ function getNetworkInfo(retryTimes = 5, retryInterval = 1000) {
        title: getSSID() ?? getCellularInfo(),
        content:
          getIP() +
-         'Pɾσxყ IP:' + transformedQuery +
-         '\n𝘈𝘚 𝘪𝘯𝘧𝘰:' + transformedAs +
-         '\n𝘓𝘰𝘤𝘢𝘵𝘪𝘰𝘯:' + getFlagEmoji(info.countryCode) + ' | ' + transformedCountryCode + '  -  ' + transformedCity,
+         '𝙿𝚁𝙾𝚇𝚈:' + transformedQuery +
+         '\n𝙰𝚂:' + transformedAs +
+         '\n𝙻𝙾𝙲𝙰𝚃𝙸𝙾𝙽:' + getFlagEmoji(info.countryCode) + ' | ' + transformedCountryCode + '  -  ' + transformedCity,
        icon: getSSID() ? 'wifi' : 'simcard',
        'icon-color': getSSID() ? '#5A9AF9' : '#8AB8DD',
      });
