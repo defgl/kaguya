@@ -109,7 +109,7 @@ async function getDirectInfo() {
 	//	CN_ADDR = CN_ADDR.replace(/^中国\t/, '').replace(/\t/, '，');
 	//
 	//	// 翻译CN_ADDR
-	//	let CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '17bd2d86-a5df-9998-ff34-28075a83bc49:fx' }))[0];
+	//	let CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '7dda8ddf-e4c2-52a2-c350-09660439db14:fx' }))[0];
 	//
 	//	if (CN_IP && CN_ADDR) {
 	//		return { CN_IP, CN_ADDR, CN_ADDR_EN };
