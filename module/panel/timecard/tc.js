@@ -792,7 +792,7 @@ var nowlunar = lunar.IMonthCn+lunar.IDayCn+' '+lunar.gzYear+lunar.gzMonth+lunar.
 //    });
 //}
 
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
 
 async function fetchPoemInfo() {
     return new Promise((resolve, reject) => {
