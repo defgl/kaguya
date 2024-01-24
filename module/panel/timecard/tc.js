@@ -792,35 +792,33 @@ var nowlunar = lunar.IMonthCn+lunar.IDayCn+' '+lunar.gzYear+lunar.gzMonth+lunar.
 //    });
 //}
 
-const fetch = require('node-fetch');
-
 async function fetchPoemInfo() {
-    return new Promise((resolve, reject) => {
-        let url = 'https://v2.jinrishici.com/one.json';
-        fetch(url)
-            .then(response => {
-                if (response.status !== 200) {
-                    reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-                    return;
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === "success") {
-                    let content = data.data.content;
-                    let title = data.data.origin.title;
-                    let author = data.data.origin.author;
-                    let result = `${content} | ${title}，${author}。`;
-                    resolve(result);
-                } else {
-                    reject(new Error("Failed to fetch poem data."));
-                }
-            })
-            .catch(error => {
-                console.error("Network error:", error);
-                reject(error);
-            });
-    });
+  return new Promise((resolve, reject) => {
+      let url = 'https://v2.jinrishici.com/one.json';
+      $httpClient.get(url, function(error, response, data) {
+          if (error) {
+              console.error("Network error:", error);
+              reject(error);
+              return;
+          }
+          if (response.status !== 200) {
+              console.error(`Failed to fetch data. HTTP Status: ${response.status}`);
+              reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+              return;
+          }
+
+          let jsonData = JSON.parse(data);
+          if (jsonData.status === "success") {
+              let content = jsonData.data.content;
+              let title = jsonData.data.origin.title;
+              let author = jsonData.data.origin.author;
+              let result = `${content} | ${title}，${author}。`;
+              resolve(result);
+          } else {
+              reject(new Error("Failed to fetch poem data."));
+          }
+      });
+  });
 }
 
 function getRandomPoem() {
