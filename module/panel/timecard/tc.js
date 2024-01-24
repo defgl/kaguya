@@ -812,7 +812,7 @@ async function fetchPoemInfo() {
               let content = jsonData.data.content;
               let title = jsonData.data.origin.title;
               let author = jsonData.data.origin.author;
-              let result = `${content} | ${title}，${author}。`;
+              let result = `${content}| ${title}，${author}。`;
               resolve(result);
           } else {
               reject(new Error("Failed to fetch poem data."));
