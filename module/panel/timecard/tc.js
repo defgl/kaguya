@@ -1,14 +1,16 @@
 var tlist = {
-    1: ["清明", "2023-04-05"],
-    2: ["劳动", "2023-05-01"],
-    3: ["端午", "2023-06-22"],
-    4: ["中秋", "2023-09-29"],
-    5: ["国庆", "2023-10-01"],
-    6: ["元旦", "2024-01-01"],
-    7: ["春节", "2024-02-10"],
-    8: ["元宵", "2024-02-24"],
-    9: ["清明", "2024-04-04"],
-    10: ["劳动", "2024-05-01"]
+  1: ["中秋", "2023-09-29"],
+  2: ["国庆", "2023-10-01"],
+  3: ["元旦", "2024-01-01"],
+  4: ["春节", "2024-02-10"],
+  5: ["元宵", "2024-02-24"],
+  6: ["清明", "2024-04-04"],
+  7: ["劳动", "2024-05-01"],
+  8: ["端午", "2024-06-10"],
+  9: ["中秋", "2024-09-17"],
+  10: ["国庆", "2024-10-01"],
+  11: ["元旦", "2025-01-01"],
+  12: ["春节", "2025-01-29"]
   };
   let tnow = new Date();
   let tnowf =
@@ -752,45 +754,74 @@ var tlist = {
   };
 
 var lunar = calendar.solar2lunar();
-var nowsolar = lunar.cMonth + '月' + lunar.cDay + '日（' + lunar.astro + '）';
-// var nowlunar = lunar.IMonthCn + lunar.IDayCn + ' ' + lunar.gzYear + lunar.gzMonth + lunar.gzDay + ' ' + lunar.Animal + '年';
+//var nowsolar = lunar.cYear + '年' +lunar.cMonth +  '月' + lunar.cDay +'日（'+lunar.astro+'）';
+var nowsolar = lunar.cMonth +  '月' + lunar.cDay +'日（'+lunar.astro+'）';
+//var nowlunar = lunar.lYear + '年' +lunar.IMonthCn+lunar.IDayCn+'，'+lunar.gzYear+'年'+lunar.gzMonth+'月'+lunar.gzDay+'日（'+lunar.Animal+'年）';
+var nowlunar = lunar.IMonthCn+lunar.IDayCn+' '+lunar.gzYear+lunar.gzMonth+lunar.gzDay+' '+lunar.Animal+'年';
+//async function fetchLunarInfo() {
+//    return new Promise((resolve, reject) => {
+//      let url = 'https://api.sfhzb.cn/api/nl.php';
+//      $httpClient.get(url, function(error, response, data) {
+//        if (error) {
+//          console.error("Network error:", error);
+//          reject(error);
+//          return;
+//        }
+//        if (response.status !== 200) {
+//          console.error(`Failed to fetch data. HTTP Status: ${response.status}`);
+//          reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+//          return;
+//        }
+//
+//        // 使用正则表达式提取 "日" 和 "━━━━━━━━━" 之间的内容
+//        const match = /日([\s\S]*?)━━━━━━━━━/.exec(data);
+//
+//        if (match) {
+//            let result = match[1].trim(); // 去掉前后空白
+//            result = result.replace("节气：", ""); // 删除 "节气："
+//            result = result.replace(/\n+/g, "｜"); // 将所有连续的换行符替换为单个 "｜"
+//            result = result.replace("农历", ""); // 删除 "农历"
+//            result = result.replace(/^\｜|｜$/g, ""); // 删除开始和结尾处的 "｜"
+//            result = result.replace(/｜\s+/g, "｜"); // 删除 "｜" 后面的多余空格
+//            resolve(result);
+//        } else {
+//          console.error("Failed to extract content between '日' and '━━━━━━━━━'");
+//          reject(new Error("Failed to extract content between '日' and '━━━━━━━━━'"));
+//        }
+//      });
+//    });
+//}
 
-async function fetchLunarInfo() {
+const fetch = require('node-fetch');
+
+async function fetchPoemInfo() {
     return new Promise((resolve, reject) => {
-      let url = 'https://api.sfhzb.cn/api/nl.php';
-      $httpClient.get(url, function(error, response, data) {
-        if (error) {
-          console.error("Network error:", error);
-          reject(error);
-          return;
-        }
-        if (response.status !== 200) {
-          console.error(`Failed to fetch data. HTTP Status: ${response.status}`);
-          reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-          return;
-        }
-
-        // 使用正则表达式提取 "日" 和 "━━━━━━━━━" 之间的内容
-        const match = /日([\s\S]*?)━━━━━━━━━/.exec(data);
-
-        if (match) {
-            let result = match[1].trim(); // 去掉前后空白
-            result = result.replace("节气：", ""); // 删除 "节气："
-            result = result.replace(/\n+/g, "｜"); // 将所有连续的换行符替换为单个 "｜"
-            result = result.replace("农历", ""); // 删除 "农历"
-            result = result.replace(/^\｜|｜$/g, ""); // 删除开始和结尾处的 "｜"
-            result = result.replace(/｜\s+/g, "｜"); // 删除 "｜" 后面的多余空格
-            resolve(result);
-        } else {
-          console.error("Failed to extract content between '日' and '━━━━━━━━━'");
-          reject(new Error("Failed to extract content between '日' and '━━━━━━━━━'"));
-        }
-      });
+        let url = 'https://v2.jinrishici.com/one.json';
+        fetch(url)
+            .then(response => {
+                if (response.status !== 200) {
+                    reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === "success") {
+                    let content = data.data.content;
+                    let title = data.data.origin.title;
+                    let author = data.data.origin.author;
+                    let result = `${content} | ${title}，${author}。`;
+                    resolve(result);
+                } else {
+                    reject(new Error("Failed to fetch poem data."));
+                }
+            })
+            .catch(error => {
+                console.error("Network error:", error);
+                reject(error);
+            });
     });
 }
-
-
-  
 
 function getRandomPoem() {
   const poems = [
@@ -981,25 +1012,31 @@ function getRandomPoem() {
 }
 
 async function title_random() {
-    const randomChoice = Math.floor(Math.random() * 3);
+    const randomChoice = Math.floor(Math.random() * 4); // Change to 4 to include case 3
     
     switch (randomChoice) {
       case 0:
         return nowsolar;
       case 1:
         try {
-          const lunarInfo = await fetchLunarInfo();
-          return lunarInfo;
+          return nowlunar;
         } catch (error) {
           console.error("Failed to fetch lunar info:", error);
           return "Unknown Lunar Info";
         }
       case 2:
         return getRandomPoem();
+      case 3:
+        try {
+          return await fetchPoemInfo(); // Add case 3 to call fetchPoemInfo
+        } catch (error) {
+          console.error("Failed to fetch poem info:", error);
+          return "Unknown Poem Info";
+        }
       default:
         return "Unknown";
     }
-  }
+}
 
 // 使用示例
 title_random()
