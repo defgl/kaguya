@@ -146,10 +146,10 @@ async function check_youtube_premium() {
         }
 
         if (data.indexOf('Premium is not available in your country') !== -1) {
-          resolve(' Not Available')
+          resolve('Not Available')
           return
         }
- 
+
         let region = ''
         let re = new RegExp('"countryCode":"(.*?)"', 'gm')
         let result = re.exec(data)
