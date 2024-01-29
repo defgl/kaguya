@@ -19,10 +19,10 @@ let params = getParams($argument)
     console.log("Original startTime: ", startTime);
 
     // 字体转换
-    startTime = transformFont(startTime, TABLE, INDEX);
+    // startTime = transformFont(startTime, TABLE, INDEX);
   
     // 打印转换后的 startTime
-    console.log("Transformed startTime: ", startTime);
+    // console.log("Transformed startTime: ", startTime);
   
   let titlecontent = await fetchtitlecontent();
 
@@ -30,7 +30,7 @@ let params = getParams($argument)
 
   $done({
     title: titlecontent,
-    content: `𝒮𝓉𝒶𝓇𝓉𝒯𝒾𝓂ℯ: ${startTime}`,
+    content: `✌𝓢𝓽𝓪𝓻𝓽𝓮𝓭✌: ${startTime}`,
     icon: params.icon,
     "icon-color": params.color
   });
@@ -38,22 +38,26 @@ let params = getParams($argument)
 })();
 
 async function fetchtitlecontent() {
-  return new Promise((resolve, reject) => {
-    let url = 'https://zj.v.api.aa1.cn/api/wenan-shici/?type=json';
-    $httpClient.get(url, function(error, response, data) {
-      if (error) {
-        reject(`error: ${error.message}`);
-        return;
-      }
-      if (response.status !== 200) {
-        reject(`failed to fetch data. http status: ${response.status}`);
-        return;
-      }
-      let jsondata = JSON.parse(data);
-      let fulltext = jsondata.msg;
-      let extractedtext = fulltext.split("。——")[0] + "。";
-      resolve(extractedtext);
-    });
+    return new Promise((resolve, reject) => {
+    let url = 'https://v1.hitokoto.cn';
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.from_who) {
+          let quote = `${data.hitokoto} - ${data.from_who} • ${data.creator}`;
+          resolve(quote);
+        } else {
+          resolve(data.hitokoto);
+        }
+      })
+      .catch(error => {
+        reject(`Error: ${error.message}`);
+      });
   });
 }
 
