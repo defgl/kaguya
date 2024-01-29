@@ -27,12 +27,34 @@ const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36'
 
   ;(async () => {
-    let panel_result = {
-      title: "",
-      content: '',
-      icon: 'movieclapper.fill',
-      'icon-color': '#318ce7',
-    }
+    function convertToItalicUnicode(text) {
+  // 斜体字符的Unicode映射
+  const italicCharMap = {
+    'A': '𝐴', 'B': '𝐵', 'C': '𝐶', 'D': '𝐷', 'E': '𝐸',
+    'F': '𝐹', 'G': '𝐺', 'H': '𝐻', 'I': '𝐼', 'J': '𝐽',
+    'K': '𝐾', 'L': '𝐿', 'M': '𝑀', 'N': '𝑁', 'O': '𝑂',
+    'P': '𝑃', 'Q': '𝑄', 'R': '𝑅', 'S': '𝑆', 'T': '𝑇',
+    'U': '𝑈', 'V': '𝑉', 'W': '𝑊', 'X': '𝑋', 'Y': '𝑌',
+    'Z': '𝑍', 'a': '𝑎', 'b': '𝑏', 'c': '𝑐', 'd': '𝑑',
+    'e': '𝑒', 'f': '𝑓', 'g': '𝑔', 'h': '𝒉', 'i': '𝒊',
+    'j': '𝒋', 'k': '𝒌', 'l': '𝒍', 'm': '𝒎', 'n': '𝒏',
+    'o': '𝒐', 'p': '𝒑', 'q': '𝒒', 'r': '𝒓', 's': '𝒔',
+    't': '𝒕', 'u': '𝒖', 'v': '𝒗', 'w': '𝒘', 'x': '𝒙',
+    'y': '𝒚', 'z': '𝒛', '0': '𝟎', '1': '𝟏', '2': '𝟐',
+    '3': '𝟑', '4': '𝟒', '5': '𝟓', '6': '𝟔', '7': '𝟕',
+    '8': '𝟖', '9': '𝟗'
+  };
+
+  return text.split('').map(char => italicCharMap[char] || char).join('');
+}
+
+// 示例用法
+let panel_result = {
+  title: "",
+  content: '',
+  icon: 'movieclapper.fill',
+  'icon-color': '#318ce7',
+};
 
     //let fetchTextContent = new Promise((resolve, reject) => {
     //  let url = 'https://v.api.aa1.cn/api/api-wenan-yingwen/index.php?type=json';
@@ -122,11 +144,11 @@ const UA =
           disney_result += `Failed to check.`;
         }
   
-        result.push(disney_result);
-        let content = result.join('\n');
-        panel_result['content'] = content;
-      })
-      .finally(() => {
+          // 构建结果并应用斜体转换
+  result.push(disney_result);
+  let content = result.join('\n');
+  panel_result['content'] = convertToItalicUnicode(content);
+
         $done(panel_result);
       });
   })();
@@ -172,7 +194,7 @@ async function check_youtube_premium() {
     if (code === 'Not Available') {
       youtube_check_result += 'Not Available';
     } else {
-      const flag = getFlagEmoji(region);
+      const flag = getFlagEmoji(code);
       youtube_check_result += `Enjoy ur time now. | ${flag}`;
     }
   } catch (error) {
