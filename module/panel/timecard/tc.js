@@ -75,13 +75,13 @@ var tlist = {
   //>图标依次切换乌龟、兔子、闹钟、礼品盒
   function icon_now(num){
     if(num<=7 && num>3 ){
-      return "sun.min.fill"
+      return "book.pages.fill"
     }else if(num<=3 && num>0){
-      return "sun.max.fill"
+      return "swiftdata"
     }else if(num==0){
-      return "tree.circle.fill"
+      return "fireworks"
     }else{
-      return "lizard.circle"
+      return "calendar.badge.checkmark"
     }
   }
   
