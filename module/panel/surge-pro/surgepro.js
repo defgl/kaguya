@@ -30,7 +30,7 @@ let params = getParams($argument)
 
   $done({
     title: titlecontent,
-    content: `✌𝓢𝓽𝓪𝓻𝓽𝓮𝓭✌: ${startTime}`,
+    content: `𝑺𝒕𝒂𝒓𝒕𝒆𝒅: ${startTime}`,
     icon: params.icon,
     "icon-color": params.color
   });
