@@ -162,8 +162,9 @@ async function getDirectInfo() {
 		});
 		const data = JSON.parse(res1.body).data;
 		CN_IP = data.myip;
-		CN_ADDR = [data.location].filter(Boolean).join(', ');
+		//CN_ADDR = [data.location].filter(Boolean).join(', ');
 		// CN_ADDR = CN_ADDR.replace('电信', 'China Telecom').replace('联通', 'China Unicom').replace('移动', 'China Mobile');
+		CN_ADDR = data.country + data.local
 		// 翻译CN_ADDR
 		CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '7dda8ddf-e4c2-52a2-c350-09660439db14:fx' }))[0];
 		if (CN_IP && CN_ADDR) {
