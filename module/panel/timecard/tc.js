@@ -792,6 +792,42 @@ var nowlunar = lunar.IMonthCn+lunar.IDayCn+' '+lunar.gzYear+lunar.gzMonth+lunar.
 //    });
 //}
 
+async function fetchTimeInfoModified() {
+    return new Promise((resolve, reject) => {
+      let url = 'https://api.timelessq.com/time';
+  
+      $httpClient.get(url, function(error, response, data) {
+        if (error) {
+          console.error("Network error:", error);
+          reject(error);
+          return;
+        }
+        if (response.status !== 200) {
+          console.error(`Failed to fetch data. HTTP Status: ${response.status}`);
+          reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+          return;
+        }
+  
+        let jsonData = JSON.parse(data);
+        if (jsonData.errno === 0 && jsonData.data) {
+          let dayInYear = jsonData.data.dayInYear;
+          let weekInYear = jsonData.data.weekInYear;
+          let astro = jsonData.data.astro;
+          let cyclicalYear = jsonData.data.lunar.cyclicalYear;
+          let zodiac = jsonData.data.lunar.zodiac;
+          let cyclicalMonth = jsonData.data.lunar.cyclicalMonth;
+          let cyclicalDay = jsonData.data.lunar.cyclicalDay;
+          let hour = jsonData.data.lunar.hour;
+  
+          let result = `第${dayInYear}天 · 第${weekInYear}周 ${astro}月\n${cyclicalYear} · ${zodiac}年 ${cyclicalMonth}月 ${cyclicalDay}日 ${hour}时`;
+          resolve(result);
+        } else {
+          reject(new Error("Failed to fetch time data."));
+        }
+      });
+    });
+  }
+
 async function fetchPoemInfo() {
   return new Promise((resolve, reject) => {
       let url = 'https://v2.jinrishici.com/one.json';
@@ -1010,23 +1046,34 @@ function getRandomPoem() {
 }
 
 async function title_random() {
-    const randomChoice = Math.floor(Math.random() * 4); // Change to 4 to include case 3
-    
+    const randomChoice = Math.floor(Math.random() * 4);
+
     switch (randomChoice) {
       case 0:
-        return nowsolar;
+        try {
+          // 尝试从API获取信息
+          let apiResult = await fetchTimeInfoModified();
+          return apiResult;
+        } catch (error) {
+          // 如果API调用失败，返回nowsolar
+          console.error("Failed to fetch time info:", error);
+          return nowsolar;
+        }
       case 1:
         try {
-          return nowlunar;
+          // 尝试从API获取信息
+          let apiResult = await fetchTimeInfoModified();
+          return apiResult;
         } catch (error) {
-          console.error("Failed to fetch lunar info:", error);
-          return "Unknown Lunar Info";
+          // 如果API调用失败，返回nowlunar
+          console.error("Failed to fetch time info:", error);
+          return nowlunar;
         }
       case 2:
         return getRandomPoem();
       case 3:
         try {
-          return await fetchPoemInfo(); // Add case 3 to call fetchPoemInfo
+          return await fetchPoemInfo();
         } catch (error) {
           console.error("Failed to fetch poem info:", error);
           return "Unknown Poem Info";
