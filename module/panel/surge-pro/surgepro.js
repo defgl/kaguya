@@ -19,7 +19,7 @@ let params = getParams($argument)
     console.log("Original startTime: ", startTime);
 
     // 字体转换
-    // startTime = transformFont(startTime, TABLE, INDEX);
+    startTime = transformFont(startTime, TABLE, INDEX);
   
     // 打印转换后的 startTime
     console.log("Transformed startTime: ", startTime);
