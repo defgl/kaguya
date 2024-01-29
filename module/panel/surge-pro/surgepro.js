@@ -22,7 +22,7 @@ let params = getParams($argument)
     // startTime = transformFont(startTime, TABLE, INDEX);
   
     // 打印转换后的 startTime
-    // console.log("Transformed startTime: ", startTime);
+    console.log("Transformed startTime: ", startTime);
   
   let titlecontent = await fetchtitlecontent();
 
