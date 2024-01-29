@@ -19,10 +19,10 @@ let params = getParams($argument)
     console.log("Original startTime: ", startTime);
 
     // 字体转换
-    startTime = transformFont(startTime, TABLE, INDEX);
+    // startTime = transformFont(startTime, TABLE, INDEX);
   
     // 打印转换后的 startTime
-    console.log("Transformed startTime: ", startTime);
+    // console.log("Transformed startTime: ", startTime);
   
   let titlecontent = await fetchtitlecontent();
 
@@ -40,24 +40,27 @@ let params = getParams($argument)
 async function fetchtitlecontent() {
     return new Promise((resolve, reject) => {
     let url = 'https://v1.hitokoto.cn';
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.from_who) {
-          let quote = `${data.hitokoto} - ${data.from_who} • ${data.creator}`;
+    $httpClient.get(url, function(error, response, data) {
+      if (error) {
+        reject(`Error: ${error.message}`);
+        return;
+      }
+      if (response.status !== 200) {
+        reject(`HTTP error! status: ${response.status}`);
+        return;
+      }
+      try {
+        let jsondata = JSON.parse(data);
+        if (jsondata.from_who) {
+          let quote = `${jsondata.hitokoto} - ${jsondata.from_who} • ${jsondata.creator}`;
           resolve(quote);
         } else {
-          resolve(data.hitokoto);
+          resolve(jsondata.hitokoto);
         }
-      })
-      .catch(error => {
-        reject(`Error: ${error.message}`);
-      });
+      } catch (error) {
+        reject(`Error parsing JSON: ${error.message}`);
+      }
+    });
   });
 }
 
