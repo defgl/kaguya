@@ -30,7 +30,7 @@ const UA =
     let panel_result = {
       title: "",
       content: '',
-      icon: 'pano.badge.play.fill',
+      icon: 'movieclapper.fill',
       'icon-color': '#318ce7',
     }
 
