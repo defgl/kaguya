@@ -87,7 +87,8 @@ var tlist = {
   
   /**
    * @日历算法来源 https://github.com/jjonline/calendar.js/blob/master/calendar.js
-   * @1900-2100区间内的公历、农历互转
+   * @1900-2100区间内的
+   * 公历、农历互转
    * @charset UTF-8
    * @Author  Jea杨(JJonline@JJonline.Cn)
    * @Time    2014-7-21
@@ -1091,6 +1092,7 @@ title_random()
     $done({
       title: title,  // 这里用到了上面 Promise 解析出的 title
       icon: icon_now(tnumcount(Number(nowlist))),
+      'icon-color': '#e52b50',
       content: `${tlist[nowlist][0]}:${today(tnumcount(nowlist))}, ${tlist[Number(nowlist) + Number(1)][0]}:${tnumcount(Number(nowlist) + Number(1))}天, ${tlist[Number(nowlist) + Number(2)][0]}:${tnumcount(Number(nowlist) + Number(2))}天`
     });
   })
