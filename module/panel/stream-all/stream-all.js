@@ -233,7 +233,7 @@ async function check_netflix() {
       }
       netflix_check_result += `Only native shows available | ${getFlagEmoji(code2)}`;
     } else {
-      netflix_check_result += `Enjoy your shows now. | ${getFlagEmoji(code1)}`;
+      netflix_check_result += `Enjoy ur shows now. | ${getFlagEmoji(code1)}`;
     }
   } catch (error) {
     if (error === 'Not Available') {
