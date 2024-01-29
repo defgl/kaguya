@@ -819,7 +819,7 @@ async function fetchTimeInfoModified() {
           let cyclicalDay = jsonData.data.lunar.cyclicalDay;
           let hour = jsonData.data.lunar.hour;
   
-          let result = `第${dayInYear}天 · 第${weekInYear}周 ${astro}月\n${cyclicalYear} · ${zodiac}年 ${cyclicalMonth}月 ${cyclicalDay}日 ${hour}时`;
+          let result = `第${dayInYear}天 · 第${weekInYear}周 ${astro}月\n${cyclicalYear} · ${zodiac}年 ${cyclicalMonth}月 ${cyclicalDay}日 ${hour}`;
           resolve(result);
         } else {
           reject(new Error("Failed to fetch time data."));
@@ -848,7 +848,7 @@ async function fetchPoemInfo() {
               let content = jsonData.data.content;
               let title = jsonData.data.origin.title;
               let author = jsonData.data.origin.author;
-              let result = `${content} | ${title}⸺${author}。`;
+              let result = `${content} | ${title} ⸺ ${author}。`;
               resolve(result);
           } else {
               reject(new Error("Failed to fetch poem data."));
