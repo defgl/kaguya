@@ -28,12 +28,12 @@ let params = getParams($argument)
 
   if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
-  $done({
-    title: titlecontent,
-    content: `𝑺𝒕𝒂𝒓𝒕𝒆𝒅: ${startTime}`,
-    icon: params.icon,
-    "icon-color": params.color
-  });
+$done({
+  title: `${titlecontent}\n𝑺𝒕𝒂𝒓𝒕𝒆𝒅: ${startTime}`,
+  content: "",
+  icon: params.icon,
+  "icon-color": params.color
+});
 
 })();
 
