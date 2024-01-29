@@ -30,8 +30,8 @@ const UA =
     let panel_result = {
       title: "",
       content: '',
-      icon: 'checkmark.gobackward',
-      'icon-color': '#2F4F4F',
+      icon: 'pano.badge.play.fill',
+      'icon-color': '#318ce7',
     }
 
     //let fetchTextContent = new Promise((resolve, reject) => {
