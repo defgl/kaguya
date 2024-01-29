@@ -1,136 +1,58 @@
-/*
- * 由@LucaLin233编写
- * 原脚本地址：https://raw.githubusercontent.com/LucaLin233/Luca_Conf/main/Surge/JS/stream-all.js
- * 由@Rabbit-Spec修改
- * 更新日期：2022.06.26
- * 版本：2.2
- */
+const STATUS_AVAILABLE = 1;
+const STATUS_NOT_AVAILABLE = 0;
+const STATUS_TIMEOUT = -1;
+const STATUS_ERROR = -2;
 
-const REQUEST_HEADERS = {
-  'User-Agent':
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36',
-  'Accept-Language': 'en',
-}
+const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36';
 
-// 即将登陆
-const STATUS_COMING = 2
-// 支持解锁
-const STATUS_AVAILABLE = 1
-// 不支持解锁
-const STATUS_NOT_AVAILABLE = 0
-// 检测超时
-const STATUS_TIMEOUT = -1
-// 检测异常
-const STATUS_ERROR = -2
+(async () => {
+  let panel_result = {
+    title: "",
+    content: '',
+    icon: 'checkmark.gobackward',
+    'icon-color': '#2F4F4F',
+  };
 
-const UA =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36'
-
-  ;(async () => {
-    let panel_result = {
-      title: "",
-      content: '',
-      icon: 'checkmark.gobackward',
-      'icon-color': '#2F4F4F',
-    }
-
-    //let fetchTextContent = new Promise((resolve, reject) => {
-    //  let url = 'https://v.api.aa1.cn/api/api-wenan-yingwen/index.php?type=json';
-    //  $httpClient.get(url, function(error, response, data) {
-    //    if (error) {
-    //      reject(error);
-    //      return;
-    //    }
-    //    if (response.status !== 200) {
-    //      reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-    //      return;
-    //    }
-    //    let jsonData = JSON.parse(data);
-    //    // 访问数组的第一个元素，并获取其 'qinggan' 字段
-    //    resolve(jsonData.text);
-    //  });
-    //});
-
-    // let fetchTextContent = new Promise((resolve, reject) => {
-    //   let url = 'https://zj.v.api.aa1.cn/api/wenan-mj/?type=json';
-    //   $httpClient.get(url, function(error, response, data) {
-    //     if (error) {
-    //       reject(error);
-    //       return;
-    //     }
-    //     if (response.status !== 200) {
-    //       reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-    //       return;
-    //     }
-    //     let jsonData = JSON.parse(data);
-    //     resolve(jsonData.msg);
-    //   });
-    // });
-
-    // let fetchTextContent = new Promise((resolve, reject) => {
-    //   let url = 'https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json';
-    //   $httpClient.get(url, function(error, response, data) {
-    //     if (error) {
-    //       reject(error);
-    //       return;
-    //     }
-    //     if (response.status !== 200) {
-    //       reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-    //       return;
-    //     }
-    //     let jsonData = JSON.parse(data);
-    //     resolve(jsonData[0].qinggan);
-    //   });
-    // });
-
-    let fetchTextContent = new Promise((resolve, reject) => {
-      let url = 'https://api.vvhan.com/api/ian?type=json&cl=ac';
+  let fetchTextContent = (url) => {
+    return new Promise((resolve, reject) => {
       $httpClient.get(url, function(error, response, data) {
-        if (error) {
-          reject(error);
-          return;
-        }
-        if (response.status !== 200) {
-          reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+        if (error || response.status !== 200) {
+          reject(error || new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
           return;
         }
         let jsonData = JSON.parse(data);
-        let vhan = jsonData.data.vhan;
-        let source = jsonData.data.source;
-        let result = `${vhan} — ${source}`;
-        resolve(result);
+        resolve(jsonData);
       });
     });
+  };
 
+  let fetchTextContents = [
+    'https://api.vvhan.com/api/ian?type=json&cl=ac',
+    // Add more URLs here
+  ];
 
+  let results = await Promise.all(fetchTextContents.map(url => fetchTextContent(url)));
+  let content = results.map(result => `${result.data.vhan} — ${result.data.source}`).join('\n');
+  panel_result.title = content;
 
-      // 使用await来获取text内容并设置为title
-      panel_result.title = await fetchTextContent;
-  
-    let [{ region, status }] = await Promise.all([testDisneyPlus()])
-    await Promise.all([check_youtube_premium(), check_netflix()])
-      .then((result) => {
-        let disney_result = '𝔻𝕚𝕤𝕟𝕖𝕪+:  ';
+  let [{ region, status }] = await Promise.all([testDisneyPlus()]);
+  let result = await Promise.all([check_youtube_premium(), check_netflix()]);
+  let disney_result = '𝑫𝒊𝒔𝒏𝒆𝒚+: ';
 
-        if (status === STATUS_COMING) {
-          disney_result += `𝙲𝚘𝚖𝚒𝚗𝚐 𝚂𝚘𝚘𝚗 ～ ${getFlagEmoji(region)}`;
-        } else if (status === STATUS_AVAILABLE) {
-          disney_result += `𝚛𝚎𝚊𝚍𝚢 𝚝𝚘 𝚠𝚊𝚝𝚌𝚑 ～ ${getFlagEmoji(region)}`;
-        } else if (status === STATUS_NOT_AVAILABLE) {
-          disney_result += `𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎`;
-        } else if (status === STATUS_TIMEOUT) {
-          disney_result += `𝚁𝚎𝚚𝚞𝚎𝚜𝚝 𝚃𝚒𝚖𝚎𝚍 𝙾𝚞𝚝`;
-        }
-  
-        result.push(disney_result);
-        let content = result.join('\n');
-        panel_result['content'] = content;
-      })
-      .finally(() => {
-        $done(panel_result);
-      });
-  })();
-  
+  if (status === STATUS_COMING) {
+    disney_result += `Coming soon | ${getFlagEmoji(region)}`;
+  } else if (status === STATUS_AVAILABLE) {
+    disney_result += `Enjoy ur shows now | ${getFlagEmoji(region)}`;
+  } else if (status === STATUS_NOT_AVAILABLE) {
+    disney_result += `Not available`;
+  } else if (status === STATUS_TIMEOUT) {
+    disney_result += `Please refresh the data`;
+  }
+
+  result.push(disney_result);
+  panel_result['content'] = result.join('\n');
+  $done(panel_result);
+})();
 
 async function check_youtube_premium() {
   let inner_check = () => {
@@ -141,46 +63,45 @@ async function check_youtube_premium() {
       }
       $httpClient.get(option, function (error, response, data) {
         if (error != null || response.status !== 200) {
-          reject('Error')
-          return
+          reject('Error');
+          return;
         }
 
         if (data.indexOf('Premium is not available in your country') !== -1) {
-          resolve(' Not Available')
-          return
+          resolve(' Not Available');
+          return;
         }
- 
-        let region = ''
-        let re = new RegExp('"countryCode":"(.*?)"', 'gm')
-        let result = re.exec(data)
-        if (result != null && result.length === 2) {
-          region = result[1]
-        } else if (data.indexOf('www.google.cn') !== -1) {
-          region = 'CN'
-        } else {
-          region = 'US'
-        }
-        resolve(region)
-      })
-    })
-  }
 
-  let youtube_check_result = '𝕐𝕠𝕦𝕋𝕦𝕓𝕖:  '
+        let region = '';
+        let re = new RegExp('"countryCode":"(.*?)"', 'gm');
+        let result = re.exec(data);
+        if (result != null && result.length === 2) {
+          region = result[1];
+        } else if (data.indexOf('www.google.cn') !== -1) {
+          region = 'CN';
+        } else {
+          region = 'US';
+        }
+        resolve(region);
+      });
+    });
+  };
+
+  let youtube_check_result = '𝒀𝒐𝒖𝑻𝒖𝒃𝒆: ';
 
   try {
     const code = await inner_check();
     if (code === 'Not Available') {
-      youtube_check_result += '𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎';
+      youtube_check_result += 'Not available';
     } else {
       const flag = getFlagEmoji(code);
-      youtube_check_result += `𝚛𝚎𝚊𝚍𝚢 𝚝𝚘 𝚠𝚊𝚝𝚌𝚑 ～ ${flag}`;
+      youtube_check_result += `Enjoy ur shows now | ${flag}`;
     }
   } catch (error) {
-    youtube_check_result += '𝙿𝚕𝚎𝚊𝚜𝚎 𝚁𝚎𝚏𝚛𝚎𝚜𝚑 𝚃𝚑𝚎 𝙿𝚊𝚗𝚎𝚕 𝙰𝚐𝚊𝚒𝚗';
+    youtube_check_result += 'Please refresh the data.';
   }
-  
 
-  return youtube_check_result
+  return youtube_check_result;
 }
 
 async function check_netflix() {
@@ -192,100 +113,81 @@ async function check_netflix() {
       }
       $httpClient.get(option, function (error, response, data) {
         if (error != null) {
-          reject('Error')
-          return
+          reject('Error');
+          return;
         }
 
         if (response.status === 403) {
-          reject('Not Available')
-          return
+          reject('Not Available');
+          return;
         }
 
         if (response.status === 404) {
-          resolve('Not Found')
-          return
+          resolve('Not Found');
+          return;
         }
 
         if (response.status === 200) {
-          let url = response.headers['x-originating-url']
-          let region = url.split('/')[3]
-          region = region.split('-')[0]
+          let url = response.headers['x-originating-url'];
+          let region = url.split('/')[3];
+          region = region.split('-')[0];
           if (region == 'title') {
-            region = 'us'
+            region = 'us';
           }
-          resolve(region)
-          return
+          resolve(region);
+          return;
         }
 
-        reject('Error')
-      })
-    })
-  }
+        reject('Error');
+      });
+    });
+  };
 
-  let netflix_check_result = 'ℕ𝔼𝕋𝔽𝕃𝕀𝕏:  '
+  let netflix_check_result = '𝑵𝒆𝒕𝒇𝒍𝒊𝒙: ';
 
   try {
-    const code1 = await inner_check(80062035);
-    if (code1 === 'Not Found') {
-      const code2 = await inner_check(80018499);
-      if (code2 === 'Not Found') {
-        throw 'Not Available';
+      const code1 = await inner_check(80062035);
+      if (code1 === 'Not Found') {
+        const code2 = await inner_check(80018499);
+        if (code2 === 'Not Found') {
+          throw 'Not Available';
+        }
+        netflix_check_result += `Only original shows can be watched | ${getFlagEmoji(code2)}`;
+      } else {
+        netflix_check_result += `Enjoy your shows now | ${getFlagEmoji(code1)}`;
       }
-      netflix_check_result += `𝙽𝙵𝙻𝚇 𝙾𝚛𝚒𝚐𝚒𝚗𝚊𝚕𝚜 𝙾𝚗𝚕𝚢 ～ ${getFlagEmoji(code2)}`;
-    } else {
-      netflix_check_result += `𝚛𝚎𝚊𝚍𝚢 𝚝𝚘 𝚠𝚊𝚝𝚌𝚑 ～ ${getFlagEmoji(code1)}`;
+    } catch (error) {
+      if (error === 'Not Available') {
+        netflix_check_result += 'Currently unavailable';
+      } else {
+        netflix_check_result += 'Please refresh the data';
+      }
     }
-  } catch (error) {
-    if (error === 'Not Available') {
-      netflix_check_result += '𝙽𝚘𝚝 𝙰𝚟𝚊𝚒𝚕𝚊𝚋𝚕𝚎';
-    } else {
-      netflix_check_result += '𝙿𝚕𝚎𝚊𝚜𝚎 𝚁𝚎𝚏𝚛𝚎𝚜𝚑 𝚃𝚑𝚎 𝙿𝚊𝚗𝚎𝚕 𝙰𝚐𝚊𝚒𝚗';
-    }
-  }
-  
-  return netflix_check_result
+
+  return netflix_check_result;
 }
 
 async function testDisneyPlus() {
   try {
-    let { region, cnbl } = await Promise.race([testHomePage(), timeout(7000)])
-    console.log(`homepage: region=${region}, cnbl=${cnbl}`)
-    // 即将登陆
-    //  if (cnbl == 2) {
-    //    return { region, status: STATUS_COMING }
-    //  }
-    let { countryCode, inSupportedLocation } = await Promise.race([
-      getLocationInfo(),
-      timeout(7000),
-    ])
-    console.log(
-      `getLocationInfo: countryCode=${countryCode}, inSupportedLocation=${inSupportedLocation}`,
-    )
+    let { region, cnbl } = await Promise.race([testHomePage(), timeout(7000)]);
+    let { countryCode, inSupportedLocation } = await Promise.race([getLocationInfo(), timeout(7000)]);
+    region = countryCode ?? region;
 
-    region = countryCode ?? region
-    console.log('region:' + region)
-    // 即将登陆
     if (inSupportedLocation === false || inSupportedLocation === 'false') {
-      return { region, status: STATUS_COMING }
+      return { region, status: STATUS_COMING };
     } else {
-      // 支持解锁
-      return { region, status: STATUS_AVAILABLE }
+      return { region, status: STATUS_AVAILABLE };
     }
   } catch (error) {
-    console.log('error:' + error)
-
-    // 不支持解锁
     if (error === 'Not Available') {
-      console.log('not Available')
-      return { status: STATUS_NOT_AVAILABLE }
+      return { status: STATUS_NOT_AVAILABLE };
     }
 
-    // 检测超时
     if (error === 'timeout') {
-      return { status: STATUS_TIMEOUT }
+      return { status: STATUS_TIMEOUT };
     }
 
-    return { status: STATUS_ERROR }
+    return { status: STATUS_ERROR };
   }
 }
 
@@ -295,14 +197,12 @@ function getLocationInfo() {
       url: 'https://disney.api.edge.bamgrid.com/graph/v1/device/graphql',
       headers: {
         'Accept-Language': 'en',
-        Authorization:
-          'ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84',
+        Authorization: 'ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84',
         'Content-Type': 'application/json',
         'User-Agent': UA,
       },
       body: JSON.stringify({
-        query:
-          'mutation registerDevice($input: RegisterDeviceInput!) { registerDevice(registerDevice: $input) { grant { grantType assertion } } }',
+        query: 'mutation registerDevice($input: RegisterDeviceInput!) { registerDevice(registerDevice: $input) { grant { grantType assertion } } }',
         variables: {
           input: {
             applicationRuntime: 'chrome',
@@ -321,25 +221,18 @@ function getLocationInfo() {
           },
         },
       }),
-    }
+    };
 
     $httpClient.post(opts, function (error, response, data) {
-      if (error) {
-        reject('Error')
-        return
+      if (error || response.status !== 200) {
+        reject('Error');
+        return;
       }
 
-      if (response.status !== 200) {
-        console.log('getLocationInfo: ' + data)
-        reject('Not Available')
-        return
-      }
-
-      data = JSON.parse(data)
+      data = JSON.parse(data);
       if (data?.errors) {
-        console.log('getLocationInfo: ' + data)
-        reject('Not Available')
-        return
+        reject('Not Available');
+        return;
       }
 
       let {
@@ -348,10 +241,10 @@ function getLocationInfo() {
           inSupportedLocation,
           location: { countryCode },
         },
-      } = data?.extensions?.sdk
-      resolve({ inSupportedLocation, countryCode, accessToken })
-    })
-  })
+      } = data?.extensions?.sdk;
+      resolve({ inSupportedLocation, countryCode, accessToken });
+    });
+  });
 }
 
 function testHomePage() {
@@ -362,46 +255,36 @@ function testHomePage() {
         'Accept-Language': 'en',
         'User-Agent': UA,
       },
-    }
+    };
 
     $httpClient.get(opts, function (error, response, data) {
-      if (error) {
-        reject('Error')
-        return
-      }
-      if (
-        response.status !== 200 ||
-        data.indexOf('Sorry, Disney+ is not available in your region.') !== -1
-      ) {
-        reject('Not Available')
-        return
+      if (error || response.status !== 200 || data.indexOf('Sorry, Disney+ is not available in your region.') !== -1) {
+        reject('Not Available');
+        return;
       }
 
-      let match = data.match(/Region: ([A-Za-z]{2})[\s\S]*?CNBL: ([12])/)
+      let match = data.match(/Region: ([A-Za-z]{2})[\s\S]*?CNBL: ([12])/);
       if (!match) {
-        resolve({ region: '', cnbl: '' })
-        return
+        resolve({ region: '', cnbl: '' });
+        return;
       }
 
-      let region = match[1]
-      let cnbl = match[2]
-      resolve({ region, cnbl })
-    })
-  })
+      let region = match[1];
+      let cnbl = match[2];
+      resolve({ region, cnbl });
+    });
+  });
 }
 
 function timeout(delay = 5000) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      reject('Timeout')
-    }, delay)
-  })
+      reject('Timeout');
+    }, delay);
+  });
 }
 
 function getFlagEmoji(countryCode) {
-  const codePoints = countryCode
-    .toUpperCase()
-    .split('')
-    .map((char) => 127397 + char.charCodeAt())
-  return String.fromCodePoint(...codePoints)
+  const codePoints = countryCode.toUpperCase().split('').map((char) => 127397 + char.charCodeAt());
+  return String.fromCodePoint(...codePoints);
 }
