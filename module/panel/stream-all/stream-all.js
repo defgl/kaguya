@@ -4,6 +4,10 @@ const STATUS_TIMEOUT = -1;
 const STATUS_ERROR = -2;
 
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36';
+const REQUEST_HEADERS = {
+    'User-Agent': UA,
+    'Accept-Language': 'en',
+};
 
 (async () => {
   let panel_result = {
@@ -13,17 +17,17 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
     'icon-color': '#2F4F4F',
   };
 
-  let fetchTextContent = (url) => {
-    return new Promise((resolve, reject) => {
-      $httpClient.get(url, function(error, response, data) {
-        if (error || response.status !== 200) {
-          reject(error || new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-          return;
-        }
-        let jsonData = JSON.parse(data);
-        resolve(jsonData);
-      });
-    });
+  let fetchTextContent = async (url) => {
+    try {
+      const response = await $httpClient.get({ url, headers: REQUEST_HEADERS });
+      if (response.status === 200) {
+        return JSON.parse(response.data);
+      } else {
+        throw new Error(`Failed to fetch data. HTTP Status: ${response.status}`);
+      }
+    } catch (error) {
+      throw error;
+    }
   };
 
   let fetchTextContents = [
@@ -31,140 +35,80 @@ const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
     // Add more URLs here
   ];
 
-  let results = await Promise.all(fetchTextContents.map(url => fetchTextContent(url)));
-  let content = results.map(result => `${result.data.vhan} — ${result.data.source}`).join('\n');
-  panel_result.title = content;
-
-  let [{ region, status }] = await Promise.all([testDisneyPlus()]);
-  let result = await Promise.all([check_youtube_premium(), check_netflix()]);
-  let disney_result = '𝑫𝒊𝒔𝒏𝒆𝒚+: ';
-
-  if (status === STATUS_COMING) {
-    disney_result += `Coming soon | ${getFlagEmoji(region)}`;
-  } else if (status === STATUS_AVAILABLE) {
-    disney_result += `Enjoy ur shows now | ${getFlagEmoji(region)}`;
-  } else if (status === STATUS_NOT_AVAILABLE) {
-    disney_result += `Not available`;
-  } else if (status === STATUS_TIMEOUT) {
-    disney_result += `Please refresh the data`;
+  try {
+    let results = await Promise.all(fetchTextContents.map(url => fetchTextContent(url)));
+    let content = results.map(result => `${result.data.vhan} — ${result.data.source}`).join('\n');
+    panel_result.title = content;
+  } catch (error) {
+    panel_result.title = "Error fetching data";
   }
 
-  result.push(disney_result);
-  panel_result['content'] = result.join('\n');
+  try {
+    let disneyResult = await testDisneyPlus();
+    let youtubeResult = await check_youtube_premium();
+    let netflixResult = await check_netflix();
+
+    let disney_display = formatDisneyResult(disneyResult);
+    panel_result['content'] = [youtubeResult, netflixResult, disney_display].join('\n');
+  } catch (error) {
+    panel_result['content'] = "Error in processing";
+  }
+
   $done(panel_result);
 })();
 
 async function check_youtube_premium() {
-  let inner_check = () => {
-    return new Promise((resolve, reject) => {
-      let option = {
-        url: 'https://www.youtube.com/premium',
-        headers: REQUEST_HEADERS,
-      }
-      $httpClient.get(option, function (error, response, data) {
-        if (error != null || response.status !== 200) {
-          reject('Error');
-          return;
-        }
-
-        if (data.indexOf('Premium is not available in your country') !== -1) {
-          resolve(' Not Available');
-          return;
-        }
-
-        let region = '';
-        let re = new RegExp('"countryCode":"(.*?)"', 'gm');
-        let result = re.exec(data);
-        if (result != null && result.length === 2) {
-          region = result[1];
-        } else if (data.indexOf('www.google.cn') !== -1) {
-          region = 'CN';
-        } else {
-          region = 'US';
-        }
-        resolve(region);
-      });
-    });
-  };
-
-  let youtube_check_result = '𝒀𝒐𝒖𝑻𝒖𝒃𝒆: ';
-
   try {
-    const code = await inner_check();
-    if (code === 'Not Available') {
-      youtube_check_result += 'Not available';
-    } else {
-      const flag = getFlagEmoji(code);
-      youtube_check_result += `Enjoy ur shows now | ${flag}`;
-    }
-  } catch (error) {
-    youtube_check_result += 'Please refresh the data.';
-  }
+    let data = await $httpClient.get({ url: 'https://www.youtube.com/premium', headers: REQUEST_HEADERS });
+    if (data.status !== 200) throw new Error('Error');
 
-  return youtube_check_result;
+    if (data.data.indexOf('Premium is not available in your country') !== -1) {
+      return '𝒀𝒐𝒖𝑻𝒖𝒃𝒆: Not available';
+    }
+
+    let region = '';
+    let re = new RegExp('"countryCode":"(.*?)"', 'gm');
+    let result = re.exec(data.data);
+    if (result != null && result.length === 2) {
+      region = result[1];
+    } else if (data.data.indexOf('www.google.cn') !== -1) {
+      region = 'CN';
+    } else {
+      region = 'US';
+    }
+
+    return `𝒀𝒐𝒖𝑻𝒖𝒃𝒆: Enjoy ur shows now | ${getFlagEmoji(region)}`;
+  } catch (error) {
+    return '𝒀𝒐𝒖𝑻𝒖𝒃𝒆: Please refresh the data.';
+  }
 }
 
 async function check_netflix() {
-  let inner_check = (filmId) => {
-    return new Promise((resolve, reject) => {
-      let option = {
-        url: 'https://www.netflix.com/title/' + filmId,
-        headers: REQUEST_HEADERS,
-      }
-      $httpClient.get(option, function (error, response, data) {
-        if (error != null) {
-          reject('Error');
-          return;
-        }
-
-        if (response.status === 403) {
-          reject('Not Available');
-          return;
-        }
-
-        if (response.status === 404) {
-          resolve('Not Found');
-          return;
-        }
-
-        if (response.status === 200) {
-          let url = response.headers['x-originating-url'];
-          let region = url.split('/')[3];
-          region = region.split('-')[0];
-          if (region == 'title') {
-            region = 'us';
-          }
-          resolve(region);
-          return;
-        }
-
-        reject('Error');
-      });
-    });
-  };
-
-  let netflix_check_result = '𝑵𝒆𝒕𝒇𝒍𝒊𝒙: ';
-
   try {
-      const code1 = await inner_check(80062035);
-      if (code1 === 'Not Found') {
-        const code2 = await inner_check(80018499);
-        if (code2 === 'Not Found') {
-          throw 'Not Available';
-        }
-        netflix_check_result += `Only original shows can be watched | ${getFlagEmoji(code2)}`;
-      } else {
-        netflix_check_result += `Enjoy your shows now | ${getFlagEmoji(code1)}`;
-      }
-    } catch (error) {
-      if (error === 'Not Available') {
-        netflix_check_result += 'Currently unavailable';
-      } else {
-        netflix_check_result += 'Please refresh the data';
-      }
+    let checkResult = await checkNetflixTitle(80062035);
+    if (checkResult === 'Not Found') {
+      checkResult = await checkNetflixTitle(80018499);
+      if (checkResult === 'Not Found') throw 'Not Available';
+      return `𝑵𝒆𝒕𝒇𝒍𝒊𝒙: Only original shows can be watched | ${getFlagEmoji(checkResult)}`;
     }
+    return `𝑵𝒆𝒕𝒇𝒍𝒊𝒙: Enjoy your shows now | ${getFlagEmoji(checkResult)}`;
+  } catch (error) {
+    if (error === 'Not Available') {
+      return '𝑵𝒆𝒕𝒇𝒍𝒊𝒙: Currently unavailable';
+    } else {
+      return '𝑵𝒆𝒕𝒇𝒍𝒊𝒙: Please refresh the data';
+    }
+  }
+}
 
-  return netflix_check_result;
+async function checkNetflixTitle(filmId) {
+  let response = await $httpClient.get({ url: `https://www.netflix.com/title/${filmId}`, headers: REQUEST_HEADERS });
+  if (response.status === 403) throw 'Not Available';
+  if (response.status === 404) return 'Not Found';
+
+  let url = response.headers['x-originating-url'];
+  let region = url.split('/')[3].split('-')[0];
+  return region === 'title' ? 'us' : region;
 }
 
 async function testDisneyPlus() {
@@ -191,6 +135,33 @@ async function testDisneyPlus() {
   }
 }
 
+function formatDisneyResult({ region, status }) {
+  switch (status) {
+    case STATUS_COMING:
+      return `𝑫𝒊𝒔𝒏𝒆𝒚+: Coming soon | ${getFlagEmoji(region)}`;
+    case STATUS_AVAILABLE:
+      return `𝑫𝒊𝒔𝒏𝒆𝒚+: Enjoy ur shows now | ${getFlagEmoji(region)}`;
+    case STATUS_NOT_AVAILABLE:
+      return `𝑫𝒊𝒔𝒏𝒆𝒚+: Not available`;
+    case STATUS_TIMEOUT:
+      return `𝑫𝒊𝒔𝒏𝒆𝒚+: Please refresh the data`;
+    default:
+      return `𝑫𝒊𝒔𝒏𝒆𝒚+: Error`;
+  }
+}
+
+function getFlagEmoji(countryCode) {
+  const codePoints = countryCode.toUpperCase().split('').map(char => 127397 + char.charCodeAt());
+  return String.fromCodePoint(...codePoints);
+}
+
+function timeout(delay = 5000) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject('timeout');
+    }, delay);
+  });
+}
 function getLocationInfo() {
   return new Promise((resolve, reject) => {
     let opts = {
@@ -224,13 +195,20 @@ function getLocationInfo() {
     };
 
     $httpClient.post(opts, function (error, response, data) {
-      if (error || response.status !== 200) {
+      if (error) {
         reject('Error');
+        return;
+      }
+
+      if (response.status !== 200) {
+        console.log('getLocationInfo: ' + data);
+        reject('Not Available');
         return;
       }
 
       data = JSON.parse(data);
       if (data?.errors) {
+        console.log('getLocationInfo: ' + data);
         reject('Not Available');
         return;
       }
@@ -258,7 +236,11 @@ function testHomePage() {
     };
 
     $httpClient.get(opts, function (error, response, data) {
-      if (error || response.status !== 200 || data.indexOf('Sorry, Disney+ is not available in your region.') !== -1) {
+      if (error) {
+        reject('Error');
+        return;
+      }
+      if (response.status !== 200 || data.indexOf('Sorry, Disney+ is not available in your region.') !== -1) {
         reject('Not Available');
         return;
       }
@@ -274,17 +256,4 @@ function testHomePage() {
       resolve({ region, cnbl });
     });
   });
-}
-
-function timeout(delay = 5000) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject('Timeout');
-    }, delay);
-  });
-}
-
-function getFlagEmoji(countryCode) {
-  const codePoints = countryCode.toUpperCase().split('').map((char) => 127397 + char.charCodeAt());
-  return String.fromCodePoint(...codePoints);
 }
