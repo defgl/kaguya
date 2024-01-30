@@ -33,7 +33,7 @@ let params = getParams($argument)
     title: titlecontent,
     content: `𝙎𝙩𝙖𝙧𝙩𝙚𝙙: ${startTime}`,
     icon: params.icon,
-    "icon-color": params.color
+    "icon-color": #ffb7c5
   });
 
 
