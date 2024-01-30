@@ -37,6 +37,32 @@ if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
 })();
 
+// 添加转换函数
+function transformToMonospace(text) {
+  const TABLE = {
+    "monospace-regular": [
+      // ...（此处省略已有的字符数组）
+    ],
+  };
+
+  const INDEX = {};
+  'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890'.split('').forEach((char, i) => {
+    INDEX[char.charCodeAt(0)] = i;
+  });
+
+  return [...text.toString()].map(c => {
+    const code = c.charCodeAt(0);
+    if ((code >= 48 && code <= 57) || // numeric (0-9)
+        (code >= 65 && code <= 90) || // upper alpha (A-Z)
+        (code >= 97 && code <= 122)) { // lower alpha (a-z)
+      const index = INDEX[code];
+      return TABLE["monospace-regular"][index];
+    } else {
+      return c;
+    }
+  }).join("");
+}
+
 function timeTransform(dateNow,dateTime) {
 let dateDiff = dateNow - dateTime;
 let days = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
@@ -49,16 +75,15 @@ let minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
 let leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
 let seconds=Math.round(leave3/1000)
 
-if(days==0){
-
-	if(hours==0){
-	if(minutes==0)return(`${seconds}秒`);
-	return(`${minutes}分${seconds}秒`)
-	}
-	return(`${hours}时${minutes}分${seconds}秒`)
-	}else {
-	return(`${days}天${hours}时${minutes}分`)
-	}
+if(days == 0) {
+  if(hours == 0) {
+    if(minutes == 0) return transformToMonospace(`${seconds}秒`);
+    return transformToMonospace(`${minutes}分${seconds}秒`);
+  }
+  return transformToMonospace(`${hours}时${minutes}分${seconds}秒`);
+} else {
+  return transformToMonospace(`${days}天 · ${hours}时${minutes}分`);
+}
 }
 
 async function fetchtitlecontent() {
