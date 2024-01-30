@@ -42,9 +42,22 @@
 
   console.log("Transformed delay: ", delay);
 
+  const TABLE_WEATHER = {
+    "monospace-regular": ["�","𝙖","𝘽","𝙗","𝘾","𝙘","𝘿","𝙙","𝙀","𝙚","𝙁","𝙛","𝙂","𝙜","𝙃","𝙝","𝙄","𝙞","𝙅","𝙟","𝙆","𝙠","𝙇","𝙡","𝙈","𝙢","𝙉","𝙣","𝙊","𝙤","𝙋","𝙥","𝙌","𝙦","𝙍","𝙧","𝙎","𝙨","𝙏","𝙩","𝙐","𝙪","𝙑","�","�","�","�","�","�","�","�","�"],
+  };
+
+
+  weathercontent = [...weathercontent].map(c => {
+    const code = c.charCodeAt(0).toString();
+    const index = INDEX[code];
+    return TABLE_WEATHER["monospace-regular"][index];
+  }).join("");
+
+  console.log("Transformed weather content: ", weathercontent);
+
   $done({
-    title: `${titlecontent}\n${weathercontent}`,
-    content: `𝙵𝚕𝚞𝚜𝚑: ${delay} 𝚖𝚜`,
+    title: `${weathercontent}\n${titlecontent}`,
+    content: `𝘍𝘭𝘶𝘴𝘩: ${delay} 𝘮𝘴`,
     icon: 'shield.lefthalf.filled.badge.checkmark',
     'icon-color': '#CD853F',
   });
@@ -116,7 +129,7 @@ async function fetchweather() {
       if (parsedData.success) {
         let weatherInfo = parsedData.info;
         let week = weatherInfo.week.replace('星期', '周');
-        let formattedData = `${parsedData.city.replace(/市$/, '')} · ${weatherInfo.week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI${weatherInfo.air.aqi}\n${weatherInfo.tip}`;
+        let formattedData = `${parsedData.city.replace(/市$/, '')} · ${weatherInfo.week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${weatherInfo.tip}`;
         resolve(formattedData);
       } else {
         reject('failed to fetch data');
