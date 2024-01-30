@@ -6,7 +6,17 @@
  * 版本：1.5
 */
 
-let params = getParams($argument)
+function getParams() {
+  return {
+    icon: "opticid.fill",
+    color: "#318ce7"
+  };
+}
+
+// 剩下的代码保持不变
+let params = getParams();
+// 使用params对象中的数据
+
 
 !(async () => {
 /* 时间获取 */
