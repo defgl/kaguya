@@ -31,7 +31,7 @@ let params = getParams($argument)
   $done({
     title: titlecontent,
     content: `𝙎𝙩𝙖𝙧𝙩𝙚𝙙: ${startTime}`,
-    icon: params.icon,
+    icon: arrowshape.forward.circle.fill,
     "icon-color": "#ffb7c5"
   });
   
