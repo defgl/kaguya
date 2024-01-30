@@ -76,10 +76,10 @@ async function fetchtitlecontent() {
       try {
         let jsondata = JSON.parse(data);
         if (jsondata.from_who) {
-          let quote = `${jsondata.hitokoto} - ${jsondata.from_who}《${jsondata.from}》-`;
+          let quote = `${jsondata.hitokoto} - ${jsondata.from_who}《${jsondata.from}》 -`;
           resolve(quote);
         } else {
-          resolve(`${jsondata.hitokoto} -《${jsondata.from}》-`);
+          resolve(`${jsondata.hitokoto} - 《${jsondata.from}》 -`);
         }
       } catch (error) {
         reject(`Error parsing JSON: ${error.message}`);
