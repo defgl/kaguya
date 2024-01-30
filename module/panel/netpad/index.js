@@ -11,8 +11,6 @@ if (typeof $argument != 'undefined') {
 
 let title = ''
 let content = ''
-let icon = 'licenseplate.fill' // replace with your icon
-let iconColor = '#ffff00' // replace with your color
 
 !(async () => {
   if($.isTile()) {
