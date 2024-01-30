@@ -43,9 +43,9 @@
   console.log("Transformed delay: ", delay);
 
   $done({
-    title: titlecontent,
-    content: `${titlecontent}\n${weathercontent}\n𝙵𝚕𝚞𝚜𝚑: ${delay} 𝚖𝚜`,
-    icon: 'rotate.3d.fill',
+    title: `${titlecontent}\n${weathercontent}`,
+    content: `𝙵𝚕𝚞𝚜𝚑: ${delay} 𝚖𝚜`,
+    icon: 'shield.lefthalf.filled.badge.checkmark',
     'icon-color': '#CD853F',
   });
 
