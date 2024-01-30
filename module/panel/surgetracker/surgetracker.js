@@ -25,11 +25,13 @@ let dateNow = new Date()
 let dateTime = Math.floor(traffic.startTime*1000)
 let startTime = timeTransform(dateNow,dateTime)
 
+let titlecontent = await fetchtitlecontent();
+
 if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
   $done({
-      title:"Surge Pro®",
-      content:`已啟動: ${startTime}`,
+    title: titlecontent,
+    content:`已啟動: ${startTime}`,
 		icon: params.icon,
 		"icon-color":params.color
     });
@@ -58,9 +60,34 @@ if(days==0){
 	}else {
 	return(`${days}天${hours}时${minutes}分`)
 	}
-
 }
 
+async function fetchtitlecontent() {
+  return new Promise((resolve, reject) => {
+    let url = 'https://v1.hitokoto.cn';
+    $httpClient.get(url, function(error, response, data) {
+      if (error) {
+        reject(`Error: ${error.message}`);
+        return;
+      }
+      if (response.status !== 200) {
+        reject(`HTTP error! status: ${response.status}`);
+        return;
+      }
+      try {
+        let jsondata = JSON.parse(data);
+        if (jsondata.from_who) {
+          let quote = `${jsondata.hitokoto} -「${jsondata.from} • ${jsondata.from_who}`;
+          resolve(quote);
+        } else {
+          resolve(`${jsondata.hitokoto} - ${jsondata.from}`);
+        }
+      } catch (error) {
+        reject(`Error parsing JSON: ${error.message}`);
+      }
+    });
+  });
+}
 
 function httpAPI(path = "", method = "POST", body = null) {
     return new Promise((resolve) => {
