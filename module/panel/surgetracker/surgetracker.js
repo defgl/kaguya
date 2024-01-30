@@ -17,25 +17,52 @@ function getParams() {
 let params = getParams();
 // 使用params对象中的数据
 
+const TABLE = {
+  "monospace-regular": [
+    "𝘼", "𝙖", "𝘽", "𝙗", "𝘾", "𝙘", "𝘿", "𝙙", "𝙀", "𝙚", "𝙁", "𝙛", "𝙂", "𝙜", "𝙃", "𝙝", "𝙄", "𝙞", "𝙅", "𝙟", "𝙆", "𝙠", "𝙇", "𝙡", "𝙈", "𝙢", "𝙉", "𝙣", "𝙊", "𝙤", "𝙋", "𝙥", "𝙌", "𝙦", "𝙍", "𝙧", "𝙎", "𝙨", "𝙏", "𝙩", "𝙐", "𝙪", "𝙑", "𝙫", "𝙒", "𝙬", "𝙓", "𝙭", "𝙔", "𝙮", "𝙕", "𝙯", "𝟭", "𝟮", "𝟯", "𝟰", "𝟱", "𝟲", "𝟳", "𝟴", "𝟵", "𝟬"
+  ],
+};
+
+const INDEX = {};
+'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890'.split('').forEach((char, i) => {
+  INDEX[char.charCodeAt(0)] = i;
+});
+
+let transformedStartTime = [...startTime.toString()].map(c => {
+  const code = c.charCodeAt(0);
+  if ((code >= 48 && code <= 57) || // numeric (0-9)
+      (code >= 65 && code <= 90) || // upper alpha (A-Z)
+      (code >= 97 && code <= 122)) { // lower alpha (a-z)
+    const index = INDEX[code];
+    return TABLE["monospace-regular"][index];
+  } else {
+    return c;
+  }
+}).join("");
+
+// Modify the content to use transformedStartTime
+let content = `已啟動: ${transformedStartTime}`;
+
 !(async () => {
-/* 时间获取 */
-let traffic = (await httpAPI("/v1/traffic","GET"))
-let dateNow = new Date()
-let dateTime = Math.floor(traffic.startTime*1000)
-let startTime = timeTransform(dateNow,dateTime)
+  /* 时间获取 */
+  let traffic = (await httpAPI("/v1/traffic","GET"))
+  let dateNow = new Date()
+  let dateTime = Math.floor(traffic.startTime*1000)
+  let startTime = timeTransform(dateNow,dateTime)
 
-let titlecontent = await fetchtitlecontent();
+  let titlecontent = await fetchtitlecontent();
 
-if ($trigger == "button") await httpAPI("/v1/profiles/reload");
+  if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
   $done({
     title: titlecontent,
-    content:`已啟動: ${startTime}`,
-		icon: params.icon,
-		"icon-color":params.color
-    });
+    content,
+    icon: params.icon,
+    "icon-color": params.color
+  });
 
 })();
+
 
 function timeTransform(dateNow,dateTime) {
 let dateDiff = dateNow - dateTime;
@@ -103,22 +130,4 @@ function getParams(param) {
       .map((item) => item.split("="))
       .map(([k, v]) => [k, decodeURIComponent(v)])
   );
-}
-function replaceText(text, table) {
-  const index = {};
-  'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890'.split('').forEach((char, i) => {
-    index[char.charCodeAt(0)] = i;
-  });
-
-  return [...text.toString()].map(c => {
-    const code = c.charCodeAt(0);
-    if ((code >= 48 && code <= 57) || // numeric (0-9)
-        (code >= 65 && code <= 90) || // upper alpha (A-Z)
-        (code >= 97 && code <= 122)) { // lower alpha (a-z)
-      const charIndex = index[code];
-      return table[charIndex];
-    } else {
-      return c;
-    }
-  }).join("");
 }
