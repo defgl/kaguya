@@ -54,7 +54,7 @@ async function fetchtitlecontent() {
       try {
         let jsondata = JSON.parse(data);
         if (jsondata.from_who) {
-          let quote = `${jsondata.hitokoto} - ${jsondata.from_who} • ${jsondata.creator}`;
+          let quote = `${jsondata.hitokoto} ⸺ 「${jsondata.from_who}」• ${jsondata.creator}`;
           resolve(quote);
         } else {
           resolve(jsondata.hitokoto);
