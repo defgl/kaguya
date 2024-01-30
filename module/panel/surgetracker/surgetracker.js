@@ -25,15 +25,12 @@ let dateTime = Math.floor(traffic.startTime*1000)
 let startTime = timeTransform(dateNow,dateTime)
 
 let titlecontent = await fetchtitlecontent();
-// Usage:
-let replacedStartTime = replaceText(startTime, TABLE["monospace-regular"]);
-// let replacedContent = `已啟動: ${replacedStartTime}`;
 
 if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
   $done({
     title: titlecontent,
-    content:`已啟動: ${replacedStartTime}`,
+    content:`已啟動: ${startTime}`,
 		icon: params.icon,
 		"icon-color":params.color
     });
