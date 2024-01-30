@@ -46,9 +46,9 @@ function timeTransform(dateNow, dateTime) {
 
 
 function httpAPI(path = "", method = "POST", body = null) {
-    return new Promise((resolve) => {
-        $httpAPI(method, path, body, (result) => {
-            resolve(result);
-        });
-    });
+  return new Promise((resolve) => {
+      $httpAPI(method, path, body, (result) => {
+          resolve(result);
+      });
+  });
 }
