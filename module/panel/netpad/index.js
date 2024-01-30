@@ -11,6 +11,9 @@ if (typeof $argument != 'undefined') {
 
 let title = ''
 let content = ''
+let icon = 'licenseplate.fill' // replace with your icon
+let iconColor = '#ffff00' // replace with your color
+
 !(async () => {
   if($.isTile()) {
     await notify('网络信息', '面板', '开始查询')
@@ -34,8 +37,6 @@ let content = ''
 
   title = `${transformedCN_ADDR_EN}`
   content = `IP:${transformedCN_IP}\nTime:${transformedTime}`
-  icon = 'licenseplate.fill' // replace with your icon
-  iconColor = '#ffff00' // replace with your color
   if ($.isTile()) {
 	await notify('网络信息', '面板', '查询完成', icon, iconColor)
   } else if(!$.isPanel()) {
