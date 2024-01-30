@@ -77,12 +77,12 @@ let seconds=Math.round(leave3/1000)
 
 if(days == 0) {
   if(hours == 0) {
-    if(minutes == 0) return transformToMonospace(`${seconds}秒`);
-    return transformToMonospace(`${minutes}分${seconds}秒`);
+    if(minutes == 0) return transformToMonospace(`${seconds}`);
+    return transformToMonospace(`${minutes}:${seconds}`);
   }
-  return transformToMonospace(`${hours}时${minutes}分${seconds}秒`);
+  return transformToMonospace(`${hours}:${minutes}:${seconds}`);
 } else {
-  return transformToMonospace(`${days}天 · ${hours}时${minutes}分`);
+  return transformToMonospace(`${days} · ${hours}:${minutes}`);
 }
 }
 
