@@ -1,11 +1,9 @@
-#!name=Surge Pro
-#!desc=Display Surge's startup time
-#!system=ios
-# 更新日期：2022.06.15
-# 版本：1.5
+#!name=Surge Startup Time Tracker
+#!desc=Displaying the startup time of the Surge
+
 
 [Panel]
 surgepro = script-name=surgepro,update-interval=1
 
 [Script]
-surgepro = type=generic,timeout=10,script-path= https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/surge-pro/surgepro.js ,argument=icon=paperplane.circle&color=#f6c970
+surgepro = type=generic,timeout=10,script-path= https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/surgepro/surgetracker.js
