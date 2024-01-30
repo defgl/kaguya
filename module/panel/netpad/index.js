@@ -11,6 +11,8 @@ if (typeof $argument != 'undefined') {
 
 let title = ''
 let content = ''
+let icon = 'licenseplate.fill' // replace with your icon
+let iconColor = '#ffff00' // replace with your color
 
 !(async () => {
   if($.isTile()) {
@@ -27,7 +29,6 @@ let content = ''
   const transformedTime = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
   const transformedCN_ADDR_EN = transformFont(CN_ADDR_EN, TABLE, INDEX);
 
-
   // 打印转换后的 CN_IP 和时间
   console.log("Transformed CN_IP: ", transformedCN_IP);
   console.log("Transformed Time: ", transformedTime);
@@ -35,6 +36,8 @@ let content = ''
 
   title = `${transformedCN_ADDR_EN}`
   content = `IP:${transformedCN_IP}\nTime:${transformedTime}`
+  icon = 'licenseplate.fill' // replace with your icon
+  iconColor = '#ffff00' // replace with your color
   if ($.isTile()) {
 	await notify('网络信息', '面板', '查询完成', icon, iconColor)
   } else if(!$.isPanel()) {
