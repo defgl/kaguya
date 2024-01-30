@@ -20,8 +20,8 @@ let params = getParams($argument)
   $done({
     title: "𝙎𝙪𝙧𝙜𝙚 𝙏𝙧𝙖𝙘𝙠𝙚𝙧®",
     content: `𝑺𝒕𝒂𝒓𝒕𝒖𝒑 𝑫𝒖𝒓𝒂𝒕𝒊𝒐𝒏: ${startTime}`,
-    icon: "rotate.3d",
-    "icon-color": "#318ce7"
+    // icon: "rotate.3d",
+    // "icon-color": "#318ce7"
   });
 
 })();
