@@ -8,7 +8,8 @@
 
 !(async () => {
 
-  let titlecontent = await fetchtitlecontent();
+  let titlecontent = await fetchwenxueyiyan();
+  let weathercontent = await fetchweather();
   let showServer = false;
 
   if ($trigger == "button") {
@@ -23,36 +24,30 @@
 
   let dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
   dnsCache = [...new Set(dnsCache.map((d) => d.server))].toString().replace(/,/g, "\n");
-  // let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
 
- // 获取并打印 API 返回的延迟
- let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
- console.log("API returned delay: ", delay);
+  let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
+  console.log("API returned delay: ", delay);
 
- // 字体转换
- const TABLE = {
-   "monospace-regular": ["𝟶","𝟷","𝟸","𝟹","𝟺","𝟻","𝟼","𝟽","𝟾","𝟿"],
- };
+  const TABLE = {
+    "monospace-regular": ["𝟶","𝟷","𝟸","𝟹","𝟺","𝟻","𝟼","𝟽","𝟾","𝟿"],
+  };
 
- const INDEX = { "48": 0, "49": 1, "50": 2, "51": 3, "52": 4, "53": 5, "54": 6, "55": 7, "56": 8, "57": 9 };
+  const INDEX = { "48": 0, "49": 1, "50": 2, "51": 3, "52": 4, "53": 5, "54": 6, "55": 7, "56": 8, "57": 9 };
 
- delay = [...delay.toString()].map(c => {
-   const code = c.charCodeAt(0).toString();
-   const index = INDEX[code];
-   return TABLE["monospace-regular"][index];
- }).join("");
+  delay = [...delay.toString()].map(c => {
+    const code = c.charCodeAt(0).toString();
+    const index = INDEX[code];
+    return TABLE["monospace-regular"][index];
+  }).join("");
 
- // 打印转换后的延迟
- console.log("Transformed delay: ", delay);
+  console.log("Transformed delay: ", delay);
 
- // 更新 UI
- $done({
-   title: titlecontent,
-   content: `𝙵𝚕𝚞𝚜𝚑: ${delay} 𝚖𝚜`,
-   icon: 'arcade.stick.and.arrow.left.and.arrow.right',
-   'icon-color': '#CD853F',
- });
-
+  $done({
+    title: titlecontent,
+    content: `${titlecontent}\n${weathercontent}\n𝙵𝚕𝚞𝚜𝚑: ${delay} 𝚖𝚜`,
+    icon: 'rotate.3d.fill',
+    'icon-color': '#CD853F',
+  });
 
 })();
 
@@ -64,9 +59,27 @@ function httpAPI(path = "", method = "POST", body = null) {
   });
 }
 
-async function fetchtitlecontent() {
+// async function fetchtitlecontent() {
+//   return new Promise((resolve, reject) => {
+//     let url = 'https://api.sfhzb.cn/api/wenrou.php';
+//     $httpClient.get(url, function(error, response, data) {
+//       if (error) {
+//         reject(`error: ${error.message}`);
+//         return;
+//       }
+//       if (response.status !== 200) {
+//         reject(`failed to fetch data. http status: ${response.status}`);
+//         return;
+//       }
+//       let regex = /━━━━━━━━━\n(.+)\n━━━━━━━━━/;
+//       let extractedtext = data.match(regex)[1];
+//       resolve(extractedtext);
+//     });
+//   });
+// }
+async function fetchwenxueyiyan() {
   return new Promise((resolve, reject) => {
-    let url = 'https://api.sfhzb.cn/api/wenrou.php';
+    let url = 'https://api.vvhan.com/api/ian?cl=wx&type=json';
     $httpClient.get(url, function(error, response, data) {
       if (error) {
         reject(`error: ${error.message}`);
@@ -76,9 +89,38 @@ async function fetchtitlecontent() {
         reject(`failed to fetch data. http status: ${response.status}`);
         return;
       }
-      let regex = /━━━━━━━━━\n(.+)\n━━━━━━━━━/;
-      let extractedtext = data.match(regex)[1];
-      resolve(extractedtext);
+      let parsedData = JSON.parse(data);
+      if (parsedData.success) {
+        let extractedtext = `${parsedData.data.vhan} - ${parsedData.data.source}`;
+        resolve(extractedtext);
+      } else {
+        reject('failed to fetch data');
+      }
+    });
+  });
+}
+
+async function fetchweather() {
+  return new Promise((resolve, reject) => {
+    let url = 'https://api.vvhan.com/api/weather';
+    $httpClient.get(url, function(error, response, data) {
+      if (error) {
+        reject(`error: ${error.message}`);
+        return;
+      }
+      if (response.status !== 200) {
+        reject(`failed to fetch data. http status: ${response.status}`);
+        return;
+      }
+      let parsedData = JSON.parse(data);
+      if (parsedData.success) {
+        let weatherInfo = parsedData.info;
+        let formattedData = `${parsedData.city} ${weatherInfo.type} ${weatherInfo.low}～${weatherInfo.high} AQI ${weatherInfo.air.aqi} ${weatherInfo.air.aqi_name} ${weatherInfo.tip}`;
+        formattedData = formattedData.replace(/市$/, ''); // Remove "市" from the city name
+        resolve(formattedData);
+      } else {
+        reject('failed to fetch data');
+      }
     });
   });
 }
