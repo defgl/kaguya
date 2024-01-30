@@ -17,7 +17,6 @@ function getParams() {
 let params = getParams();
 // 使用params对象中的数据
 
-
 !(async () => {
 /* 时间获取 */
 let traffic = (await httpAPI("/v1/traffic","GET"))
@@ -26,12 +25,15 @@ let dateTime = Math.floor(traffic.startTime*1000)
 let startTime = timeTransform(dateNow,dateTime)
 
 let titlecontent = await fetchtitlecontent();
+// Usage:
+let replacedStartTime = replaceText(startTime, TABLE["monospace-regular"]);
+// let replacedContent = `已啟動: ${replacedStartTime}`;
 
 if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
   $done({
     title: titlecontent,
-    content:`已啟動: ${startTime}`,
+    content:`已啟動: ${replacedStartTime}`,
 		icon: params.icon,
 		"icon-color":params.color
     });
@@ -77,10 +79,10 @@ async function fetchtitlecontent() {
       try {
         let jsondata = JSON.parse(data);
         if (jsondata.from_who) {
-          let quote = `${jsondata.hitokoto} -「${jsondata.from} • ${jsondata.from_who}`;
+          let quote = `${jsondata.hitokoto} - ${jsondata.from_who}《${jsondata.from}》-`;
           resolve(quote);
         } else {
-          resolve(`${jsondata.hitokoto} - ${jsondata.from}`);
+          resolve(`${jsondata.hitokoto} -《${jsondata.from}》-`);
         }
       } catch (error) {
         reject(`Error parsing JSON: ${error.message}`);
@@ -104,4 +106,22 @@ function getParams(param) {
       .map((item) => item.split("="))
       .map(([k, v]) => [k, decodeURIComponent(v)])
   );
+}
+function replaceText(text, table) {
+  const index = {};
+  'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890'.split('').forEach((char, i) => {
+    index[char.charCodeAt(0)] = i;
+  });
+
+  return [...text.toString()].map(c => {
+    const code = c.charCodeAt(0);
+    if ((code >= 48 && code <= 57) || // numeric (0-9)
+        (code >= 65 && code <= 90) || // upper alpha (A-Z)
+        (code >= 97 && code <= 122)) { // lower alpha (a-z)
+      const charIndex = index[code];
+      return table[charIndex];
+    } else {
+      return c;
+    }
+  }).join("");
 }
