@@ -3,7 +3,7 @@
 
 [Script]
 # Panel
-netpad = type=generic,timeout=60,script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/netpad/index.js,argument=icon=iphone.gen3.landscape&icon-color=#3CB371
+netpad = type=generic,timeout=60,script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/netpad/index.js
 
 netnotification = type=event,event-name=network-changed,timeout=30,script-update-interval=3600,debug=false,enable=true,script-path=https://raw.githubusercontent.com/anyawa/kaguya/master/modules/panel/netpad/event.js
 

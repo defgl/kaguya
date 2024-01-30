@@ -33,12 +33,15 @@ let content = ''
   console.log("Transformed CN_ADDR_EN: ", transformedCN_ADDR_EN);
 
   title = `${transformedCN_ADDR_EN}`
-  content = `𝙸𝙿:${transformedCN_IP}\n𝚃𝚒𝚖𝚎:${transformedTime}`
+  content = `IP:${transformedCN_IP}\nTime:${transformedTime}`
+  icon = 'licenseplate.fill' // replace with your icon
+  iconColor = '#ffff00' // replace with your color
   if ($.isTile()) {
-    await notify('网络信息', '面板', '查询完成')
+	await notify('网络信息', '面板', '查询完成', icon, iconColor)
   } else if(!$.isPanel()) {
-    await notify('网络信息', title, content)
+	await notify('网络信息', title, content, icon, iconColor)
   }
+
 })()
   .catch(async e => {
     $.logErr(e)
