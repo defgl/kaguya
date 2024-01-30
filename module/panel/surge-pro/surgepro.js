@@ -39,22 +39,29 @@ let params = getParams($argument)
 
 async function fetchtitlecontent() {
   return new Promise((resolve, reject) => {
-    let url = 'https://zj.v.api.aa1.cn/api/wenan-shici/?type=json';
-    $httpClient.get(url, function(error, response, data) {
-      if (error) {
-        reject(`error: ${error.message}`);
-        return;
-      }
-      if (response.status !== 200) {
-        reject(`failed to fetch data. http status: ${response.status}`);
-        return;
-      }
+  let url = 'https://v1.hitokoto.cn';
+  $httpClient.get(url, function(error, response, data) {
+    if (error) {
+      reject(`Error: ${error.message}`);
+      return;
+    }
+    if (response.status !== 200) {
+      reject(`HTTP error! status: ${response.status}`);
+      return;
+    }
+    try {
       let jsondata = JSON.parse(data);
-      let fulltext = jsondata.msg;
-      let extractedtext = fulltext.split("。——")[0] + "。";
-      resolve(extractedtext);
-    });
+      if (jsondata.from_who) {
+        let quote = `${jsondata.hitokoto} ⸺ 「${jsondata.from_who} • ${jsondata.creator}`;
+        resolve(quote);
+      } else {
+        resolve(jsondata.hitokoto);
+      }
+    } catch (error) {
+      reject(`Error parsing JSON: ${error.message}`);
+    }
   });
+});
 }
 
 function timeTransform(dateNow,dateTime) {
