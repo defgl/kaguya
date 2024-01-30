@@ -3,7 +3,7 @@
 
 
 [Panel]
-surgepro = script-name=surgepro,update-interval=1
+surgepro = script-name=tracker,update-interval=1
 
 [Script]
-surgepro = type=generic,timeout=10,script-path= https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/surgepro/surgetracker.js
+tracker = type=generic,timeout=10,script-path= https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/surgepro/surgetracker.js
