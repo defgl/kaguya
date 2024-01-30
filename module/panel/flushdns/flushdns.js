@@ -8,6 +8,7 @@
 
 !(async () => {
 
+  // 假设这些函数在您的环境中是可用的
   let titlecontent = await fetchwenxueyiyan();
   let weathercontent = await fetchweather();
   let showServer = false;
@@ -28,41 +29,35 @@
   let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
   console.log("API returned delay: ", delay);
 
+  // 通用字体转换表
   const TABLE = {
-    "monospace-regular": ["𝟬","𝟭","𝟮","𝟯","𝟰","𝟱","𝟲","𝟳","𝟴","𝟵"],
-  };
-
-  const INDEX = { "48": 0, "49": 1, "50": 2, "51": 3, "52": 4, "53": 5, "54": 6, "55": 7, "56": 8, "57": 9 };
-
-  delay = [...delay.toString()].map(c => {
-    const code = c.charCodeAt(0).toString();
-    const index = INDEX[code];
-    return TABLE["monospace-regular"][index];
-  }).join("");
-
-  console.log("Transformed delay: ", delay);
-
-  const TABLE_WEATHER = {
     "monospace-regular": [
       "𝘼", "𝙖", "𝘽", "𝙗", "𝘾", "𝙘", "𝘿", "𝙙", "𝙀", "𝙚", "𝙁", "𝙛", "𝙂", "𝙜", "𝙃", "𝙝", "𝙄", "𝙞", "𝙅", "𝙟", "𝙆", "𝙠", "𝙇", "𝙡", "𝙈", "𝙢", "𝙉", "𝙣", "𝙊", "𝙤", "𝙋", "𝙥", "𝙌", "𝙦", "𝙍", "𝙧", "𝙎", "𝙨", "𝙏", "𝙩", "𝙐", "𝙪", "𝙑", "𝙫", "𝙒", "𝙬", "𝙓", "𝙭", "𝙔", "𝙮", "𝙕", "𝙯", "𝟭", "𝟮", "𝟯", "𝟰", "𝟱", "𝟲", "𝟳", "𝟴", "𝟵", "𝟬"
     ],
   };
 
+  function transformContent(content) {
+    return [...content].map(c => {
+      const code = c.charCodeAt(0);
+      if ((code >= 48 && code <= 57) || // numeric (0-9)
+          (code >= 65 && code <= 90) || // upper alpha (A-Z)
+          (code >= 97 && code <= 122)) { // lower alpha (a-z)
+        const index = code - 48; // 对应于表格索引的调整
+        return TABLE["monospace-regular"][index];
+      } else {
+        return c;
+      }
+    }).join("");
+  }
 
-  weathercontent = [...weathercontent].map(c => {
-    const code = c.charCodeAt(0);
-    if ((code >= 48 && code <= 57) || // numeric (0-9)
-        (code >= 65 && code <= 90) || // upper alpha (A-Z)
-        (code >= 97 && code <= 122)) { // lower alpha (a-z)
-      const index = INDEX[code.toString()];
-      return TABLE_WEATHER["monospace-regular"][index];
-    } else {
-      return c;
-    }
-  }).join("");
+  // 使用通用函数进行转换
+  delay = transformContent(delay.toString());
+  weathercontent = transformContent(weathercontent);
 
+  console.log("Transformed delay: ", delay);
   console.log("Transformed weather content: ", weathercontent);
 
+  // 最终结果
   $done({
     title: `${weathercontent}\n${titlecontent}`,
     content: `𝘍𝘭𝘶𝘴𝘩: ${delay} 𝘮𝘴`,
@@ -71,6 +66,7 @@
   });
 
 })();
+
 
 function httpAPI(path = "", method = "POST", body = null) {
   return new Promise((resolve) => {
