@@ -91,7 +91,7 @@ async function fetchwenxueyiyan() {
       }
       let parsedData = JSON.parse(data);
       if (parsedData.success) {
-        let extractedtext = `${parsedData.data.vhan} - ${parsedData.data.source}`;
+        let extractedtext = `「${parsedData.data.vhan} - ${parsedData.data.source}」`;
         resolve(extractedtext);
       } else {
         reject('failed to fetch data');
@@ -115,8 +115,8 @@ async function fetchweather() {
       let parsedData = JSON.parse(data);
       if (parsedData.success) {
         let weatherInfo = parsedData.info;
-        let formattedData = `${parsedData.city} ${weatherInfo.type} ${weatherInfo.low}～${weatherInfo.high} AQI ${weatherInfo.air.aqi} ${weatherInfo.air.aqi_name} ${weatherInfo.tip}`;
-        formattedData = formattedData.replace(/市$/, ''); // Remove "市" from the city name
+        let week = weatherInfo.week.replace('星期', '周');
+        let formattedData = `${parsedData.city.replace(/市$/, '')} · ${weatherInfo.week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI${weatherInfo.air.aqi}\n${weatherInfo.tip}`;
         resolve(formattedData);
       } else {
         reject('failed to fetch data');
