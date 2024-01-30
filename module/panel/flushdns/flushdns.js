@@ -35,7 +35,7 @@
   };
 
   const INDEX = {};
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.split('').forEach((char, i) => {
+  'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890'.split('').forEach((char, i) => {
     INDEX[char.charCodeAt(0)] = i;
   });
 
