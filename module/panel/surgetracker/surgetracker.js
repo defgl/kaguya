@@ -9,20 +9,20 @@
 let params = getParams($argument)
 
 !(async () => {
-  /* 时间获取 */
-  let traffic = (await httpAPI("/v1/traffic","GET"))
-  let dateNow = new Date()
-  let dateTime = Math.floor(traffic.startTime*1000)
-  let startTime = timeTransform(dateNow,dateTime)
+/* 时间获取 */
+let traffic = (await httpAPI("/v1/traffic","GET"))
+let dateNow = new Date()
+let dateTime = Math.floor(traffic.startTime*1000)
+let startTime = timeTransform(dateNow,dateTime)
 
-  if ($trigger == "button") await httpAPI("/v1/profiles/reload");
+if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
   $done({
-    title: "𝙎𝙪𝙧𝙜𝙚 𝙏𝙧𝙖𝙘𝙠𝙚𝙧®",
-    content: `𝑺𝒕𝒂𝒓𝒕𝒖𝒑 𝑫𝒖𝒓𝒂𝒕𝒊𝒐𝒏: ${startTime}`,
-    // icon: "rotate.3d",
-    // "icon-color": "#318ce7"
-  });
+      title:"Surge Pro®",
+      content:`启动时长: ${startTime}`,
+		icon: params.icon,
+		"icon-color":params.color
+    });
 
 })();
 
@@ -38,15 +38,17 @@ let minutes=Math.floor(leave2/(60*1000))//计算相差分钟数
 let leave3=leave2%(60*1000)      //计算分钟数后剩余的毫秒数
 let seconds=Math.round(leave3/1000)
 
+if(days==0){
 
-if(days == 0) {
-  if(hours == 0) {
-    if(minutes == 0) return(`${seconds}`);
-    return(`${minutes}.${seconds}`);
-  }
-  return(`${hours}:${minutes}.${seconds}`);
-} else {
-  return(`${days}.${hours}:${minutes}`);
+	if(hours==0){
+	if(minutes==0)return(`${seconds}秒`);
+	return(`${minutes}分${seconds}秒`)
+	}
+	return(`${hours}时${minutes}分${seconds}秒`)
+	}else {
+	return(`${days}天${hours}时${minutes}分`)
+	}
+
 }
 
 
