@@ -18,8 +18,8 @@ if ($trigger == "button") await httpAPI("/v1/profiles/reload");
   $done({
       title:"Surge Pro®",
       content:`已啟動: ${startTime}`,
-      icon: "paperplane.circle", // 直接写入图标样式
-      "icon-color": "#f6c970" // 直接写入图标颜色
+      icon: "rotate.3d.fill", // 直接写入图标样式
+      "icon-color": "#318ce7" // 直接写入图标颜色
     });
 
 })();
