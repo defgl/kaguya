@@ -5,7 +5,7 @@
 # Panel
 netpad = type=generic,timeout=60,script-path=https://github.com/iyqgrl/kaguya/blob/Master/module/panel/netipmonitor/index.js?raw=true,argument=icon=licenseplate.fill&icon-color=#ffff00
 # Notification
-netnotification = type=event,event-name=network-changed,timeout=30,script-update-interval=3600,debug=false,enable=true,script-path=https://github.com/iyqgrl/kaguya/blob/Master/module/panel/netpad/event.js?raw=true
+netnotification = type=event,event-name=network-changed,timeout=30,script-update-interval=3600,debug=false,enable=true,script-path=https://github.com/iyqgrl/kaguya/blob/Master/module/panel/netipmonitor/event.js?raw=true
 
 [Panel]
 netpad = script-name=netpad,update-interval=1
