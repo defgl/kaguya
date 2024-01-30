@@ -30,7 +30,7 @@ if ($trigger == "button") await httpAPI("/v1/profiles/reload");
 
   $done({
     title: titlecontent,
-    content:`已啟動: ${startTime}`,
+    content:`𝙎𝙩𝙖𝙧𝙩𝙚𝙙: ${startTime}`,
 		icon: params.icon,
 		"icon-color":params.color
     });
