@@ -6,4 +6,4 @@
 surgepro = script-name=tracker,update-interval=1
 
 [Script]
-tracker = type=generic,timeout=10,script-path= https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/surgepro/surgetracker.js
+tracker = type=generic,timeout=10,script-path= https://raw.githubusercontent.com/anyawa/kaguya/master/module/panel/surgepro/surgetracker.js,  ,argument=icon=opticid.fill&color=#318ce7
