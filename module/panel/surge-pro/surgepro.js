@@ -30,9 +30,9 @@ let params = getParams($argument)
 
   $done({
     title: titlecontent,
-    content: `𝑺𝒕𝒂𝒓𝒕𝒆𝒅: ${startTime}`,
-    icon: arrowshape.forward.circle.fill,
-    "icon-color": "#ffb7c5"
+    content: `𝒮𝓉𝒶𝓇𝓉𝒯𝒾𝓂ℯ: ${startTime}`,
+    icon: params.icon,
+    "icon-color": params.color
   });
 
 })();
