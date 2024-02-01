@@ -416,28 +416,6 @@ function testHomePage() {
   })
 }
 
-async function getCountryCode() {
-  return new Promise((resolve, reject) => {
-    let option = {
-      url: "https://api.live.bilibili.com/xlive/web-room/v1/index/getIpInfo",
-      headers: REQUEST_HEADERS,
-    }
-    $httpClient.get(option, function (error, response, data) {
-      if (error != null || response.status !== 200) {
-        reject("Error")
-        return
-      }
-
-      let result = JSON.parse(data)
-      if (result.code === 0) {
-        resolve(result.data.country)
-      } else {
-        reject("Error")
-      }
-    })
-  })
-}
-
 async function check_bilibili() {
   let check = (url) => {
     return new Promise((resolve, reject) => {
