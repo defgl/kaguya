@@ -465,51 +465,10 @@ async function check_bilibili() {
   let bilibili_check_result = "𝘽𝙞𝙡𝙞𝙗𝙞𝙡𝙞: "
 
   try {
-    const countryCode = await getCountryCode()
-    const flag = getFlagEmoji(countryCode)
-    const mainland = await check(
-      "https://api.bilibili.com/pgc/player/web/playurl?avid=82846771&qn=0&type=&otype=json&ep_id=307247&fourk=1&fnver=0&fnval=16",
-    )
-    const hkmctw = await check(
-      "https://api.bilibili.com/pgc/player/web/playurl?avid=18281381&cid=29892777&qn=0&type=&otype=json&ep_id=183799&fourk=1&fnver=0&fnval=16",
-    )
-    const tw = await check(
-      "https://api.bilibili.com/pgc/player/web/playurl?avid=50762638&cid=100279344&qn=0&type=&otype=json&ep_id=268176&fourk=1&fnver=0&fnval=16",
-    )
-
-    if (tw === "Available") {
-      bilibili_check_result += `Ready to enjoy BILI TW now. | ${flag}`
-    } else if (hkmctw === "Available") {
-      bilibili_check_result += `Enjoying watching BILI GC now. | ${flag}`
-    } else if (mainland === "Available") {
-      bilibili_check_result += `Enjoy watching BILI CN now. | ${flag}`
-    } else {
-      bilibili_check_result += `Ready to enjoy BILI Intl now. | ${flag}`
-    }
-  } catch (error) {
-    bilibili_check_result += "Failed to check."
-  }
-
-  return bilibili_check_result
-}
-
-async function getCountryCode() {
-  return new Promise((resolve, reject) => {
-    let option = {
-      url: "https://api.live.bilibili.com/client/v1/Ip/getInfoNew",
-      headers: REQUEST_HEADERS,
-    }
-    $httpClient.get(option, function (error, response, data) {
-      if (error != null || response.status !== 200) {
-        reject("Error")
-        return
-      }
-
-      let result = JSON.parse(data)
-      if (result.code === 0) {
-        let ip = result.data.addr
+    const getCountryCode = async () => {
+      return new Promise((resolve, reject) => {
         let option = {
-          url: `https://api.ipapi.is/?q=${ip}`,
+          url: "https://api.live.bilibili.com/client/v1/Ip/getInfoNew",
           headers: REQUEST_HEADERS,
         }
         $httpClient.get(option, function (error, response, data) {
@@ -519,13 +478,60 @@ async function getCountryCode() {
           }
 
           let result = JSON.parse(data)
-          resolve(result.location.country)
+          if (result.code === 0) {
+            let ip = result.data.addr
+            let option = {
+              url: `https://api.ipapi.is/?q=${ip}`,
+              headers: REQUEST_HEADERS,
+            }
+            $httpClient.get(option, function (error, response, data) {
+              if (error != null || response.status !== 200) {
+                reject("Error")
+                return
+              }
+
+              let result = JSON.parse(data)
+              console.log("Location Info:", result)
+              resolve(result.location.country_code)
+            })
+          } else {
+            reject("Error")
+          }
         })
-      } else {
-        reject("Error")
-      }
-    })
-  })
+      })
+    }
+
+    const countryCode = await getCountryCode()
+    console.log("Country Code:", countryCode)
+    const flag = getFlagEmoji(countryCode)
+    console.log("Flag Emoji:", flag)
+    const mainland = await check(
+      "https://api.bilibili.com/pgc/player/web/playurl?avid=82846771&qn=0&type=&otype=json&ep_id=307247&fourk=1&fnver=0&fnval=16",
+    )
+    console.log("Mainland:", mainland)
+    const hkmctw = await check(
+      "https://api.bilibili.com/pgc/player/web/playurl?avid=18281381&cid=29892777&qn=0&type=&otype=json&ep_id=183799&fourk=1&fnver=0&fnval=16",
+    )
+    console.log("HK/MC/TW:", hkmctw)
+    const tw = await check(
+      "https://api.bilibili.com/pgc/player/web/playurl?avid=50762638&cid=100279344&qn=0&type=&otype=json&ep_id=268176&fourk=1&fnver=0&fnval=16",
+    )
+    console.log("TW:", tw)
+
+    if (tw === "Available") {
+      bilibili_check_result += `Enjoy watching BILI TW now. | ${flag}`
+    } else if (hkmctw === "Available") {
+      bilibili_check_result += `Enjoy watching BILI GC now. | ${flag}`
+    } else if (mainland === "Available") {
+      bilibili_check_result += `Enjoy watching BILI CN now. | ${flag}`
+    } else {
+      bilibili_check_result += `Enjoy watching BILI Intl now. | ${flag}`
+    }
+  } catch (error) {
+    bilibili_check_result += "Failed to check."
+  }
+
+  return bilibili_check_result
 }
 
 function timeout(delay = 5000) {
