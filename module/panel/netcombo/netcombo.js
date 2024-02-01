@@ -111,15 +111,15 @@ let content = ''
         await Promise.all([getDirectInfo(IP), getProxyInfo(IP)])
       // 国内接口的国外 IP 解析过于离谱 排除掉
       if (ENTRANCE_INFO1 && isCN) {
-        ENTRANCE = `入口 IP: ${maskIP(IP) || '-'}\n${maskAddr(ENTRANCE_INFO1)}`
+        ENTRANCE = `Relay IP: ${maskIP(IP) || '-'}\n${maskAddr(ENTRANCE_INFO1)}`
       }
       if (ENTRANCE_INFO2) {
         if (ENTRANCE) {
-          ENTRANCE = `${ENTRANCE.replace('位置:', '位置¹:').replace('运营商:', '运营商¹:')}\n${maskAddr(
-            ENTRANCE_INFO2.replace('位置:', '位置²:').replace('运营商:', '运营商²:')
+          ENTRANCE = `${ENTRANCE.replace('Location:', 'Location¹:').replace('Org:', 'Org¹:')}\n${maskAddr(
+            ENTRANCE_INFO2.replace('Location:', 'Location²:').replace('Org:', 'Org²:')
           )}`
         } else {
-          ENTRANCE = `入口 IP: ${maskIP(IP) || '-'}\n${maskAddr(ENTRANCE_INFO2)}`
+          ENTRANCE = `Relay IP: ${maskIP(IP) || '-'}\n${maskAddr(ENTRANCE_INFO2)}`
         }
       }
     }
@@ -153,9 +153,12 @@ let content = ''
     }
     // title = `${PROXY_POLICY}`
     title = `${openAIResult}\n${PROXY_POLICY}`; // 修改 title 变量
-    content = `${SSID}${LAN}${CN_POLICY}IP: ${maskIP(CN_IP) || '-'}${CN_IPv6}${maskAddr(
-      CN_INFO
-    )}\n\n${ENTRANCE}落地 IP: ${maskIP(PROXY_IP) || '-'}${PROXY_IPv6}${maskAddr(
+    // content = `${SSID}${LAN}${CN_POLICY}IP: ${maskIP(CN_IP) || '-'}${CN_IPv6}${maskAddr(
+    //   CN_INFO
+    // )}\n\n${ENTRANCE}落地 IP: ${maskIP(PROXY_IP) || '-'}${PROXY_IPv6}${maskAddr(
+    //   PROXY_INFO
+    // )}${PROXY_PRIVACY}\n执行时间: ${new Date().toTimeString().split(' ')[0]}`
+    content = `${SSID}${LAN}\n-----------------------${ENTRANCE}Endpoint IP: ${maskIP(PROXY_IP) || '-'}${PROXY_IPv6}${maskAddr(
       PROXY_INFO
     )}${PROXY_PRIVACY}\n执行时间: ${new Date().toTimeString().split(' ')[0]}`
     if ($.isTile()) {
@@ -521,10 +524,10 @@ async function getProxyInfo(ip) {
       } catch (e) {}
       PROXY_IP = ip || $.lodash_get(body, 'ip')
       PROXY_INFO = [
-        ['位置:', getflag(body.country), body.country.replace(/\s*中国\s*/, ''), body.region, body.city]
+        ['Location:', getflag(body.country), body.country.replace(/\s*中国\s*/, ''), body.region, body.city]
           .filter(i => i)
           .join(' '),
-        ['运营商:', $.lodash_get(body, 'company.name') || $.lodash_get(body, 'asn.name')].filter(i => i).join(' '),
+        ['Org:', $.lodash_get(body, 'company.name') || $.lodash_get(body, 'asn.name')].filter(i => i).join(' '),
       ]
         .filter(i => i)
         .join('\n')
@@ -699,10 +702,10 @@ async function getProxyInfo(ip) {
       } catch (e) {}
       PROXY_IP = ip || $.lodash_get(body, 'query')
       PROXY_INFO = [
-        ['位置:', getflag(body.countryCode), body.country.replace(/\s*中国\s*/, ''), body.regionName, body.city]
+        ['Location:', getflag(body.countryCode), body.country.replace(/\s*中国\s*/, ''), body.regionName, body.city]
           .filter(i => i)
           .join(' '),
-        ['运营商:', body.isp || body.org || body.as].filter(i => i).join(' '),
+        ['Org:', body.isp || body.org || body.as].filter(i => i).join(' '),
       ]
         .filter(i => i)
         .join('\n')
@@ -777,12 +780,12 @@ async function checkOpenAI() {
   let region = ipApiData.datacenter ? ipApiData.datacenter.region : "";
 
   let message = SUPPORT_COUNTRY.includes(loc) ? "𝙍𝙚𝙖𝙙𝙮 𝙩𝙤 𝙪𝙨𝙚 𝙣𝙤𝙬." : "𝘾𝙪𝙧𝙧𝙚𝙣𝙩𝙡𝙮 𝙤𝙛𝙛𝙡𝙞𝙣𝙚.";
-  message += ` 𝑪𝑮𝑷𝑻 𝑪𝑫𝑵: ${loc} | ${getflag(countrycode)}`;
+  message += ` ${loc} | ${getflag(countrycode)}`;
   if (region) {
       message += ` 𝑫𝑪: ${region}`;
   }
 
-  return `𝑪𝑮𝑷𝑻: ${message}\n-------------------`;
+  return `𝑪𝑮𝑷𝑻: ${message}\n ⟹   ⟹   ⟹   ⟹   ⟹`;
 }
 
 function simplifyAddr(addr) {
