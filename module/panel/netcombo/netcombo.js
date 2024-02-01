@@ -146,7 +146,7 @@ let content = ''
     if (PROXY_POLICY === 'DIRECT') {
       PROXY_POLICY = `代理策略: 直連`
     } else {
-      PROXY_POLICY = `Proxy: ${maskAddr(PROXY_POLICY) || '-'}`
+      PROXY_POLICY = `𝑻𝒓𝒂𝒄𝒌𝒊𝒏𝒈: ${maskAddr(PROXY_POLICY) || '-'}`
     }
     if (PROXY_INFO) {
       PROXY_INFO = `\n${PROXY_INFO}`
@@ -158,7 +158,7 @@ let content = ''
     // )}\n\n${ENTRANCE}落地 IP: ${maskIP(PROXY_IP) || '-'}${PROXY_IPv6}${maskAddr(
     //   PROXY_INFO
     // )}${PROXY_PRIVACY}\n执行时间: ${new Date().toTimeString().split(' ')[0]}`
-    content = `${SSID}${LAN}\n-----------------------${ENTRANCE}Endpoint IP: ${maskIP(PROXY_IP) || '-'}${PROXY_IPv6}${maskAddr(
+    content = `${SSID}${LAN}\n----------------------------\n${ENTRANCE}Endpoint IP: ${maskIP(PROXY_IP) || '-'}${PROXY_IPv6}${maskAddr(
       PROXY_INFO
     )}${PROXY_PRIVACY}\n执行时间: ${new Date().toTimeString().split(' ')[0]}`
     if ($.isTile()) {
@@ -780,12 +780,12 @@ async function checkOpenAI() {
   let region = ipApiData.datacenter ? ipApiData.datacenter.region : "";
 
   let message = SUPPORT_COUNTRY.includes(loc) ? "𝙍𝙚𝙖𝙙𝙮 𝙩𝙤 𝙪𝙨𝙚 𝙣𝙤𝙬." : "𝘾𝙪𝙧𝙧𝙚𝙣𝙩𝙡𝙮 𝙤𝙛𝙛𝙡𝙞𝙣𝙚.";
-  message += ` ${loc} | ${getflag(countrycode)}`;
+  message += `   ${loc} | ${getflag(countrycode)}`;
   if (region) {
       message += ` 𝑫𝑪: ${region}`;
   }
 
-  return `𝑪𝑮𝑷𝑻: ${message}\n ⟹   ⟹   ⟹   ⟹   ⟹`;
+  return `𝑪𝑮𝑷𝑻: ${message}\n ➜   ➜   ➜   ➜   ➜   ➜   ➜   ➜`;
 }
 
 function simplifyAddr(addr) {
