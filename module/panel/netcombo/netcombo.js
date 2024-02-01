@@ -146,7 +146,7 @@ let content = ''
     if (PROXY_POLICY === 'DIRECT') {
       PROXY_POLICY = `代理策略: 直連`
     } else {
-      PROXY_POLICY = `代理节点: ${maskAddr(PROXY_POLICY) || '-'}`
+      PROXY_POLICY = `Proxy: ${maskAddr(PROXY_POLICY) || '-'}`
     }
     if (PROXY_INFO) {
       PROXY_INFO = `\n${PROXY_INFO}`
@@ -687,7 +687,7 @@ async function getProxyInfo(ip) {
       const p = ip ? `/${encodeURIComponent(ip)}` : ''
       const res = await $.http.get({
         timeout: parseFloat($.lodash_get(arg, 'TIMEOUT') || 5),
-        url: `http://ip-api.com/json${p}?lang=zh-CN`,
+        url: `http://ip-api.com/json${p}`,
         headers: {
           'User-Agent':
             'Mozilla/5.0 (iPhone CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/109.0.0.0',
@@ -754,7 +754,7 @@ async function checkOpenAI() {
   const SUPPORT_COUNTRY = ["AL", "DZ", "AD", "AO", "AG", "AR", "AM", "AU", "AT", "AZ", "BS", "BD", "BB", "BE", "BZ", "BJ", "BT", "BO", "BA", "BW", "BR", "BN", "BG", "BF", "CV", "CA", "CL", "CO", "KM", "CG", "CR", "CI", "HR", "CY", "CZ", "DK", "DJ", "DM", "DO", "EC", "SV", "EE", "FJ", "FI", "FR", "GA", "GM", "GE", "DE", "GH", "GR", "GD", "GT", "GN", "GW", "GY", "HT", "VA", "HN", "HU", "IS", "IN", "ID", "IQ", "IE", "IL", "IT", "JM", "JP", "JO", "KZ", "KE", "KI", "KW", "KG", "LV", "LB", "LS", "LR", "LI", "LT", "LU", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MR", "MU", "MX", "FM", "MD", "MC", "MN", "ME", "MA", "MZ", "MM", "NA", "NR", "NP", "NL", "NZ", "NI", "NE", "NG", "MK", "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PL", "PT", "QA", "RO", "RW", "KN", "LC", "VC", "WS", "SM", "ST", "SN", "RS", "SC", "SL", "SG", "SK", "SI", "SB", "ZA", "KR", "ES", "LK", "SR", "SE", "CH", "TW", "TZ", "TH", "TL", "TG", "TO", "TT", "TN", "TR", "TV", "UG", "UA", "AE", "GB", "US", "UY", "VU", "ZM"];
   let response = await $.http.get({url: "https://chat.openai.com/"});
   if (response.headers['content-type'] && response.headers['content-type'].includes("text/plain")) {
-      return "官人我不在呢";
+      return "𝑪𝑮𝑷𝑻: 𝑳𝒐𝒔𝒕 𝒄𝒐𝒏𝒏𝒆𝒄𝒕𝒊𝒐𝒏 𝒕𝒐 𝑶𝒑𝒆𝒏𝑨𝑰 𝒔𝒆𝒓𝒗𝒆𝒓. 𝑷𝒍𝒆𝒂𝒔𝒆 𝒓𝒆𝒄𝒉𝒐𝒐𝒔𝒆 𝒕𝒉𝒆 𝒔𝒆𝒓𝒗𝒆𝒓.";
   }
 
   let traceResponse = await $.http.get({url: "https://chat.openai.com/cdn-cgi/trace"});
@@ -773,15 +773,16 @@ async function checkOpenAI() {
   let ipApiResponse = await $.http.get({url: `https://api.ipapi.is/?q=${ip}`});
   let ipApiData = JSON.parse(ipApiResponse.body);
   let country = ipApiData.location.country;
+  let countrycode = ipApiData.location.country_code;
   let region = ipApiData.datacenter ? ipApiData.datacenter.region : "";
 
-  let message = SUPPORT_COUNTRY.includes(loc) ? "官人 任凭吩咐" : "官人 还要等等";
-  message += ` | ${country}`;
+  let message = SUPPORT_COUNTRY.includes(loc) ? "𝙍𝙚𝙖𝙙𝙮 𝙩𝙤 𝙪𝙨𝙚 𝙣𝙤𝙬." : "𝘾𝙪𝙧𝙧𝙚𝙣𝙩𝙡𝙮 𝙤𝙛𝙛𝙡𝙞𝙣𝙚.";
+  message += ` -------------- ${loc} | ${getflag(countrycode)}`;
   if (region) {
-      message += ` DC: ${region}`;
+      message += ` 𝑫𝑪: ${region}`;
   }
 
-  return `CGPT: ${message}`;
+  return `𝑪𝑮𝑷𝑻: ${message}`;
 }
 
 function simplifyAddr(addr) {
