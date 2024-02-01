@@ -777,12 +777,12 @@ async function checkOpenAI() {
   let region = ipApiData.datacenter ? ipApiData.datacenter.region : "";
 
   let message = SUPPORT_COUNTRY.includes(loc) ? "𝙍𝙚𝙖𝙙𝙮 𝙩𝙤 𝙪𝙨𝙚 𝙣𝙤𝙬." : "𝘾𝙪𝙧𝙧𝙚𝙣𝙩𝙡𝙮 𝙤𝙛𝙛𝙡𝙞𝙣𝙚.";
-  message += ` -------------- ${loc} | ${getflag(countrycode)}`;
+  message += ` 𝑪𝑮𝑷𝑻 𝑪𝑫𝑵: ${loc} | ${getflag(countrycode)}`;
   if (region) {
       message += ` 𝑫𝑪: ${region}`;
   }
 
-  return `𝑪𝑮𝑷𝑻: ${message}`;
+  return `𝑪𝑮𝑷𝑻: ${message}\n-------------------`;
 }
 
 function simplifyAddr(addr) {
