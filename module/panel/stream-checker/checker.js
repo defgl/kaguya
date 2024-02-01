@@ -53,55 +53,6 @@ let panel_result = {
   'icon-color': '#318ce7',
 };
 
-    //let fetchTextContent = new Promise((resolve, reject) => {
-    //  let url = 'https://v.api.aa1.cn/api/api-wenan-yingwen/index.php?type=json';
-    //  $httpClient.get(url, function(error, response, data) {
-    //    if (error) {
-    //      reject(error);
-    //      return;
-    //    }
-    //    if (response.status !== 200) {
-    //      reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-    //      return;
-    //    }
-    //    let jsonData = JSON.parse(data);
-    //    // 访问数组的第一个元素，并获取其 'qinggan' 字段
-    //    resolve(jsonData.text);
-    //  });
-    //});
-
-    // let fetchTextContent = new Promise((resolve, reject) => {
-    //   let url = 'https://zj.v.api.aa1.cn/api/wenan-mj/?type=json';
-    //   $httpClient.get(url, function(error, response, data) {
-    //     if (error) {
-    //       reject(error);
-    //       return;
-    //     }
-    //     if (response.status !== 200) {
-    //       reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-    //       return;
-    //     }
-    //     let jsonData = JSON.parse(data);
-    //     resolve(jsonData.msg);
-    //   });
-    // });
-
-    // let fetchTextContent = new Promise((resolve, reject) => {
-    //   let url = 'https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json';
-    //   $httpClient.get(url, function(error, response, data) {
-    //     if (error) {
-    //       reject(error);
-    //       return;
-    //     }
-    //     if (response.status !== 200) {
-    //       reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-    //       return;
-    //     }
-    //     let jsonData = JSON.parse(data);
-    //     resolve(jsonData[0].qinggan);
-    //   });
-    // });
-
     let fetchTextContent = new Promise((resolve, reject) => {
       let url = 'https://api.vvhan.com/api/ian?type=json&cl=ac';
       $httpClient.get(url, function(error, response, data) {
@@ -121,13 +72,11 @@ let panel_result = {
       });
     });
 
-
-
-      // 使用await来获取text内容并设置为title
-      panel_result.title = await fetchTextContent;
+    // 使用await来获取text内容并设置为title
+    panel_result.title = await fetchTextContent;
   
     let [{ region, status }] = await Promise.all([testDisneyPlus()])
-    await Promise.all([check_youtube_premium(), check_netflix()])
+    await Promise.all([check_youtube_premium(), check_netflix(), check_bilibili()])
       .then((result) => {
         let disney_result = '𝑫𝒊𝒔𝒏𝒆𝒚+: ';
 
@@ -402,6 +351,75 @@ function testHomePage() {
       resolve({ region, cnbl })
     })
   })
+}
+
+async function getCountryCode() {
+  return new Promise((resolve, reject) => {
+    let option = {
+      url: 'https://api.live.bilibili.com/xlive/web-room/v1/index/getIpInfo',
+      headers: REQUEST_HEADERS,
+    }
+    $httpClient.get(option, function (error, response, data) {
+      if (error != null || response.status !== 200) {
+        reject('Error')
+        return
+      }
+
+      let result = JSON.parse(data);
+      if (result.code === 0) {
+        resolve(result.data.country);
+      } else {
+        reject('Error')
+      }
+    })
+  })
+}
+
+async function check_bilibili() {
+  let check = (url) => {
+    return new Promise((resolve, reject) => {
+      let option = {
+        url: url,
+        headers: REQUEST_HEADERS,
+      }
+      $httpClient.get(option, function (error, response, data) {
+        if (error != null || response.status !== 200) {
+          reject('Error')
+          return
+        }
+
+        let result = JSON.parse(data);
+        if (result.code === 0) {
+          resolve('Available')
+          return
+        }
+
+        resolve('Not Available')
+      })
+    })
+  }
+
+  let bilibili_check_result = '𝑩𝒊𝒍𝒊𝒃𝒊𝒍𝒊: '
+
+  try {
+    const countryCode = await getCountryCode();
+    const flag = getFlagEmoji(countryCode);
+    const mainland = await check('https://api.bilibili.com/pgc/player/web/playurl?avid=82846771&qn=0&type=&otype=json&ep_id=307247&fourk=1&fnver=0&fnval=16');
+    const hkmctw = await check('https://api.bilibili.com/pgc/player/web/playurl?avid=18281381&cid=29892777&qn=0&type=&otype=json&ep_id=183799&fourk=1&fnver=0&fnval=16');
+    const tw = await check('https://api.bilibili.com/pgc/player/web/playurl?avid=50762638&cid=100279344&qn=0&type=&otype=json&ep_id=268176&fourk=1&fnver=0&fnval=16');
+
+    if (tw === 'Available') {
+      bilibili_check_result += `Ready to enjoy Bilibili TW now. | ${flag}`;
+    } else if (hkmctw === 'Available') {
+      bilibili_check_result += `Enjoying watching Bilibili GC now. | ${flag}`;
+    } else if (mainland === 'Available') {
+      bilibili_check_result += `Enjoy watching Bilibili CN now. | ${flag}`;
+    }
+  } catch (error) {
+    bilibili_check_result += 'Failed to check.';
+  }
+
+  return bilibili_check_result
 }
 
 function timeout(delay = 5000) {
