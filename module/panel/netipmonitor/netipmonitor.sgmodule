@@ -1,11 +1,11 @@
-#!name=Internet outlet IP monitor
-#!desc=Monitor internet outlet IP address change, Highest priority for checking domestic network IP address.
+#!name=Internet outlet IP monitor (Higher priority 4domestic)
+#!desc=Monitor internet outlet IP address change, Highest priority for tracking domestic network IP address.
 
 [Script]
 # Panel
 netpad = type=generic,timeout=60,script-path=https://github.com/iyqgrl/kaguya/blob/Master/module/panel/netipmonitor/index.js?raw=true,argument=icon=licenseplate.fill&icon-color=#ffff00
 # Notification
-netnotification = type=event,event-name=network-changed,timeout=30,script-update-interval=3600,debug=false,enable=true,script-path=https://github.com/iyqgrl/kaguya/blob/Master/module/panel/netipmonitor/event.js?raw=true
+netnotification = type=event,event-name=network-changed,timeout=30,script-update-interval=3600,debug=false,enable=true,script-path=https://raw.githubusercontent.com/xream/scripts/main/surge/modules/network-info/index.js,
 
 [Panel]
 netpad = script-name=netpad,update-interval=1

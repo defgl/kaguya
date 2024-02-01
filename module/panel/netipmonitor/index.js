@@ -124,38 +124,45 @@ async function getDirectInfo() {
 	//	$.logErr($.toStr(e));
 	//}
 
-	try {
-		const res1 = await $.http.get({
-			url: 'http://v6.ip.zxinc.org/info.php?type=json',
-			headers: {
-				'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.14',
-			},
-		});
-		const data = JSON.parse(res1.body).data;
-		let CN_IP = data.myip;
-		let CN_ADDR = data.location;
-	
-		// 删除第一个 "中国" 并替换第一个 "\t" 为 "，" 和 "区" 变为 "区 ・"
-        // 判断IP类型
-        if (CN_IP.includes(':')) { // IPv6
-            CN_ADDR = data.location;
-            // 删除第一个 "中国" 并替换第一个 "\t" 为 "，" 和 "区" 变为 "区 • "
-            CN_ADDR = CN_ADDR.replace(/^中国\t/, '').replace(/\t/, '，').replace(/\t/, '').replace('区 ', '区 • ');
-        } else { // IPv4
-            // 提取country和local的内容组合
-            CN_ADDR = data.country + data.local;
-        }
-	
-		// 翻译CN_ADDR
-		let CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '7dda8ddf-e4c2-52a2-c350-09660439db14:fx' }))[0];
-	
-		if (CN_IP && CN_ADDR) {
-			return { CN_IP, CN_ADDR, CN_ADDR_EN };
-		}
-	} catch (e) {
-		$.logErr(e);
-		$.logErr($.toStr(e));
-	}	
+try {
+    const res1 = await $.http.get({
+        url: 'http://v6.ip.zxinc.org/info.php?type=json',
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.14',
+        },
+    });
+    const data = JSON.parse(res1.body).data;
+
+    // 如果返回的所有内容里没有中国，记录错误并停止执行
+    if (!res1.body.includes('中国')) {
+        $.logErr("Check routing rules, detected non-mainland IP");
+        return;
+    }
+
+    let CN_IP = data.myip;
+    let CN_ADDR = data.location;
+
+    // 删除第一个 "中国" 并替换第一个 "\t" 为 "，" 和 "区" 变为 "区 ・"
+    // 判断IP类型
+    if (CN_IP.includes(':')) { // IPv6
+        CN_ADDR = data.location;
+        // 删除第一个 "中国" 并替换第一个 "\t" 为 "，" 和 "区" 变为 "区 • "
+        CN_ADDR = CN_ADDR.replace(/^中国\t/, '').replace(/\t/, '，').replace(/\t/, '').replace('区 ', '区 • ');
+    } else { // IPv4
+        // 提取country和local的内容组合
+        CN_ADDR = data.country + data.local;
+    }
+
+    // 翻译CN_ADDR
+    let CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '7dda8ddf-e4c2-52a2-c350-09660439db14:fx' }))[0];
+
+    if (CN_IP && CN_ADDR) {
+        return { CN_IP, CN_ADDR, CN_ADDR_EN };
+    }
+} catch (e) {
+    $.logErr(e);
+    $.logErr($.toStr(e));
+}
 
 	try {
 		const res1 = await $.http.get({
