@@ -28,14 +28,15 @@ let iconColor = '#ffff00' // replace with your color
   const transformedCN_IP = transformFont(CN_IP, TABLE, INDEX);
   const transformedTime = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
   const transformedCN_ADDR_EN = transformFont(CN_ADDR_EN, TABLE, INDEX);
-
+  const festivalInfo = await getFestivalInfo();
+  const getMovieInfo = await getMovieInfo
   // 打印转换后的 CN_IP 和时间
   console.log("Transformed CN_IP: ", transformedCN_IP);
   console.log("Transformed Time: ", transformedTime);
   console.log("Transformed CN_ADDR_EN: ", transformedCN_ADDR_EN);
 
-  title = `${transformedCN_ADDR_EN}`
-  content = `IP:${transformedCN_IP}\nTime:${transformedTime}`
+  title = `${festivalInfo}\n${getMovieInfo}\n${transformedCN_ADDR_EN}`
+  content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`
   icon = 'licenseplate.fill' // replace with your icon
   iconColor = '#ffff00' // replace with your color
   if ($.isTile()) {
@@ -261,7 +262,6 @@ async function Translator(type = "DeepL", source = "", target = "", text = "", a
 		return texts
 	};
 };
-
 async function Fetch(request = {}) {
 	$.log(`☑️ ${$.name}, Fetch Ruled Reqeust`, "");
 	const FORMAT = (request?.headers?.["Content-Type"] ?? request?.headers?.["content-type"])?.split(";")?.[0];
@@ -293,6 +293,75 @@ async function Fetch(request = {}) {
 	return response;
 };
 
+async function getFestivalInfo() {
+	let lunarFestival, festivals, cnMonth, cnDay;
+  
+	try {
+	  const res1 = await $.http.get('https://api.mu-jie.cc/lunar');
+	  lunarFestival = $.lodash_get(res1, 'data.data.lunarFestival');
+  
+	  const res2 = await $.http.get('https://api.timelessq.com/time');
+	  festivals = $.lodash_get(res2, 'data.data.festivals');
+	  cnMonth = $.lodash_get(res2, 'data.data.lunar.cnMonth');
+	  cnDay = $.lodash_get(res2, 'data.data.lunar.cnDay');
+	} catch (e) {
+	  $.logErr(`获取数据时发生错误: ${e.message || e}`);
+	}
+  
+	// Combine and deduplicate festivals
+	const combinedFestivals = Array.from(new Set([...festivals, lunarFestival]));
+  
+	// Output
+	console.log(`农历 ${cnMonth}${cnDay}\n${combinedFestivals.join(', ')}`);
+	// Return the formatted string
+	return `农历 ${cnMonth}${cnDay}\n${combinedFestivals.join(', ')}`;
+  }
+
+  async function getquote() {
+	let zh, en;
+  
+	try {
+	  const res = await $.http.get('https://api.vvhan.com/api/en');
+	  zh = $.lodash_get(res, 'data.zh');
+	  en = $.lodash_get(res, 'data.en');
+	} catch (e) {
+	  $.logErr(`获取数据时发生错误: ${e.message || e}`);
+	}
+  
+	// Return the formatted string
+	return `${zh} | ${en}`;
+  }
+
+  async function getMovieInfo() {
+	let title, rating, comment;
+  
+	try {
+	  const res = await $.http.get('https://raw.githubusercontent.com/yes1am/douban-movie-calendar/master/douban-movie-calendar-2024.json');
+	  const movies = $.lodash_get(res, 'data');
+  
+	  // Get current date in 'yyyy-mm-dd' format
+	  const now = new Date();
+	  const currentDate = now.toISOString().split('T')[0];
+  
+	  // Find the movie that matches the current date
+	  const movie = movies.find(movie => movie.comment.startsWith(currentDate));
+	  if (movie) {
+		title = movie.title;
+		rating = movie.rating;
+		comment = movie.comment;
+	  } else {
+		throw new Error(`没有找到 ${currentDate} 的电影信息`);
+	  }
+	} catch (e) {
+	  $.logErr(`获取数据时发生错误: ${e.message || e}`);
+	}
+  
+	// Output
+	console.log(`${title} | ${rating}\n${comment}`);
+	// Return the formatted string
+	return `${title} | ${rating}\n${comment}`;
+  }
+  
 // 字体表
 const TABLE = {
 	"monospace-regular": ["𝟶", "𝟷", "𝟸", "𝟹", "𝟺", "𝟻", "𝟼", "𝟽", "𝟾", "𝟿", 
