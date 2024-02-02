@@ -342,8 +342,8 @@ async function getFestivalInfo() {
   }
 
   async function getMovieInfo() {
-	let title = "未找到电影", rating = "无", comment = "无相关评论";
-  
+  let title = "未找到电影", rating = "无", comment = "无相关评论";
+  let currentDate;
 	try {
 	  const movies = {
 		"2024-01-01": {
@@ -2179,23 +2179,23 @@ async function getFestivalInfo() {
 		// ... 其他电影信息
 	  };
   
-	  const now = new Date();
-	  const currentDate = now.toISOString().split('T')[0];
-	  console.log(`当前日期: ${currentDate}`); // 日志记录当前日期
-  
-	  const movie = movies[currentDate];
-	  if (movie) {
-		title = movie.title;
-		rating = movie.rating;
-		comment = movie.comment;
-	  }
-	} catch (e) {
-	  console.error(`获取数据时发生错误: ${e.message}`);
-	}
-  
-	console.log(`${title} | ${rating}\n${currentDate} | ${comment}`);
-	return `${title} | ${rating}\n${currentDate} | ${comment}`;
+    const now = new Date();
+    currentDate = now.toISOString().split('T')[0];
+    console.log(`当前日期: ${currentDate}`); // 日志记录当前日期
+
+    const movie = movies[currentDate];
+    if (movie) {
+      title = movie.title;
+      rating = movie.rating;
+      comment = movie.comment;
+    }
+  } catch (e) {
+    console.error(`获取数据时发生错误: ${e.message}`);
   }
+
+  console.log(`${title} | ${rating}\n${currentDate} | ${comment}`);
+  return `${title} | ${rating}\n${currentDate} | ${comment}`;
+}
   
   
 // 字体表
