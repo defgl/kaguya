@@ -28,7 +28,7 @@ let iconColor = '#ffff00' // replace with your color
   const transformedCN_IP = transformFont(CN_IP, TABLE, INDEX);
   const transformedTime = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
   const transformedCN_ADDR_EN = transformFont(CN_ADDR_EN, TABLE, INDEX);
-
+  const festivalInfo = await getFestivalInfo();
   //const getMovieInfo = await getMovieInfo();
   // 打印转换后的 CN_IP 和时间
   console.log("Transformed CN_IP: ", transformedCN_IP);
@@ -293,28 +293,37 @@ async function Fetch(request = {}) {
 };
 
 async function getFestivalInfo() {
-	let lunarFestival, festivals, cnMonth, cnDay;
+    let lunarFestival = "", festivals = [], cnMonth, cnDay;
   
-	try {
-	  const res1 = await $.http.get('https://api.mu-jie.cc/lunar');
-	  lunarFestival = $.lodash_get(res1, 'data.data.lunarFestival');
+    try {
+        // 获取第一个API的信息
+        const res1 = await $.http.get("https://api.mu-jie.cc/lunar");
+        const data1 = JSON.parse(res1.body).data;
+        lunarFestival = data1.lunarFestival || ""; // 如果没有lunarFestival，则默认为空字符串
+        
+        // 获取第二个API的信息
+        const res2 = await $.http.get("https://api.timelessq.com/time");
+        const data2 = JSON.parse(res2.body).data;
+        festivals = data2.festivals || [];
+        cnMonth = data2.lunar.cnMonth;
+        cnDay = data2.lunar.cnDay;
+    } catch (e) {
+        $.logErr(`获取数据时发生错误: ${e.message || e}`);
+    }
   
-	  const res2 = await $.http.get('https://api.timelessq.com/time');
-	  festivals = $.lodash_get(res2, 'data.data.festivals');
-	  cnMonth = $.lodash_get(res2, 'data.data.lunar.cnMonth');
-	  cnDay = $.lodash_get(res2, 'data.data.lunar.cnDay');
-	} catch (e) {
-	  $.logErr(`获取数据时发生错误: ${e.message || e}`);
-	}
+    // 如果lunarFestival不为空且festivals不包含lunarFestival，就将lunarFestival添加到festivals数组中
+    if (lunarFestival && !festivals.includes(lunarFestival)) {
+        festivals.push(lunarFestival);
+    }
   
-	// Combine and deduplicate festivals
-	const combinedFestivals = Array.from(new Set([...festivals, lunarFestival]));
+    // 去重并组合最终的节日信息
+    const combinedFestivals = Array.from(new Set(festivals)).join(" / ");
   
-	// Output
-	console.log(`农历 ${cnMonth}${cnDay}\n${combinedFestivals.join(', ')}`);
-	// Return the formatted string
-	return `农历 ${cnMonth}${cnDay}\n${combinedFestivals.join(', ')}`;
-  }
+    // 输出
+    console.log(`农历 ${cnMonth}${cnDay}\n节日: ${combinedFestivals}`);
+    // 返回格式化的字符串
+    return ` ${cnMonth}${cnDay}\n ${combinedFestivals}`;
+}
 
   async function getquote() {
 	let zh, en;
