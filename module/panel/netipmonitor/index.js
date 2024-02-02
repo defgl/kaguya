@@ -268,19 +268,42 @@ async function Fetch(request = {}) {
 	return response;
 };
 
+//  async function getquote() {
+//	let zh, en;
+//  
+//	try {
+//	  const res = await $.http.get('https://api.vvhan.com/api/en');
+//	  zh = $.lodash_get(res, 'data.zh');
+//	  en = $.lodash_get(res, 'data.en');
+//	} catch (e) {
+//	  $.logErr(`获取数据时发生错误: ${e.message || e}`);
+//	}
+//  
+//	// Return the formatted string
+//	return `${zh} | ${en}`;
+//  }
+
   async function getquote() {
-	let zh, en;
-  
-	try {
-	  const res = await $.http.get('https://api.vvhan.com/api/en');
-	  zh = $.lodash_get(res, 'data.zh');
-	  en = $.lodash_get(res, 'data.en');
-	} catch (e) {
-	  $.logErr(`获取数据时发生错误: ${e.message || e}`);
-	}
-  
-	// Return the formatted string
-	return `${zh} | ${en}`;
+	return new Promise((resolve, reject) => {
+	  let url = 'https://api.vvhan.com/api/ian?cl=wx&type=json';
+	  $httpClient.get(url, function(error, response, data) {
+		if (error) {
+		  reject(`error: ${error.message}`);
+		  return;
+		}
+		if (response.status !== 200) {
+		  reject(`failed to fetch data. http status: ${response.status}`);
+		  return;
+		}
+		let parsedData = JSON.parse(data);
+		if (parsedData.success) {
+		  let extractedtext = `「${parsedData.data.vhan} - ${parsedData.data.source}」`;
+		  resolve(extractedtext);
+		} else {
+		  reject('failed to fetch data');
+		}
+	  });
+	});
   }
   
 // 字体表
