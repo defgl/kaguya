@@ -35,7 +35,7 @@ let iconColor = '#ffff00' // replace with your color
   console.log("Transformed Time: ", transformedTime);
   console.log("Transformed CN_ADDR_EN: ", transformedCN_ADDR_EN);
 
-  title = `${quote}\n---------------------\n${transformedCN_ADDR_EN}`
+  title = `${quote}\n--------------------------------------\n${transformedCN_ADDR_EN}`
   content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`
   icon = 'licenseplate.fill' // replace with your icon
   iconColor = '#ffff00' // replace with your color
@@ -285,7 +285,7 @@ async function Fetch(request = {}) {
 
   async function getquote() {
 	return new Promise((resolve, reject) => {
-	  let url = 'https://api.vvhan.com/api/ian?cl=wx&type=json';
+	  let url = 'https://v1.hitokoto.cn/?c=e&c=h&c=i&c=d&max_length=10';
 	  $httpClient.get(url, function(error, response, data) {
 		if (error) {
 		  reject(`error: ${error.message}`);
@@ -297,7 +297,7 @@ async function Fetch(request = {}) {
 		}
 		let parsedData = JSON.parse(data);
 		if (parsedData.success) {
-		  let extractedtext = `「${parsedData.data.vhan} - ${parsedData.data.source}」`;
+		  let extractedtext = `「${parsedData.data.hitokoto} - ${parsedData.data.from}」`;
 		  resolve(extractedtext);
 		} else {
 		  reject('failed to fetch data');
