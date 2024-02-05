@@ -69,7 +69,7 @@
   console.log("Transformed weather content: ", weathercontent);
 
   $done({
-    title: `${weathercontent}${titlecontent}`,
+    title: `${weathercontent}\n${titlecontent}`,
     content: `𝘍𝘭𝘶𝘴𝘩: ${delay} 𝘮𝘴`,
     icon: 'shield.lefthalf.filled.badge.checkmark',
     'icon-color': '#CD853F',
