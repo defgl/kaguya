@@ -72,6 +72,7 @@ let iconColor = '#ffff00' // replace with your color
   content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}${transformedLAN ? ' | ' + transformedLAN : ''}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`;
   // icon = 'licenseplate.fill' // replace with your icon
   // 根据网络状态更改图标
+  const isWifi = $network.wifi.ssid !== undefined;
   if (isWifi) {
 	icon = 'chart.bar.fill';
   } else {
@@ -108,21 +109,26 @@ async function notify(title, subt, desc, opts) {
   }
 }
 async function getNetworkInfo() {
-    let networkInfo = {};
-
-    networkInfo.primaryDNSv4 = $network.v4.primarydns;
-    networkInfo.secondaryDNSv4 = $network.v4.secondarydns;
-    networkInfo.primaryDNSv6 = $network.v6.primarydns;
-    networkInfo.secondaryDNSv6 = $network.v6.secondarydns;
-    networkInfo.IPv4WiFiAddress = $network.v4.wifi.address;
-    networkInfo.IPv4CellularAddress = $network.v4.cellular.address;
-    networkInfo.IPv6WiFiAddress = $network.v6.wifi.address;
-    networkInfo.IPv6CellularAddress = $network.v6.cellular.address;
-    networkInfo.wifiSSID = $network.wifi.ssid;
-    networkInfo.wifiBSSID = $network.wifi.bssid;
-
-    return networkInfo;
-}
+	let SSID = '';
+	let LAN = '';
+  
+	// 检查 $network 对象是否存在
+	if (typeof $network !== 'undefined') {
+	  // 提取 SSID，如果请求参数中指定了需要 SSID
+	  if ($.lodash_get(arg, 'SSID') == 1) {
+		SSID = $network.wifi.ssid || '-';
+	  }
+  
+	  // 提取局域网地址，如果请求参数中指定了需要 LAN 地址
+	  if ($.lodash_get(arg, 'LAN') == 1) {
+		// 优先使用 WiFi 地址，如果没有则尝试获取蜂窝数据地址
+		LAN = $network.v4.primaryAddress || $network.v4.cellular.address || '-';
+	  }
+	}
+  
+	return { SSID, LAN };
+  }
+  
 // async function getDirectInfo() {
 //   let CN_IP
 //   let CN_ADDR
@@ -338,7 +344,7 @@ async function Fetch(request = {}) {
 //	return `${zh} | ${en}`;
 //  }
 
-  async function getquote() {
+async function getquote() {
 	return new Promise((resolve, reject) => {
 	  let url = 'https://v1.hitokoto.cn/?c=e&c=h&c=i&c=d&max_length=10';
 	  $httpClient.get(url, function(error, response, data) {
@@ -351,15 +357,16 @@ async function Fetch(request = {}) {
 		  return;
 		}
 		let parsedData = JSON.parse(data);
-		if (parsedData.success) {
-		  let extractedtext = `「${parsedData.data.hitokoto} - ${parsedData.data.from}」`;
-		  resolve(extractedtext);
+		if (parsedData) {
+		  let extractedText = `${parsedData.hitokoto} / ${parsedData.from_who} 《${parsedData.from}》`;
+		  resolve(extractedText);
 		} else {
 		  reject('failed to fetch data');
 		}
 	  });
 	});
   }
+  
   
 // 字体表
 const TABLE = {
