@@ -13,6 +13,9 @@ let title = ''
 let content = ''
 let icon = 'licenseplate.fill' // replace with your icon
 let iconColor = '#ffff00' // replace with your color
+let wifiName = $network.wifi.ssid || '';
+let localIP = $network.v4.wifi.address || '';
+let isWifi = wifiName !== '';
 
 !(async () => {
   if($.isTile()) {
@@ -28,6 +31,8 @@ let iconColor = '#ffff00' // replace with your color
   const transformedCN_IP = transformFont(CN_IP, TABLE, INDEX);
   const transformedTime = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
   const transformedCN_ADDR_EN = transformFont(CN_ADDR_EN, TABLE, INDEX);
+  const transformedWifiName = transformFont(wifiName, TABLE, INDEX);
+  const transformedLocalIP = transformFont(localIP, TABLE, INDEX);
   const quote = await getquote()
 
   // 打印转换后的 CN_IP 和时间
@@ -35,9 +40,19 @@ let iconColor = '#ffff00' // replace with your color
   console.log("Transformed Time: ", transformedTime);
   console.log("Transformed CN_ADDR_EN: ", transformedCN_ADDR_EN);
 
-  title = `${quote}\n--------------------------------------\n${transformedCN_ADDR_EN}`
-  content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`
-  icon = 'licenseplate.fill' // replace with your icon
+  //title = `${quote}\n--------------------------------------\n${transformedCN_ADDR_EN}`
+  //content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`
+
+  title = `${quote}\n--------------------------------------\n${isWifi ? transformedWifiName + '\n' : ''}${transformedCN_ADDR_EN}`;
+  content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}${isWifi ? ' | ' + transformedLocalIP : ''}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`;
+
+  // icon = 'licenseplate.fill' // replace with your icon
+  // 根据网络状态更改图标
+  if (isWifi) {
+	icon = 'chart.bar.fill';
+  } else {
+	icon = 'cellularbars';
+  }
   iconColor = '#ffff00' // replace with your color
   if ($.isTile()) {
 	await notify('网络信息', '面板', '查询完成', icon, iconColor)
@@ -67,6 +82,22 @@ async function notify(title, subt, desc, opts) {
   } else {
     $.log('🔕', title, subt, desc, opts)  
   }
+}
+async function getNetworkInfo() {
+    let networkInfo = {};
+
+    networkInfo.primaryDNSv4 = $network.v4.primarydns;
+    networkInfo.secondaryDNSv4 = $network.v4.secondarydns;
+    networkInfo.primaryDNSv6 = $network.v6.primarydns;
+    networkInfo.secondaryDNSv6 = $network.v6.secondarydns;
+    networkInfo.IPv4WiFiAddress = $network.v4.wifi.address;
+    networkInfo.IPv4CellularAddress = $network.v4.cellular.address;
+    networkInfo.IPv6WiFiAddress = $network.v6.wifi.address;
+    networkInfo.IPv6CellularAddress = $network.v6.cellular.address;
+    networkInfo.wifiSSID = $network.wifi.ssid;
+    networkInfo.wifiBSSID = $network.wifi.bssid;
+
+    return networkInfo;
 }
 // async function getDirectInfo() {
 //   let CN_IP
