@@ -363,7 +363,7 @@ async function getquote() {
             extractedText += ` / ${parsedData.from_who}`;
           }
           if (parsedData.from) {
-            extractedText += ` 《${parsedData.from}》`;
+            extractedText += ` / 《${parsedData.from}》`;
           }
           resolve(extractedText);
         } else {
