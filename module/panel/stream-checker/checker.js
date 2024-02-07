@@ -108,9 +108,11 @@ const UA =
     "icon-color": "#318ce7",
   }
 
-    //let url = "https://api.vvhan.com/api/ian?type=json&cl=ac"
     let getyiyan = new Promise((resolve, reject) => {
-      let url = "https://v1.hitokoto.cn/?c=a&c=b&c=c&c=h&c=h&encode=json"
+		
+      //let url = "https://v1.hitokoto.cn/?c=a&c=b&c=c&c=h&c=h&encode=json"
+	  let url = "https://api.vvhan.com/api/ian?type=json&cl=ac"
+
       $httpClient.get(url, function (error, response, data) {
         if (error) {
           reject(error)
