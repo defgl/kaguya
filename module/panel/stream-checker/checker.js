@@ -133,8 +133,8 @@ const REQUEST_HEADERS = {
 		})
 	  })
   
-	// 使用await来获取text内容并设置为title
-	panel_result.title = await getquote
+	let quote = await getquote;
+	panel_result.title = await quote;
   
 	let [{ region, status }] = await Promise.all([testDisneyPlus()])
 	await Promise.all([
