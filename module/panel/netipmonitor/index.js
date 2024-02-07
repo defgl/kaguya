@@ -66,11 +66,17 @@ let iconColor = '#ffff00' // replace with your color
   // 在需要的地方调用这个函数
   let { SSID, LAN } = await getNetworkInfo();
   
+  // 在需要的地方调用这个函数
+  let { SSID, LAN } = await getNetworkInfo();
+  
   // 字体转换
-  const transformedSSID = transformFont(SSID, TABLE, INDEX);
+  let transformedSSID = '';
+  if (SSID) {
+    transformedSSID = transformFont(SSID, TABLE, INDEX);
+  }
   const transformedLAN = transformFont(LAN, TABLE, INDEX);
   
-  title = `${quote}\n${movieInfo}\n--------------------------------------\n${transformedSSID ? transformedSSID + '\n' : ''}${transformedCN_ADDR_EN}`;
+  title = `${quote}\n--------------------------------------\n${transformedSSID ? transformedSSID + ' ' : ''}${transformedLAN ? transformedLAN + ' | ' + transformedCN_ADDR_EN : transformedCN_ADDR_EN}`;
   content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}${transformedLAN ? ' | ' + transformedLAN : ''}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`;
   // icon = 'licenseplate.fill' // replace with your icon
   // 根据网络状态更改图标
