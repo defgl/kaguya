@@ -345,27 +345,33 @@ async function Fetch(request = {}) {
 //  }
 
 async function getquote() {
-	return new Promise((resolve, reject) => {
-	  let url = 'https://v1.hitokoto.cn/?c=e&c=h&c=i&c=d&max_length=10';
-	  $httpClient.get(url, function(error, response, data) {
-		if (error) {
-		  reject(`error: ${error.message}`);
-		  return;
-		}
-		if (response.status !== 200) {
-		  reject(`failed to fetch data. http status: ${response.status}`);
-		  return;
-		}
-		let parsedData = JSON.parse(data);
-		if (parsedData) {
-		  let extractedText = `${parsedData.hitokoto} / ${parsedData.from_who} 《${parsedData.from}》`;
-		  resolve(extractedText);
-		} else {
-		  reject('failed to fetch data');
-		}
-	  });
-	});
-  }
+    return new Promise((resolve, reject) => {
+      let url = 'https://v1.hitokoto.cn/?c=e&c=h&c=i&c=d&max_length=10';
+      $httpClient.get(url, function(error, response, data) {
+        if (error) {
+          reject(`error: ${error.message}`);
+          return;
+        }
+        if (response.status !== 200) {
+          reject(`failed to fetch data. http status: ${response.status}`);
+          return;
+        }
+        let parsedData = JSON.parse(data);
+        if (parsedData) {
+          let extractedText = parsedData.hitokoto;
+          if (parsedData.from_who) {
+            extractedText += ` / ${parsedData.from_who}`;
+          }
+          if (parsedData.from) {
+            extractedText += ` 《${parsedData.from}》`;
+          }
+          resolve(extractedText);
+        } else {
+          reject('failed to fetch data');
+        }
+      });
+    });
+}
   
   
 // 字体表
