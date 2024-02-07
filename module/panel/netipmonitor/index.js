@@ -70,6 +70,7 @@ let iconColor = '#ffff00' // replace with your color
   let transformedSSID = '';
   if (SSID) {
     transformedSSID = transformFont(SSID, TABLE, INDEX);
+	console.log('Transformed SSID:', transformedSSID);  
   }
   const transformedLAN = transformFont(LAN, TABLE, INDEX);
   
@@ -85,7 +86,7 @@ let iconColor = '#ffff00' // replace with your color
       title += transformedSSID + ' @ ';
   } else {
       // 如果不存在 transformedSSID，则直接准备添加 transformedCN_ADDR_EN，不再需要 ' @ ' 前缀
-      title += '𝘾𝙚𝙡𝙡𝙪𝙡𝙖𝙧'; // 这行实际上可以省略，只是为了清晰表达逻辑
+      title += '𝘾𝙚𝙡𝙡𝙪𝙡𝙖𝙧 @ '; // 这行实际上可以省略，只是为了清晰表达逻辑
   }
   // 添加 transformedCN_ADDR_EN，根据上述逻辑，这里不再需要 '@' 前缀
   title += transformedCN_ADDR_EN;
@@ -228,28 +229,29 @@ try {
     $.logErr($.toStr(e));
 }
 
-	try {
-		const res1 = await $.http.get({
-		  url: 'http://v4.ip.zxinc.org/info.php?type=json',
-		  headers: {
-			'User-Agent':
-			  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.14',
-		  },
-		});
-		const data = JSON.parse(res1.body).data;
-		CN_IP = data.myip;
-		//CN_ADDR = [data.location].filter(Boolean).join(', ');
-		// CN_ADDR = CN_ADDR.replace('电信', 'China Telecom').replace('联通', 'China Unicom').replace('移动', 'China Mobile');
-		CN_ADDR = data.country + data.local
-		// 翻译CN_ADDR
-		CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '7dda8ddf-e4c2-52a2-c350-09660439db14:fx' }))[0];
-		if (CN_IP && CN_ADDR) {
-		  return { CN_IP, CN_ADDR, CN_ADDR_EN };
-		}
-	} catch (e) {
-		$.logErr(e);
-		$.logErr($.toStr(e));
-	}
+  try {
+      const res1 = await $.http.get({
+          url: 'http://v4.ip.zxinc.org/info.php?type=json',
+          headers: {
+              'User-Agent':
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.14',
+          },
+      });
+      const data = JSON.parse(res1.body).data;
+      CN_IP = data.myip;
+      CN_ADDR = data.local + ' | ' + data.country;
+      if (['电信', '移动', '联通'].includes(data.local)) {
+          CN_ADDR = '中国' + CN_ADDR;
+      }
+      // 翻译CN_ADDR
+      CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '7dda8ddf-e4c2-52a2-c350-09660439db14:fx' }))[0];
+      if (CN_IP && CN_ADDR) {
+          return { CN_IP, CN_ADDR, CN_ADDR_EN };
+      }
+  } catch (e) {
+      $.logErr(e);
+      $.logErr($.toStr(e));
+  }
 	try {
 		const res2 = await $.http.get({
 		  url: 'https://forge.speedtest.cn/api/location/info',
