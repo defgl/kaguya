@@ -60,8 +60,6 @@ let iconColor = '#ffff00' // replace with your color
 	  } catch (e) {}
 	}
 	console.log($network);
-	console.log($config);
-	console.log(arg);
 	return { SSID, LAN };
   }
   
