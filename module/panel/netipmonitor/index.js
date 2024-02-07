@@ -359,11 +359,14 @@ async function getquote() {
         let parsedData = JSON.parse(data);
         if (parsedData) {
           let extractedText = parsedData.hitokoto;
+          if (parsedData.from_who || parsedData.from) {
+            extractedText += ' / ';
+          }
           if (parsedData.from_who) {
-            extractedText += ` / ${parsedData.from_who}`;
+            extractedText += ` ${parsedData.from_who}`;
           }
           if (parsedData.from) {
-            extractedText += ` / 《${parsedData.from}》`;
+            extractedText += ` 《${parsedData.from}》`;
           }
           resolve(extractedText);
         } else {
