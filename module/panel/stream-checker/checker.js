@@ -108,29 +108,33 @@ const REQUEST_HEADERS = {
 	  "icon-color": "#318ce7",
 	}
   
-	let fetchTextContent = new Promise((resolve, reject) => {
-	  let url = "https://api.vvhan.com/api/ian?type=json&cl=ac"
-	  $httpClient.get(url, function (error, response, data) {
-		if (error) {
-		  reject(error)
-		  return
-		}
-		if (response.status !== 200) {
-		  reject(
-			new Error(`Failed to fetch data. HTTP Status: ${response.status}`),
-		  )
-		  return
-		}
-		let jsonData = JSON.parse(data)
-		let vhan = jsonData.data.vhan
-		let source = jsonData.data.source
-		let result = `${vhan} — ${source}`
-		resolve(result)
+	let getquote = new Promise((resolve, reject) => {
+		let url = "https://international.v1.hitokoto.cn/?c=a&c=b&c=c&c=h&c=h&max_length=12"
+		$httpClient.get(url, function (error, response, data) {
+		  if (error) {
+			reject(error)
+			return
+		  }
+		  if (response.status !== 200) {
+			reject(
+			  new Error(`Failed to fetch data. HTTP Status: ${response.status}`),
+			)
+			return
+		  }
+		  let jsonData = JSON.parse(data)
+		  let hitokoto = jsonData.hitokoto;
+		  let from = jsonData.from;
+		  let from_who = jsonData.from_who;
+		  let result = `${hitokoto} - 《${from}》 -`;
+		  if (from_who) {
+			result = `${hitokoto} - ${from_who}《${from}》 -`;
+		  }
+		  resolve(result)
+		})
 	  })
-	})
   
 	// 使用await来获取text内容并设置为title
-	panel_result.title = await fetchTextContent
+	panel_result.title = await getquote
   
 	let [{ region, status }] = await Promise.all([testDisneyPlus()])
 	await Promise.all([
