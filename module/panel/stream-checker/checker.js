@@ -110,7 +110,7 @@ const UA =
 
     let getyiyan = new Promise((resolve, reject) => {
 
-      let url = "https://international.v1.hitokoto.cn/?c=a&c=b&c=c&c=h&c=h&encode=json"
+       let url = "https://international.v1.hitokoto.cn/?c=a&c=b&c=c&c=h&c=h&encode=json"
 	  //let url = "https://api.vvhan.com/api/ian?type=json&cl=ac"
 
       $httpClient.get(url, function (error, response, data) {
@@ -128,7 +128,7 @@ const UA =
         let hitokoto = jsonData.hitokoto
         let from_who = jsonData.from_who
         let from = jsonData.from
-        let result = `『${hitokoto}』 -- ${from_who} 『${from}』`
+        let result = `『${hitokoto}』 -- ${from_who} 「${from}」`
         resolve(result)
       })
     })
