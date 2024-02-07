@@ -36,82 +36,44 @@ let iconColor = '#ffff00' // replace with your color
   console.log("Transformed Time: ", transformedTime);
   console.log("Transformed CN_ADDR_EN: ", transformedCN_ADDR_EN);
 
-  //title = `${quote}\n--------------------------------------\n${transformedCN_ADDR_EN}`
-  //content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`
+// 检查是否连接到 WiFi
+const isWifi = $network.wifi.ssid !== undefined;
 
-  async function getNetworkInfo() {
-	let SSID = '';
-	let LAN = '';
-	if (typeof $network !== 'undefined') {
-	  const v4 = $.lodash_get($network, 'v4.primaryAddress')
-	  if ($.lodash_get(arg, 'SSID') == 1) {
-		SSID = $.lodash_get($network, 'wifi.ssid')
-	  }
-	  if (v4 && $.lodash_get(arg, 'LAN') == 1) {
-		LAN = v4;
-	  }
-	} else if (typeof $config !== 'undefined') {
-	  try {
-		let conf = $config.getConfig()
-		conf = JSON.parse(conf)
-		if ($.lodash_get(arg, 'SSID') == 1) {
-		  SSID = $.lodash_get(conf, 'ssid')
-		}
-	  } catch (e) {}
-	}
-	console.log($network);
-	return { SSID, LAN };
-  }
-  
-  // 在需要的地方调用这个函数
+let transformedSSID = '';
+let transformedLAN = '';
+
+if (isWifi) {
+  // 如果连接到 WiFi，获取 SSID 和 LAN
   let { SSID, LAN } = await getNetworkInfo();
-  
-  // 字体转换
-  let transformedSSID = '';
+
+  // 转换 SSID 和 LAN
   if (SSID) {
     transformedSSID = transformFont(SSID, TABLE, INDEX);
-	console.log('Transformed SSID:', transformedSSID);  
+    console.log('Transformed SSID:', transformedSSID);  
   }
-  const transformedLAN = transformFont(LAN, TABLE, INDEX);
-  
-  // Assuming transformedSSID, transformedLAN, transformedCN_ADDR_EN, transformedCN_IP, and transformedTime
-  // are already defined as per your previous code
-  //title = `${quote}\n--------------------------------------\n${transformedSSID ? transformedSSID + ' | ' : ''}${transformedCN_ADDR_EN}`;
-  //content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}${transformedLAN ? ' | ' + transformedLAN : ''}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`;
-  title = quote + '\n--------------------------------------\n';
-  // 使用简单的字符串连接方法调整 title 的显示
-  title = quote + '\n--------------------------------------\n';
-  if (transformedSSID) {
-      // 如果存在 transformedSSID，则在其后添加 ' @ '
-      title += transformedSSID + ' @ ';
-  } else {
-      // 如果不存在 transformedSSID，则直接准备添加 transformedCN_ADDR_EN，不再需要 ' @ ' 前缀
-      title += '𝘾𝙚𝙡𝙡𝙪𝙡𝙖𝙧 @ '; // 这行实际上可以省略，只是为了清晰表达逻辑
-  }
-  // 添加 transformedCN_ADDR_EN，根据上述逻辑，这里不再需要 '@' 前缀
-  title += transformedCN_ADDR_EN;
+  transformedLAN = transformFont(LAN, TABLE, INDEX);
+}
 
-  // 使用简单的字符串连接方法调整 content 的显示
-  content = '𝘈𝘥𝘥𝘳:' + transformedCN_IP;
-  if (transformedLAN) {
-      content += ' | ' + transformedLAN;
-  }
-  content += '\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:' + transformedTime;
+// 根据网络状态更改图标
+if (isWifi) {
+  icon = 'chart.bar.fill';
+} else {
+  icon = 'cellularbars';
+}
 
-  // icon = 'licenseplate.fill' // replace with your icon
-  // 根据网络状态更改图标
-  const isWifi = $network.wifi.ssid !== undefined;
-  if (isWifi) {
-	icon = 'chart.bar.fill';
-  } else {
-	icon = 'cellularbars';
-  }
-  iconColor = '#ffff00' // replace with your color
-  if ($.isTile()) {
-	await notify('网络信息', '面板', '查询完成', icon, iconColor)
-  } else if(!$.isPanel()) {
-	await notify('网络信息', title, content, icon, iconColor)
-  }
+// 更新 title 和 content
+if (transformedSSID) {
+  title += transformedSSID + ' @ ';
+} else {
+  title += '𝘾𝙚𝙡𝙡𝙪𝙡𝙖𝙧 @ ';
+}
+title += transformedCN_ADDR_EN;
+
+content = '𝘈𝘥𝘥𝘳:' + transformedCN_IP;
+if (transformedLAN) {
+  content += ' | ' + transformedLAN;
+}
+content += '\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:' + transformedTime;
 
 })()
   .catch(async e => {
@@ -128,14 +90,6 @@ let iconColor = '#ffff00' // replace with your color
     $.done(result)
   })
 
-// 通知
-async function notify(title, subt, desc, opts) {
-  if ($.lodash_get(arg, 'notify')) {
-    $.msg(title, subt, desc, opts)
-  } else {
-    $.log('🔕', title, subt, desc, opts)  
-  }
-}
 async function getNetworkInfo() {
 	let SSID = '';
 	let LAN = '';
@@ -157,6 +111,15 @@ async function getNetworkInfo() {
 	return { SSID, LAN };
   }
   
+  // 通知
+async function notify(title, subt, desc, opts) {
+	if ($.lodash_get(arg, 'notify')) {
+	  $.msg(title, subt, desc, opts)
+	} else {
+	  $.log('🔕', title, subt, desc, opts)  
+	}
+  }
+
 // async function getDirectInfo() {
 //   let CN_IP
 //   let CN_ADDR
