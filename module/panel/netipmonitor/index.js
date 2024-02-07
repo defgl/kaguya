@@ -346,7 +346,7 @@ async function Fetch(request = {}) {
 
 async function getquote() {
     return new Promise((resolve, reject) => {
-      let url = 'https://v1.hitokoto.cn/?c=e&c=h&c=i&c=d&max_length=10';
+      let url = 'https://international.v1.hitokoto.cn/?c=e&c=h&c=i&c=d&max_length=10';
       $httpClient.get(url, function(error, response, data) {
         if (error) {
           reject(`error: ${error.message}`);
