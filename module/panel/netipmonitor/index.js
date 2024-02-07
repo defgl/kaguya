@@ -66,9 +66,6 @@ let iconColor = '#ffff00' // replace with your color
   // 在需要的地方调用这个函数
   let { SSID, LAN } = await getNetworkInfo();
   
-  // 在需要的地方调用这个函数
-  let { SSID, LAN } = await getNetworkInfo();
-  
   // 字体转换
   let transformedSSID = '';
   if (SSID) {
@@ -76,8 +73,30 @@ let iconColor = '#ffff00' // replace with your color
   }
   const transformedLAN = transformFont(LAN, TABLE, INDEX);
   
-  title = `${quote}\n--------------------------------------\n${transformedSSID ? transformedSSID + ' ' : ''}${transformedLAN ? transformedLAN + ' | ' + transformedCN_ADDR_EN : transformedCN_ADDR_EN}`;
-  content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}${transformedLAN ? ' | ' + transformedLAN : ''}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`;
+  // Assuming transformedSSID, transformedLAN, transformedCN_ADDR_EN, transformedCN_IP, and transformedTime
+  // are already defined as per your previous code
+  //title = `${quote}\n--------------------------------------\n${transformedSSID ? transformedSSID + ' | ' : ''}${transformedCN_ADDR_EN}`;
+  //content = `𝘈𝘥𝘥𝘳:${transformedCN_IP}${transformedLAN ? ' | ' + transformedLAN : ''}\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:${transformedTime}`;
+  title = quote + '\n--------------------------------------\n';
+  // 使用简单的字符串连接方法调整 title 的显示
+  title = quote + '\n--------------------------------------\n';
+  if (transformedSSID) {
+      // 如果存在 transformedSSID，则在其后添加 ' @ '
+      title += transformedSSID + ' @ ';
+  } else {
+      // 如果不存在 transformedSSID，则直接准备添加 transformedCN_ADDR_EN，不再需要 ' @ ' 前缀
+      title += '𝘾𝙚𝙡𝙡𝙪𝙡𝙖𝙧'; // 这行实际上可以省略，只是为了清晰表达逻辑
+  }
+  // 添加 transformedCN_ADDR_EN，根据上述逻辑，这里不再需要 '@' 前缀
+  title += transformedCN_ADDR_EN;
+
+  // 使用简单的字符串连接方法调整 content 的显示
+  content = '𝘈𝘥𝘥𝘳:' + transformedCN_IP;
+  if (transformedLAN) {
+      content += ' | ' + transformedLAN;
+  }
+  content += '\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:' + transformedTime;
+
   // icon = 'licenseplate.fill' // replace with your icon
   // 根据网络状态更改图标
   const isWifi = $network.wifi.ssid !== undefined;
