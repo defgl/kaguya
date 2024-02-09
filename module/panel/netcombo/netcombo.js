@@ -158,7 +158,7 @@ let content = ''
     // )}\n\n${ENTRANCE}落地 IP: ${maskIP(PROXY_IP) || '-'}${PROXY_IPv6}${maskAddr(
     //   PROXY_INFO
     // )}${PROXY_PRIVACY}\n执行时间: ${new Date().toTimeString().split(' ')[0]}`
-    content = `${SSID}${LAN}\n----------------------------\n${ENTRANCE}----------------------------\nEndpoint IP: ${maskIP(PROXY_IP) || '-'}${PROXY_IPv6}${maskAddr(
+    content = `${SSID}${LAN}----------------------------${ENTRANCE}----------------------------\nEndpoint IP: ${maskIP(PROXY_IP) || '-'}${PROXY_IPv6}${maskAddr(
       PROXY_INFO
     )}${PROXY_PRIVACY}\n执行时间: ${new Date().toTimeString().split(' ')[0]}`
     if ($.isTile()) {
