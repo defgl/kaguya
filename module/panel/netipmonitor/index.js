@@ -29,49 +29,38 @@ let iconColor = '#ffff00' // replace with your color
   const transformedTime = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
   const transformedCN_ADDR_EN = transformFont(CN_ADDR_EN, TABLE, INDEX);
   const quote = await getquote()
-
+  // 获取 SSID、LAN IP 和 Router IP
+  const ssid = getSSID();
+  const { lanIP, routerIP } = getNetworkDetails();
+  
+  // 转换字体
+  const transformedSSID = transformFont(ssid, TABLE, INDEX);
+  const transformedLanIP = transformFont(lanIP, TABLE, INDEX);
+  const transformedRouterIP = transformFont(routerIP, TABLE, INDEX);
 
   // 打印转换后的 CN_IP 和时间
   console.log("Transformed CN_IP: ", transformedCN_IP);
   console.log("Transformed Time: ", transformedTime);
   console.log("Transformed CN_ADDR_EN: ", transformedCN_ADDR_EN);
+    
+  // 输出转换后的值
+  console.log('Transformed SSID:', transformedSSID);
+  console.log('Transformed LAN IP:', transformedLanIP);
+  console.log('Transformed Router IP:', transformedRouterIP);
 
 // 检查是否连接到 WiFi
 const isWifi = $network.wifi.ssid !== undefined;
 
-let transformedSSID = '';
-let transformedLAN = '';
-
-if (isWifi) {
-  // 如果连接到 WiFi，获取 SSID 和 LAN
-  let { SSID, LAN } = await getNetworkInfo();
-
-  // 转换 SSID 和 LAN
-  if (SSID) {
-    transformedSSID = transformFont(SSID, TABLE, INDEX);
-    console.log('Transformed SSID:', transformedSSID);  
-  }
-  transformedLAN = transformFont(LAN, TABLE, INDEX);
-}
-
 // 根据网络状态更改图标
-if (isWifi) {
-  icon = 'chart.bar.fill';
-} else {
-  icon = 'cellularbars';
-}
+icon = isWifi ? 'chart.bar.fill' : 'cellularbars';
 
 // 更新 title 和 content
-if (transformedSSID) {
-  title += transformedSSID + ' @ ';
-} else {
-  title += '𝘾𝙚𝙡𝙡𝙪𝙡𝙖𝙧 @ ';
-}
-title += transformedCN_ADDR_EN;
+title = (isWifi ? transformedSSID : '𝘾𝙚𝙡𝙡𝙪𝙡𝙖𝙧') + ' @ ' + transformedCN_ADDR_EN;
+title += '\n' + getquote + '--------------------';
 
-content = '𝘈𝘥𝘥𝘳:' + transformedCN_IP;
-if (transformedLAN) {
-  content += ' | ' + transformedLAN;
+content = '𝙋𝙪𝙗𝙡𝙞𝙘 : ' + transformedCN_IP;
+if (isWifi) {
+  content += '\n𝙍𝙤𝙪𝙩𝙚𝙧 / 𝙇𝘼𝙉: ' + transformedLanIP + ' / ' + transformedRouterIP;
 }
 content += '\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:' + transformedTime;
 
@@ -90,26 +79,32 @@ content += '\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:' + transformedTime;
     $.done(result)
   })
 
-async function getNetworkInfo() {
-	let SSID = '';
-	let LAN = '';
+// 获取Wi-Fi SSID
+function getSSID() {
+	return $network.wifi?.ssid ?? '未连接到Wi-Fi';
+  }
   
-	// 检查 $network 对象是否存在
-	if (typeof $network !== 'undefined') {
-	  // 提取 SSID，如果请求参数中指定了需要 SSID
-	  if ($.lodash_get(arg, 'SSID') == 1) {
-		SSID = $network.wifi.ssid || '-';
+  // 获取局域网IP地址和路由器IP地址
+  function getNetworkDetails() {
+	const { v4 } = $network;
+	let details = {
+	  lanIP: '未获取到IP地址',
+	  routerIP: '未获取到路由器IP'
+	};
+  
+	// 如果有IPv4信息，从中提取设备IP和路由器IP
+	if (v4) {
+	  if (v4.primaryAddress) {
+		details.lanIP = v4.primaryAddress;
 	  }
-  
-	  // 提取局域网地址，如果请求参数中指定了需要 LAN 地址
-	  if ($.lodash_get(arg, 'LAN') == 1) {
-		// 优先使用 WiFi 地址，如果没有则尝试获取蜂窝数据地址
-		LAN = $network.v4.primaryAddress || $network.v4.cellular.address || '-';
+	  if (v4.primaryRouter) {
+		details.routerIP = v4.primaryRouter;
 	  }
 	}
   
-	return { SSID, LAN };
+	return details;
   }
+
   
   // 通知
 async function notify(title, subt, desc, opts) {
@@ -336,7 +331,7 @@ async function Fetch(request = {}) {
 
 async function getquote() {
     return new Promise((resolve, reject) => {
-      let url = 'https://international.v1.hitokoto.cn/?c=e&c=h&c=i&c=d&max_length=10';
+      let url = 'https://international.v1.hitokoto.cn/?c=e&c=h&c=i&c=d&max_length=5';
       $httpClient.get(url, function(error, response, data) {
         if (error) {
           reject(`error: ${error.message}`);
