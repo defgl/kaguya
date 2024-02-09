@@ -55,14 +55,14 @@ const isWifi = $network.wifi.ssid !== undefined;
 icon = isWifi ? 'chart.bar.fill' : 'cellularbars';
 
 // 更新 title 和 content
-title = (isWifi ? transformedSSID : '𝘾𝙚𝙡𝙡𝙪𝙡𝙖𝙧') + ' @ ' + transformedCN_ADDR_EN;
-title += '\n' + quote + '--------------------';
+title = (isWifi ? transformedSSID : '𝘾𝙚𝙡𝙡𝙪𝙡𝙖𝙧') + '@' + transformedCN_ADDR_EN+ '\n-----------------------------';
+title += '\n' + quote;
 
 content = '𝙋𝙪𝙗𝙡𝙞𝙘 : ' + transformedCN_IP;
 if (isWifi) {
   content += '\n𝙍𝙤𝙪𝙩𝙚𝙧 / 𝙇𝘼𝙉: ' + transformedLanIP + ' / ' + transformedRouterIP;
 }
-content += '\n𝘓𝘢𝘴𝘵 𝘊𝘩𝘦𝘤𝘬𝘦𝘥:' + transformedTime;
+content += '\n𝙇𝙖𝙨𝙩 𝘾𝙝𝙚𝙘𝙠𝙚𝙙:' + transformedTime;
 
 })()
   .catch(async e => {
@@ -345,7 +345,7 @@ async function getquote() {
         if (parsedData) {
           let extractedText = parsedData.hitokoto;
           if (parsedData.from_who || parsedData.from) {
-            extractedText += ' / ';
+            extractedText += '\n              / ';
           }
           if (parsedData.from_who) {
             extractedText += ` ${parsedData.from_who}`;
