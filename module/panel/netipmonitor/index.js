@@ -81,7 +81,7 @@ content += '\n𝙇𝙖𝙨𝙩 𝘾𝙝𝙚𝙘𝙠𝙚𝙙:' + transformedTime;
 
 // 获取Wi-Fi SSID
 function getSSID() {
-	return $network.wifi?.ssid ?? '未连接到Wi-Fi';
+	return $network.wifi?.ssid ?? 'Cellular';
   }
   
   // 获取局域网IP地址和路由器IP地址
