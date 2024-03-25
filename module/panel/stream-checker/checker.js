@@ -111,34 +111,27 @@ const REQUEST_HEADERS = {
 	  const [movieInfo, quote] = await Promise.all([getMovieInfo(), getQuote()]);
 	  panel_result.title = `${quote}\n${movieInfo}`;
   
-	let [{ region, status }] = await Promise.all([testDisneyPlus()])
+	let [{ region, status }] = await Promise.all([check_disneyplus()])
+
 	await Promise.all([
-	  check_youtube_premium(),
-	  check_netflix(),
-	  check_bilibili(),
-	]).then((result) => {
-	  let disney_result = "𝘿𝙞𝙨𝙣𝙚𝙮+: "
-  
-	  if (status === STATUS_COMING) {
-		disney_result += `Coming soon. | ${getFlagEmoji(region)}`
-	  } else if (status === STATUS_AVAILABLE) {
-		disney_result += `Enjoy ur shows now. | ${getFlagEmoji(region)}`
-	  } else if (status === STATUS_NOT_AVAILABLE) {
-		disney_result += `Not available.`
-	  } else if (status === STATUS_TIMEOUT) {
-		disney_result += `Failed to check.`
-	  }
-  
-	  // 插入disney_result到结果数组的开始
-	  result.unshift(disney_result)
-	  let content = result.join("\n")
-	  panel_result["content"] = convertToItalicUnicode(content)
-  
-	  $done(panel_result)
-	})
+		check_youtube(),
+		check_netflix(),
+		check_bilibili(),
+		check_disneyplus()
+	  ]).then((result) => {
+		let [youtube_result, netflix_result, disney_result, bilibili_result ] = result;
+		
+		
+		let content = result.join("\n");
+		
+		panel_result["content"] = convertToItalicUnicode(content);
+		
+		$done(panel_result);
+	  });
+
   })()
   
-  async function check_youtube_premium() {
+  async function check_youtube() {
 	let inner_check = () => {
 	  return new Promise((resolve, reject) => {
 		let option = {
@@ -251,46 +244,47 @@ const REQUEST_HEADERS = {
 	return netflix_check_result
   }
   
-  async function testDisneyPlus() {
+  async function check_disneyplus() {
 	try {
-	  let { region, cnbl } = await Promise.race([testHomePage(), timeout(7000)])
-	  console.log(`homepage: region=${region}, cnbl=${cnbl}`)
-	  // 即将登陆
-	  //  if (cnbl == 2) {
-	  //    return { region, status: STATUS_COMING }
-	  //  }
+	  let { region, cnbl } = await Promise.race([testHomePage(), timeout(7000)]);
+	  console.log(`homepage: region=${region}, cnbl=${cnbl}`);
+	  
+	  let Disney_result = "𝘿𝙞𝙨𝙣𝙚𝙮+: ";
+	  
 	  let { countryCode, inSupportedLocation } = await Promise.race([
 		getLocationInfo(),
 		timeout(7000),
-	  ])
-	  console.log(
-		`getLocationInfo: countryCode=${countryCode}, inSupportedLocation=${inSupportedLocation}`,
-	  )
-  
-	  region = countryCode ?? region
-	  console.log("region:" + region)
-	  // 即将登陆
+	  ]);
+	  region = countryCode ?? region;
+	  console.log(`getLocationInfo: countryCode=${countryCode}, inSupportedLocation=${inSupportedLocation}`);
+	  
 	  if (inSupportedLocation === false || inSupportedLocation === "false") {
-		return { region, status: STATUS_COMING }
+		if (region) {
+		  if (cnbl === "2") {
+			Disney_result += `Coming soon. | ${getFlagEmoji(region)}`;
+		  } else {
+			Disney_result += `Available For [Disney+ ${region}] Soon`;
+		  }
+		} else {
+		  Disney_result += "Not available";
+		}
 	  } else {
-		// 支持解锁
-		return { region, status: STATUS_AVAILABLE }
+		Disney_result += `Enjoy ur shows now. | ${getFlagEmoji(region)}`;
 	  }
+	  
+	  return Disney_result;
 	} catch (error) {
-	  console.log("error:" + error)
-  
-	  // 不支持解锁
+	  console.log("error:" + error);
+	  
 	  if (error === "Not Available") {
-		console.log("not Available")
-		return { status: STATUS_NOT_AVAILABLE }
+		return "𝘿𝙞𝙨𝙣𝙚𝙮+: Not available";
 	  }
-  
-	  // 检测超时
+	  
 	  if (error === "timeout") {
-		return { status: STATUS_TIMEOUT }
+		return "𝘿𝙞𝙨𝙣𝙚𝙮+: Failed to check";
 	  }
-  
-	  return { status: STATUS_ERROR }
+	  
+	  return "𝘿𝙞𝙨𝙣𝙚𝙮+: Failed to check";
 	}
   }
   
@@ -339,7 +333,7 @@ const REQUEST_HEADERS = {
 		  reject("Not Available")
 		  return
 		}
-  
+
 		data = JSON.parse(data)
 		if (data?.errors) {
 		  console.log("getLocationInfo: " + data)
@@ -407,18 +401,20 @@ const REQUEST_HEADERS = {
 			reject("Error")
 			return
 		  }
+		  
 		  let result = JSON.parse(data)
 		  if (result.code === 0) {
 			resolve("Available")
 			return
 		  }
+		  
 		  resolve("Not Available")
 		})
 	  })
 	}
-  
+	
 	let bilibili_check_result = "𝘽𝙞𝙡𝙞𝙗𝙞𝙡𝙞: "
-  
+	
 	try {
 	  const getCountryCode = async () => {
 		return new Promise((resolve, reject) => {
@@ -431,45 +427,60 @@ const REQUEST_HEADERS = {
 			  reject("Error")
 			  return
 			}
+			
 			let result = JSON.parse(data)
 			if (result.code === 0) {
-			  let countryCode = result.data.country_code
-			  console.log("Country Code:", countryCode)
-			  resolve(countryCode.toUpperCase())
+			  let ip = result.data.addr
+			  let option = {
+				url: `http://ip-api.com/json/${ip}`,
+				headers: REQUEST_HEADERS,
+			  }
+			  $httpClient.get(option, function (error, response, data) {
+				if (error != null || response.status !== 200) {
+				  reject("Error")
+				  return
+				}
+				
+				let result = JSON.parse(data)
+				console.log("IP Info:", result)
+				resolve(result.countryCode)
+			  })
 			} else {
 			  reject("Error")
 			}
 		  })
 		})
 	  }
-  
+	  
 	  const countryCode = await getCountryCode()
+	  console.log("Country Code:", countryCode)
 	  const flag = getFlagEmoji(countryCode)
 	  console.log("Flag Emoji:", flag)
-  
+	  
 	  const [mainland, hkmctw, tw] = await Promise.all([
 		check("https://api.bilibili.com/pgc/player/web/playurl?avid=82846771&qn=0&type=&otype=json&ep_id=307247&fourk=1&fnver=0&fnval=16"),
 		check("https://api.bilibili.com/pgc/player/web/playurl?avid=18281381&cid=29892777&qn=0&type=&otype=json&ep_id=183799&fourk=1&fnver=0&fnval=16"),
 		check("https://api.bilibili.com/pgc/player/web/playurl?avid=50762638&cid=100279344&qn=0&type=&otype=json&ep_id=268176&fourk=1&fnver=0&fnval=16")
 	  ])
-  
+	  
 	  console.log("Mainland:", mainland)
 	  console.log("HK/MC/TW:", hkmctw)
 	  console.log("TW:", tw)
-  
+	  
 	  if (tw === "Available") {
 		bilibili_check_result += `Enjoy watching BILI TW now. | ${flag}`
 	  } else if (hkmctw === "Available") {
-		bilibili_check_result += `Enjoy watching BILI HK/MC/TW now. | ${flag}`
+		bilibili_check_result += `Enjoy watching BILI HK/MC/TW now. | ${flag}`  
 	  } else if (mainland === "Available") {
 		bilibili_check_result += `Enjoy watching BILI CN now. | ${flag}`
 	  } else {
-		bilibili_check_result += `Enjoy watching BILI Intl now. | ${flag}`
+		bilibili_check_result += `Enjoy watching BILI Intl now. | ${flag}`   
 	  }
 	} catch (error) {
+	  console.log("Error:", error)
 	  bilibili_check_result += "Failed to check."
 	}
-  
+	
 	return bilibili_check_result
   }
   
@@ -2351,7 +2362,7 @@ const REQUEST_HEADERS = {
 	}
   
 	console.log(`${title} | ${rating}\n${currentDate} | ${comment}`);
-	return `${title} | ${rating}\n${currentDate} | ${comment}`;
+	return `${currentDate} | ✨ ${rating}\n《${title}》\n${comment}`;
   }
   
   function timeout(delay = 5000) {
