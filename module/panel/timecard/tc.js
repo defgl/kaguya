@@ -1093,7 +1093,7 @@ title_random()
       title: title,  // 这里用到了上面 Promise 解析出的 title
       icon: icon_now(tnumcount(Number(nowlist))),
       'icon-color': '#e52b50',
-      content: `${tlist[nowlist][0]}:${today(tnumcount(nowlist))}  •  ${tlist[Number(nowlist) + Number(1)][0]}:${tnumcount(Number(nowlist) + Number(1))}天  •  ${tlist[Number(nowlist) + Number(2)][0]}:${tnumcount(Number(nowlist) + Number(2))}天`
+      content: `${tlist[nowlist][0]}:${today(tnumcount(nowlist))} ➜ ${tlist[Number(nowlist) + Number(1)][0]}:${tnumcount(Number(nowlist) + Number(1))}天 ➜ ${tlist[Number(nowlist) + Number(2)][0]}:${tnumcount(Number(nowlist) + Number(2))}天`
     });
   })
   .catch(error => {
