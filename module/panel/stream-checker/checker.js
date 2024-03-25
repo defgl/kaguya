@@ -108,33 +108,7 @@ const REQUEST_HEADERS = {
 	  "icon-color": "#318ce7",
 	}
   
-	let getquote = new Promise((resolve, reject) => {
-		let url = "https://international.v1.hitokoto.cn/?c=a&c=b&c=c&c=h&c=h&max_length=12"
-		$httpClient.get(url, function (error, response, data) {
-		  if (error) {
-			reject(error)
-			return
-		  }
-		  if (response.status !== 200) {
-			reject(
-			  new Error(`Failed to fetch data. HTTP Status: ${response.status}`),
-			)
-			return
-		  }
-		  let jsonData = JSON.parse(data)
-		  let hitokoto = jsonData.hitokoto;
-		  let from = jsonData.from;
-		  let from_who = jsonData.from_who;
-		  let result = `${hitokoto} - 《${from}》 -`;
-		  if (from_who) {
-			result = `${hitokoto} - ${from_who}《${from}》 -`;
-		  }
-		  resolve(result)
-		})
-	  })
-  
-	  const movieInfo = await getMovieInfo();
-	  let quote = await getquote;
+	  const [movieInfo, quote] = await Promise.all([getMovieInfo(), getQuote()]);
 	  panel_result.title = `${quote}\n${movieInfo}`;
   
 	let [{ region, status }] = await Promise.all([testDisneyPlus()])
@@ -433,13 +407,11 @@ const REQUEST_HEADERS = {
 			reject("Error")
 			return
 		  }
-  
 		  let result = JSON.parse(data)
 		  if (result.code === 0) {
 			resolve("Available")
 			return
 		  }
-  
 		  resolve("Not Available")
 		})
 	  })
@@ -451,7 +423,7 @@ const REQUEST_HEADERS = {
 	  const getCountryCode = async () => {
 		return new Promise((resolve, reject) => {
 		  let option = {
-			url: "https://api.live.bilibili.com/client/v1/Ip/getInfoNew",
+			url: "https://www.cloudflare.com/cdn-cgi/trace",
 			headers: REQUEST_HEADERS,
 		  }
 		  $httpClient.get(option, function (error, response, data) {
@@ -459,27 +431,10 @@ const REQUEST_HEADERS = {
 			  reject("Error")
 			  return
 			}
-  
-			let result = JSON.parse(data)
-			if (result.code === 0) {
-			  let ip = result.data.addr
-			  let option = {
-				url: `https://api.ipapi.is/?q=${ip}`,
-				headers: REQUEST_HEADERS,
-			  }
-			  $httpClient.get(option, function (error, response, data) {
-				if (error != null || response.status !== 200) {
-				  reject("Error")
-				  return
-				}
-  
-				let result = JSON.parse(data)
-				console.log("Location Info:", result)
-				resolve(result.location.country_code)
-			  })
-			} else {
-			  reject("Error")
-			}
+			// 从响应中提取国家代码
+			const countryCode = data.split("loc=")[1].split("\n")[0]
+			console.log("Country Code:", countryCode)
+			resolve(countryCode.toUpperCase())
 		  })
 		})
 	  }
@@ -488,23 +443,21 @@ const REQUEST_HEADERS = {
 	  console.log("Country Code:", countryCode)
 	  const flag = getFlagEmoji(countryCode)
 	  console.log("Flag Emoji:", flag)
-	  const mainland = await check(
-		"https://api.bilibili.com/pgc/player/web/playurl?avid=82846771&qn=0&type=&otype=json&ep_id=307247&fourk=1&fnver=0&fnval=16",
-	  )
+  
+	  const [mainland, hkmctw, tw] = await Promise.all([
+		check("https://api.bilibili.com/pgc/player/web/playurl?avid=82846771&qn=0&type=&otype=json&ep_id=307247&fourk=1&fnver=0&fnval=16"),
+		check("https://api.bilibili.com/pgc/player/web/playurl?avid=18281381&cid=29892777&qn=0&type=&otype=json&ep_id=183799&fourk=1&fnver=0&fnval=16"),
+		check("https://api.bilibili.com/pgc/player/web/playurl?avid=50762638&cid=100279344&qn=0&type=&otype=json&ep_id=268176&fourk=1&fnver=0&fnval=16")
+	  ])
+  
 	  console.log("Mainland:", mainland)
-	  const hkmctw = await check(
-		"https://api.bilibili.com/pgc/player/web/playurl?avid=18281381&cid=29892777&qn=0&type=&otype=json&ep_id=183799&fourk=1&fnver=0&fnval=16",
-	  )
 	  console.log("HK/MC/TW:", hkmctw)
-	  const tw = await check(
-		"https://api.bilibili.com/pgc/player/web/playurl?avid=50762638&cid=100279344&qn=0&type=&otype=json&ep_id=268176&fourk=1&fnver=0&fnval=16",
-	  )
 	  console.log("TW:", tw)
   
 	  if (tw === "Available") {
 		bilibili_check_result += `Enjoy watching BILI TW now. | ${flag}`
 	  } else if (hkmctw === "Available") {
-		bilibili_check_result += `Enjoy watching BILI GC now. | ${flag}`
+		bilibili_check_result += `Enjoy watching BILI HK/MC/TW now. | ${flag}`  
 	  } else if (mainland === "Available") {
 		bilibili_check_result += `Enjoy watching BILI CN now. | ${flag}`
 	  } else {
@@ -517,6 +470,31 @@ const REQUEST_HEADERS = {
 	return bilibili_check_result
   }
   
+  async function getQuote() {
+	return new Promise((resolve, reject) => {
+	  let url = "https://international.v1.hitokoto.cn/?c=a&c=b&c=c&c=h&max_length=12";
+	  $httpClient.get(url, function (error, response, data) {
+		if (error) {
+		  reject(error);
+		  return;
+		}
+		if (response.status !== 200) {
+		  reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+		  return;
+		}
+		let jsonData = JSON.parse(data);
+		let hitokoto = jsonData.hitokoto;
+		let from = jsonData.from;
+		let from_who = jsonData.from_who;
+		let result = `${hitokoto} - 《${from}》 -`;
+		if (from_who) {
+		  result = `${hitokoto} - ${from_who}《${from}》 -`;
+		}
+		resolve(result);
+	  });
+	});
+  }
+
   async function getMovieInfo() {
 	let title = "未找到电影", rating = "无", comment = "无相关评论";
 	let currentDate;
