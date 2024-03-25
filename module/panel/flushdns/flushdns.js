@@ -48,9 +48,9 @@ async function getQuote() {
 		let hitokoto = jsonData.hitokoto;
 		let from = jsonData.from;
 		let from_who = jsonData.from_who;
-		let result = `${hitokoto} - 《${from}》 -`;
+		let result = `${hitokoto} \n          /《${from}》`;
 		if (from_who) {
-      result = `${hitokoto} \n          / ${from_who} 《${from}》` : `${hitokoto}\n          /《${from}》`;
+      result = `${hitokoto} \n          / ${from_who} 《${from}》``;
 		}
 		resolve(result);
 	  });
