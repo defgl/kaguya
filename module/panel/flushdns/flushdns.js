@@ -39,33 +39,26 @@ async function getQuote() {
     let hitokoto = jsonData.hitokoto;
     let from = jsonData.from;
     let from_who = jsonData.from_who;
-    return from_who ? `${hitokoto} \n / ${from_who} 《${from}》` : `${hitokoto}\n /《${from}》`;
+    return from_who ? `${hitokoto} \n          / ${from_who} 《${from}》` : `${hitokoto}\n          /《${from}》`;
   } catch (error) {
     console.error(`Failed to fetch quote: ${error}`);
-    return "";
+    return "見面吧，就現在。";
   }
 }
 
-  async function fetchweather() {
-    return new Promise((resolve, reject) => {
-      let url = 'https://api.vvhan.com/api/weather';
-      $httpClient.get(url, function(error, response, data) {
-        if (error) {
-          reject(`error: ${error.message}`);
-          return;
-        }
-        if (response.status !== 200) {
-          reject(`failed to fetch data. http status: ${response.status}`);
-          return;
-        }
-        let parsedData = JSON.parse(data);
-        if (parsedData.success) {
-          let weatherInfo = parsedData.info;
-          let week = weatherInfo.week.replace('星期', '周');
-          let formattedData = `${parsedData.city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${weatherInfo.tip}`;
-          resolve(formattedData);
-        } else {
-        }
-      });
-    });
+async function fetchweather() {
+  try {
+    let response = await $httpClient.get('https://api.vvhan.com/api/weather');
+    let parsedData = JSON.parse(response.data);
+    if (parsedData.success) {
+      let weatherInfo = parsedData.info;
+      let week = weatherInfo.week.replace('星期', '周');
+      return `${parsedData.city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${weatherInfo.tip}`;
+    } else {
+      throw new Error('Failed to fetch weather data');
+    }
+  } catch (error) {
+    console.error(`Failed to fetch weather: ${error}`);
+    return "天氣好的話，我會去找你。";
   }
+}
