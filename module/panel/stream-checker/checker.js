@@ -1,349 +1,427 @@
+/*
+ * 由@LucaLin233编写
+ * 原脚本地址：https://raw.githubusercontent.com/LucaLin233/Luca_Conf/main/Surge/JS/stream-all.js
+ * 由@Rabbit-Spec修改
+ * 更新日期：2022.06.26
+ * 版本：2.2
+ */
+
 const REQUEST_HEADERS = {
-  "User-Agent":
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
-  "Accept-Language": "en",
-}
-
-// 即将登陆
-const STATUS_COMING = 2
-// 支持解锁
-const STATUS_AVAILABLE = 1
-// 不支持解锁
-const STATUS_NOT_AVAILABLE = 0
-// 检测超时
-const STATUS_TIMEOUT = -1
-// 检测异常
-const STATUS_ERROR = -2
-
-const UA =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36"
-
-const checkFunctions = [
-	check_youtube_premium,
-	check_netflix,
-	check_bilibili,
-	check_disneyplus
-];
-  
-const resultLabels = [
-	"𝙔𝙤𝙪𝙏𝙪𝙗𝙚: ",
-	"𝙉𝙚𝙩𝙛𝙡𝙞𝙭: ",
-	"𝘽𝙞𝙡𝙞𝙗𝙞𝙡𝙞: ",
-	"𝘿𝙞𝙨𝙣𝙚𝙮+: "
-];
-
-async function getyiyan() {
-	try {
-	  let url = "https://v1.hitokoto.cn/?c=a&c=b&c=c&c=h&c=h&encode=json";
-	  let response = await $httpClient.get(url);
-	  
-	  if (response.status !== 200) {
-		throw new Error(`Failed to fetch data. HTTP Status: ${response.status}`);
-	  }
-	  
-	  let jsonData = JSON.parse(response.data);
-	  let hitokoto = jsonData.hitokoto;
-	  let from_who = jsonData.from_who;
-	  let from = jsonData.from;
-	  let result = `『${hitokoto}』 -- ${from_who} 『${from}』`;
-	  
-	  return result;
-	} catch (error) {
-	  console.log(error);
-	  return "Failed to fetch yiyan.";
-	}
+	"User-Agent":
+	  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
+	"Accept-Language": "en",
   }
-
-  async function check_youtube_premium() {
-	try {
-	  let option = {
-		url: "https://www.youtube.com/premium",
-		headers: REQUEST_HEADERS,
-	  };
-	  let response = await $httpClient.get(option);
-	  let data = response.data;
-	  
-	  if (data.indexOf("Premium is not available in your country") !== -1) {
-		return "Not Available";
+  
+  // 即将登陆
+  const STATUS_COMING = 2
+  // 支持解锁
+  const STATUS_AVAILABLE = 1
+  // 不支持解锁
+  const STATUS_NOT_AVAILABLE = 0
+  // 检测超时
+  const STATUS_TIMEOUT = -1
+  // 检测异常
+  const STATUS_ERROR = -2
+  
+  const UA =
+	"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36"
+  
+  ;(async () => {
+	function convertToItalicUnicode(text) {
+	  // 斜体字符的Unicode映射
+	  const italicCharMap = {
+		A: "𝘈",
+		B: "𝘉",
+		C: "𝘊",
+		D: "𝘋",
+		E: "𝘌",
+		F: "𝘍",
+		G: "𝘎",
+		H: "𝘏",
+		I: "𝘐",
+		J: "𝘑",
+		K: "𝘒",
+		L: "𝘓",
+		M: "𝘔",
+		N: "𝘕",
+		O: "𝘖",
+		P: "𝘗",
+		Q: "𝘘",
+		R: "𝘙",
+		S: "𝘚",
+		T: "𝘛",
+		U: "𝘜",
+		V: "𝘝",
+		W: "𝘞",
+		X: "𝘟",
+		Y: "𝘠",
+		Z: "𝘡",
+		a: "𝘢",
+		b: "𝘣",
+		c: "𝘤",
+		d: "𝘥",
+		e: "𝘦",
+		f: "𝘧",
+		g: "𝘨",
+		h: "𝘩",
+		i: "𝘪",
+		j: "𝘫",
+		k: "𝘬",
+		l: "𝘭",
+		m: "𝘮",
+		n: "𝘯",
+		o: "𝘰",
+		p: "𝘱",
+		q: "𝘲",
+		r: "𝘳",
+		s: "𝘴",
+		t: "𝘵",
+		u: "𝘶",
+		v: "𝘷",
+		w: "𝘸",
+		x: "𝘹",
+		y: "𝘺",
+		z: "𝘻",
+		0: "𝟬",
+		1: "𝟭",
+		2: "𝟮",
+		3: "𝟯",
+		4: "𝟰",
+		5: "𝟱",
+		6: "𝟲",
+		7: "𝟳",
+		8: "𝟴",
+		9: "𝟵",
 	  }
   
-	  let region = "";
-	  let re = new RegExp('"countryCode":"(.*?)"', "gm");
-	  let result = re.exec(data);
-	  if (result != null && result.length === 2) {
-		region = result[1];
-	  } else if (data.indexOf("www.google.cn") !== -1) {
-		region = "CN";
-	  } else {
-		region = "US";
-	  }
-	  
-	  return `Enjoy ur time now. | ${getFlagEmoji(region)}`;
-	} catch (error) {
-	  return "Failed to check.";
+	  return text
+		.split("")
+		.map((char) => italicCharMap[char] || char)
+		.join("")
 	}
+  
+	// 示例用法
+	let panel_result = {
+	  title: "",
+	  content: "",
+	  icon: "movieclapper.fill",
+	  "icon-color": "#318ce7",
+	}
+  
+	let getquote = new Promise((resolve, reject) => {
+		let url = "https://international.v1.hitokoto.cn/?c=a&c=b&c=c&c=h&c=h&max_length=12"
+		$httpClient.get(url, function (error, response, data) {
+		  if (error) {
+			reject(error)
+			return
+		  }
+		  if (response.status !== 200) {
+			reject(
+			  new Error(`Failed to fetch data. HTTP Status: ${response.status}`),
+			)
+			return
+		  }
+		  let jsonData = JSON.parse(data)
+		  let hitokoto = jsonData.hitokoto;
+		  let from = jsonData.from;
+		  let from_who = jsonData.from_who;
+		  let result = `${hitokoto} - 《${from}》 -`;
+		  if (from_who) {
+			result = `${hitokoto} - ${from_who}《${from}》 -`;
+		  }
+		  resolve(result)
+		})
+	  })
+  
+	  const movieInfo = await getMovieInfo();
+	  let quote = await getquote;
+	  panel_result.title = `${quote}\n${movieInfo}`;
+  
+	let [{ region, status }] = await Promise.all([testDisneyPlus()])
+	await Promise.all([
+	  check_youtube_premium(),
+	  check_netflix(),
+	  check_bilibili(),
+	]).then((result) => {
+	  let disney_result = "𝘿𝙞𝙨𝙣𝙚𝙮+: "
+  
+	  if (status === STATUS_COMING) {
+		disney_result += `Coming soon. | ${getFlagEmoji(region)}`
+	  } else if (status === STATUS_AVAILABLE) {
+		disney_result += `Enjoy ur shows now. | ${getFlagEmoji(region)}`
+	  } else if (status === STATUS_NOT_AVAILABLE) {
+		disney_result += `Not available.`
+	  } else if (status === STATUS_TIMEOUT) {
+		disney_result += `Failed to check.`
+	  }
+  
+	  // 插入disney_result到结果数组的开始
+	  result.unshift(disney_result)
+	  let content = result.join("\n")
+	  panel_result["content"] = convertToItalicUnicode(content)
+  
+	  $done(panel_result)
+	})
+  })()
+  
+  async function check_youtube_premium() {
+	let inner_check = () => {
+	  return new Promise((resolve, reject) => {
+		let option = {
+		  url: "https://www.youtube.com/premium",
+		  headers: REQUEST_HEADERS,
+		}
+		$httpClient.get(option, function (error, response, data) {
+		  if (error != null || response.status !== 200) {
+			reject("Error")
+			return
+		  }
+  
+		  if (data.indexOf("Premium is not available in your country") !== -1) {
+			resolve("Not Available")
+			return
+		  }
+  
+		  let region = ""
+		  let re = new RegExp('"countryCode":"(.*?)"', "gm")
+		  let result = re.exec(data)
+		  if (result != null && result.length === 2) {
+			region = result[1]
+		  } else if (data.indexOf("www.google.cn") !== -1) {
+			region = "CN"
+		  } else {
+			region = "US"
+		  }
+		  resolve(region)
+		})
+	  })
+	}
+  
+	let youtube_check_result = "𝙔𝙤𝙪𝙏𝙪𝙗𝙚: "
+  
+	try {
+	  const code = await inner_check()
+	  if (code === "Not Available") {
+		youtube_check_result += "Not Available"
+	  } else {
+		const flag = getFlagEmoji(code)
+		youtube_check_result += `Enjoy ur time now. | ${flag}`
+	  }
+	} catch (error) {
+	  youtube_check_result += "Failed to check."
+	}
+  
+	return youtube_check_result
   }
   
   async function check_netflix() {
-	try {
-	  let filmId = 80062035;
-	  let option = {
-		url: "https://www.netflix.com/title/" + filmId,
-		headers: REQUEST_HEADERS,
-	  };
-	  let response = await $httpClient.get(option);
-	  
-	  if (response.status === 403) {
-		return "Not Available";
-	  } else if (response.status === 404) {
-		filmId = 80018499;
-		option.url = "https://www.netflix.com/title/" + filmId;
-		response = await $httpClient.get(option);
-		
-		if (response.status === 404) {
-		  return "Not Available";
-		} else if (response.status === 200) {
-		  let region = response.headers["x-originating-url"].split("/")[3].split("-")[0];
-		  region = region === "title" ? "us" : region;
-		  return `Only native shows available | ${getFlagEmoji(region)}`;
+	let inner_check = (filmId) => {
+	  return new Promise((resolve, reject) => {
+		let option = {
+		  url: "https://www.netflix.com/title/" + filmId,
+		  headers: REQUEST_HEADERS,
 		}
-	  } else if (response.status === 200) {
-		let region = response.headers["x-originating-url"].split("/")[3].split("-")[0];
-		region = region === "title" ? "us" : region;
-		return `Enjoy ur shows now. | ${getFlagEmoji(region)}`;
-	  }
-	  
-	  return "Failed to check.";
-	} catch (error) {
-	  return "Failed to check.";
+		$httpClient.get(option, function (error, response, data) {
+		  if (error != null) {
+			reject("Error")
+			return
+		  }
+  
+		  if (response.status === 403) {
+			reject("Not Available")
+			return
+		  }
+  
+		  if (response.status === 404) {
+			resolve("Not Found")
+			return
+		  }
+  
+		  if (response.status === 200) {
+			let url = response.headers["x-originating-url"]
+			let region = url.split("/")[3]
+			region = region.split("-")[0]
+			if (region == "title") {
+			  region = "us"
+			}
+			resolve(region)
+			return
+		  }
+  
+		  reject("Error")
+		})
+	  })
 	}
-  }
-
-;(async () => {
-  // 示例用法
-  let panel_result = {
-    title: "",
-    content: "",
-    icon: "pano.badge.play.fill",
-    "icon-color": "#318ce7",
-  }
-
-  // 使用await来获取text内容并设置为title
-  let textContent = await getyiyan();
-  let movieInfo = await getMovieInfo();
-  panel_result.title = `${textContent}\n${movieInfo}`;
-
-  try {
-    const results = await Promise.all(checkFunctions.map(func => func()));
-
-    let content = results.map((result, index) => {
-      let label = resultLabels[index];
-      
-      if (typeof result === "object") {
-        let { region, status } = result;
-        if (status === STATUS_COMING) {
-          return `${label}Coming soon. | ${getFlagEmoji(region)}`;
-        } else if (status === STATUS_AVAILABLE) {
-          return `${label}Enjoy ur shows now. | ${getFlagEmoji(region)}`;
-        } else if (status === STATUS_NOT_AVAILABLE) {
-          return `${label}Not available.`;
-        } else if (status === STATUS_TIMEOUT) {
-          return `${label}Failed to check.`;
-        }
-      } else {
-        return `${label}${result}`;
-      }
-    }).join("\n");
-
-    panel_result["content"] = content;
-    $done(panel_result);
-  } catch (error) {
-    console.log(error);
-    $done({});
-  }
-})();
-
-async function check_disneyplus() {
+  
+	let netflix_check_result = "𝙉𝙚𝙩𝙛𝙡𝙞𝙭: "
+  
 	try {
-	  // 获取 assertion
-	  let preAssertion = await Promise.race([getPreAssertion(), timeout(10000)])
-  
-	  // 判断IPv6支持
-	  if (preAssertion === "Not Support" && inIPv6) {
-		return { status: STATUS_NOT_AVAILABLE, error: "IPv6 Not Supported" }
+	  const code1 = await inner_check(80062035)
+	  if (code1 === "Not Found") {
+		const code2 = await inner_check(80018499)
+		if (code2 === "Not Found") {
+		  throw "Not Available"
+		}
+		netflix_check_result += `Only native shows available | ${getFlagEmoji(code2)}`
+	  } else {
+		netflix_check_result += `Enjoy ur shows now. | ${getFlagEmoji(code1)}`
 	  }
-  
-	  // 获取 refresh_token
-	  let token = await Promise.race([getToken(preAssertion), timeout(10000)])
-  
-	  // 判断 403 错误
-	  if (token === "Forbidden") {
-		return { status: STATUS_NOT_AVAILABLE }
+	} catch (error) {
+	  if (error === "Not Available") {
+		netflix_check_result += "Not Available"
+	  } else {
+		netflix_check_result += "Failed to check."
 	  }
+	}
   
-	  // 获取 region 和 inSupportedLocation
-	  let { region, inSupportedLocation } = await Promise.race([getLocationInfo(token), timeout(10000)])
+	return netflix_check_result
+  }
   
-	  // 判断解锁状态
-	  if (inSupportedLocation === true) {
-		return { region, status: STATUS_AVAILABLE }
-	  } else if (inSupportedLocation === false) {
+  async function testDisneyPlus() {
+	try {
+	  let { region, cnbl } = await Promise.race([testHomePage(), timeout(7000)])
+	  console.log(`homepage: region=${region}, cnbl=${cnbl}`)
+	  // 即将登陆
+	  //  if (cnbl == 2) {
+	  //    return { region, status: STATUS_COMING }
+	  //  }
+	  let { countryCode, inSupportedLocation } = await Promise.race([
+		getLocationInfo(),
+		timeout(7000),
+	  ])
+	  console.log(
+		`getLocationInfo: countryCode=${countryCode}, inSupportedLocation=${inSupportedLocation}`,
+	  )
+  
+	  region = countryCode ?? region
+	  console.log("region:" + region)
+	  // 即将登陆
+	  if (inSupportedLocation === false || inSupportedLocation === "false") {
 		return { region, status: STATUS_COMING }
 	  } else {
-		let unavailable = await Promise.race([getUnavailableCheck(), timeout(10000)])
-		if (unavailable === true) {
-		  return { status: STATUS_NOT_AVAILABLE }
-		} else if (unavailable === false) {
-		  return { region, status: STATUS_COMING }
-		} else {
-		  return { status: STATUS_ERROR }
-		}
+		// 支持解锁
+		return { region, status: STATUS_AVAILABLE }
 	  }
 	} catch (error) {
-	  // 判断超时和其他错误
-	  console.log(error)
+	  console.log("error:" + error)
+  
+	  // 不支持解锁
 	  if (error === "Not Available") {
+		console.log("not Available")
 		return { status: STATUS_NOT_AVAILABLE }
-	  } else if (error === "timeout") {
-		return { status: STATUS_TIMEOUT }
-	  } else {
-		return { status: STATUS_ERROR }
 	  }
+  
+	  // 检测超时
+	  if (error === "timeout") {
+		return { status: STATUS_TIMEOUT }
+	  }
+  
+	  return { status: STATUS_ERROR }
 	}
   }
   
-  // 获取 assertion
-  function getPreAssertion() {
-	return new Promise((resolve, reject) => {
-	  let opts = {
-		url: "https://disney.api.edge.bamgrid.com/devices",
-		headers: {
-		  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36",
-		  "authorization": "Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84",
-		  "content-type": "application/json; charset=UTF-8" 
-		},
-		body: JSON.stringify({
-		  "deviceFamily": "browser",
-		  "applicationRuntime": "chrome",
-		  "deviceProfile": "windows",
-		  "attributes": {}
-		})
-	  }
-  
-	  $httpClient.post(opts, function (error, response, data) {
-		if (error) {
-		  if (inIPv6) {
-			resolve("Not Support")
-		  } else {
-			reject("Not Available")
-		  }
-		} else {
-		  resolve(data)
-		}
-	  })
-	})
-  }
-  
-  // 获取 refresh_token
-  function getToken(preAssertion) {
-	return new Promise((resolve, reject) => {
-	  let opts = {
-		url: "https://disney.api.edge.bamgrid.com/token",
-		headers: {
-		  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36",
-		  "authorization": "Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84"
-		},
-		body: preAssertion.replace("DISNEYASSERTION", JSON.parse(preAssertion).assertion)
-	  }
-  
-	  $httpClient.post(opts, function (error, response, data) {
-		if (error) {
-		  reject("Not Available")
-		} else {
-		  if (response.status === 403) {
-			resolve("Forbidden")
-		  } else {
-			resolve(JSON.parse(data).refresh_token)  
-		  }
-		}
-	  })
-	})
-  }
-  
-  // 获取 region 和 inSupportedLocation
-  function getLocationInfo(token) {
+  function getLocationInfo() {
 	return new Promise((resolve, reject) => {
 	  let opts = {
 		url: "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql",
 		headers: {
-		  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36",
-		  "authorization": "ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84"
+		  "Accept-Language": "en",
+		  Authorization:
+			"ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84",
+		  "Content-Type": "application/json",
+		  "User-Agent": UA,
 		},
 		body: JSON.stringify({
-		  "query": "mutation registerDevice($input: RegisterDeviceInput!) { registerDevice(registerDevice: $input) { grant { grantType assertion } } }",
-		  "variables": {
-			"input": {
-			  "applicationRuntime": "chrome",
-			  "attributes": {
-				"browserName": "chrome",
-				"browserVersion": "94.0.4606.71",
-				"manufacturer": "microsoft",
-				"model": null,
-				"operatingSystem": "windows",
-				"operatingSystemVersion": "10.0",
-				"osDeviceIds": []
+		  query:
+			"mutation registerDevice($input: RegisterDeviceInput!) { registerDevice(registerDevice: $input) { grant { grantType assertion } } }",
+		  variables: {
+			input: {
+			  applicationRuntime: "chrome",
+			  attributes: {
+				browserName: "chrome",
+				browserVersion: "94.0.4606",
+				manufacturer: "apple",
+				model: null,
+				operatingSystem: "macintosh",
+				operatingSystemVersion: "10.15.7",
+				osDeviceIds: [],
 			  },
-			  "deviceFamily": "browser",
-			  "deviceLanguage": "en",
-			  "deviceProfile": "windows"
-			}
-		  }
-		}).replace("ILOVEDISNEY", token)
+			  deviceFamily: "browser",
+			  deviceLanguage: "en",
+			  deviceProfile: "macosx",
+			},
+		  },
+		}),
 	  }
   
 	  $httpClient.post(opts, function (error, response, data) {
 		if (error) {
 		  reject("Error")
-		} else {
-		  let {
-			token: { accessToken },
-			session: {
-			  inSupportedLocation,
-			  location: { countryCode: region = "unknown" } = {}
-			} = {}
-		  } = JSON.parse(data)?.extensions?.sdk || {}
-  
-		  resolve({ region, inSupportedLocation })
+		  return
 		}
+  
+		if (response.status !== 200) {
+		  console.log("getLocationInfo: " + data)
+		  reject("Not Available")
+		  return
+		}
+  
+		data = JSON.parse(data)
+		if (data?.errors) {
+		  console.log("getLocationInfo: " + data)
+		  reject("Not Available")
+		  return
+		}
+  
+		let {
+		  token: { accessToken },
+		  session: {
+			inSupportedLocation,
+			location: { countryCode },
+		  },
+		} = data?.extensions?.sdk
+		resolve({ inSupportedLocation, countryCode, accessToken })
 	  })
 	})
   }
   
-  // 判断 Disney+ 不可用状态
-  function getUnavailableCheck() {
+  function testHomePage() {
 	return new Promise((resolve, reject) => {
 	  let opts = {
-		url: "https://disneyplus.com",
+		url: "https://www.disneyplus.com/",
 		headers: {
-		  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"
-		}
+		  "Accept-Language": "en",
+		  "User-Agent": UA,
+		},
 	  }
   
 	  $httpClient.get(opts, function (error, response, data) {
 		if (error) {
 		  reject("Error")
-		} else {
-		  if (data.indexOf("unavailable") !== -1) {
-			resolve(true)
-		  } else {
-			resolve(false)
-		  }
+		  return
 		}
+		if (
+		  response.status !== 200 ||
+		  data.indexOf("Sorry, Disney+ is not available in your region.") !== -1
+		) {
+		  reject("Not Available")
+		  return
+		}
+  
+		let match = data.match(/Region: ([A-Za-z]{2})[\s\S]*?CNBL: ([12])/)
+		if (!match) {
+		  resolve({ region: "", cnbl: "" })
+		  return
+		}
+  
+		let region = match[1]
+		let cnbl = match[2]
+		resolve({ region, cnbl })
 	  })
 	})
   }
-
-async function check_bilibili() {
+  
+  async function check_bilibili() {
 	let check = (url) => {
 	  return new Promise((resolve, reject) => {
 		let option = {
@@ -355,11 +433,13 @@ async function check_bilibili() {
 			reject("Error")
 			return
 		  }
+  
 		  let result = JSON.parse(data)
 		  if (result.code === 0) {
 			resolve("Available")
 			return
 		  }
+  
 		  resolve("Not Available")
 		})
 	  })
@@ -371,7 +451,7 @@ async function check_bilibili() {
 	  const getCountryCode = async () => {
 		return new Promise((resolve, reject) => {
 		  let option = {
-			url: "https://api.bilibili.com/x/web-interface/zone",
+			url: "https://api.live.bilibili.com/client/v1/Ip/getInfoNew",
 			headers: REQUEST_HEADERS,
 		  }
 		  $httpClient.get(option, function (error, response, data) {
@@ -379,11 +459,24 @@ async function check_bilibili() {
 			  reject("Error")
 			  return
 			}
+  
 			let result = JSON.parse(data)
 			if (result.code === 0) {
-			  let countryCode = result.data.country_code
-			  console.log("Country Code:", countryCode)
-			  resolve(countryCode.toUpperCase())
+			  let ip = result.data.addr
+			  let option = {
+				url: `https://api.ipapi.is/?q=${ip}`,
+				headers: REQUEST_HEADERS,
+			  }
+			  $httpClient.get(option, function (error, response, data) {
+				if (error != null || response.status !== 200) {
+				  reject("Error")
+				  return
+				}
+  
+				let result = JSON.parse(data)
+				console.log("Location Info:", result)
+				resolve(result.location.country_code)
+			  })
 			} else {
 			  reject("Error")
 			}
@@ -392,23 +485,26 @@ async function check_bilibili() {
 	  }
   
 	  const countryCode = await getCountryCode()
+	  console.log("Country Code:", countryCode)
 	  const flag = getFlagEmoji(countryCode)
 	  console.log("Flag Emoji:", flag)
-  
-	  const [mainland, hkmctw, tw] = await Promise.all([
-		check("https://api.bilibili.com/pgc/player/web/playurl?avid=82846771&qn=0&type=&otype=json&ep_id=307247&fourk=1&fnver=0&fnval=16"),
-		check("https://api.bilibili.com/pgc/player/web/playurl?avid=18281381&cid=29892777&qn=0&type=&otype=json&ep_id=183799&fourk=1&fnver=0&fnval=16"),
-		check("https://api.bilibili.com/pgc/player/web/playurl?avid=50762638&cid=100279344&qn=0&type=&otype=json&ep_id=268176&fourk=1&fnver=0&fnval=16")
-	  ])
-  
+	  const mainland = await check(
+		"https://api.bilibili.com/pgc/player/web/playurl?avid=82846771&qn=0&type=&otype=json&ep_id=307247&fourk=1&fnver=0&fnval=16",
+	  )
 	  console.log("Mainland:", mainland)
+	  const hkmctw = await check(
+		"https://api.bilibili.com/pgc/player/web/playurl?avid=18281381&cid=29892777&qn=0&type=&otype=json&ep_id=183799&fourk=1&fnver=0&fnval=16",
+	  )
 	  console.log("HK/MC/TW:", hkmctw)
+	  const tw = await check(
+		"https://api.bilibili.com/pgc/player/web/playurl?avid=50762638&cid=100279344&qn=0&type=&otype=json&ep_id=268176&fourk=1&fnver=0&fnval=16",
+	  )
 	  console.log("TW:", tw)
   
 	  if (tw === "Available") {
 		bilibili_check_result += `Enjoy watching BILI TW now. | ${flag}`
 	  } else if (hkmctw === "Available") {
-		bilibili_check_result += `Enjoy watching BILI HK/MC/TW now. | ${flag}`
+		bilibili_check_result += `Enjoy watching BILI GC now. | ${flag}`
 	  } else if (mainland === "Available") {
 		bilibili_check_result += `Enjoy watching BILI CN now. | ${flag}`
 	  } else {
@@ -420,7 +516,7 @@ async function check_bilibili() {
   
 	return bilibili_check_result
   }
-
+  
   async function getMovieInfo() {
 	let title = "未找到电影", rating = "无", comment = "无相关评论";
 	let currentDate;
@@ -2276,18 +2372,19 @@ async function check_bilibili() {
 	console.log(`${title} | ${rating}\n${currentDate} | ${comment}`);
 	return `${title} | ${rating}\n${currentDate} | ${comment}`;
   }
-
-function timeout(delay = 5000) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject("Timeout")
-    }, delay)
-  })
-}
-function getFlagEmoji(countryCode) {
-  const codePoints = countryCode
-    .toUpperCase()
-    .split("")
-    .map((char) => 127397 + char.charCodeAt())
-  return String.fromCodePoint(...codePoints)
-}
+  
+  function timeout(delay = 5000) {
+	return new Promise((resolve, reject) => {
+	  setTimeout(() => {
+		reject("Timeout")
+	  }, delay)
+	})
+  }
+  function getFlagEmoji(countryCode) {
+	const codePoints = countryCode
+	  .toUpperCase()
+	  .split("")
+	  .map((char) => 127397 + char.charCodeAt())
+	return String.fromCodePoint(...codePoints)
+  }
+  
