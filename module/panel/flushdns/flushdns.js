@@ -33,29 +33,21 @@ function httpAPI(path = "", method = "POST", body = null) {
 }
 
 async function getQuote() {
-	return new Promise((resolve, reject) => {
-	  let url = "https://international.v1.hitokoto.cn/?c=j&c=e&c=f&c=e&c=g&max_length=11";
-	  $httpClient.get(url, function (error, response, data) {
-		if (error) {
-		  reject(error);
-		  return;
-		}
-		if (response.status !== 200) {
-		  reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
-		  return;
-		}
-		let jsonData = JSON.parse(data);
-		let hitokoto = jsonData.hitokoto;
-		let from = jsonData.from;
-		let from_who = jsonData.from_who;
-		let result = `${hitokoto} \n          /《${from}》`;
-		if (from_who) {
-      result = `${hitokoto} \n          / ${from_who} 《${from}》``;
-		}
-		resolve(result);
-	  });
-	});
-  }
+  return new Promise((resolve, reject) => {
+    $httpClient.get("https://international.v1.hitokoto.cn/?c=j&c=e&c=f&c=e&c=g&max_length=11", function(error, response, data) {
+      if (error) {
+        console.error(`Failed to fetch quote: ${error || '春宵一刻値千金.'}`);
+        reject("");
+      } else {
+        let jsonData = JSON.parse(data);
+        let hitokoto = jsonData.hitokoto;
+        let from = jsonData.from;
+        let from_who = jsonData.from_who;
+        resolve(from_who ? `${hitokoto} \n          / ${from_who} 《${from}》`);
+      }
+    });
+  });
+}
 
   async function fetchweather() {
     return new Promise((resolve, reject) => {
@@ -76,7 +68,7 @@ async function getQuote() {
           let formattedData = `${parsedData.city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${weatherInfo.tip}`;
           resolve(formattedData);
         } else {
-          reject('failed to fetch data');
         }
       });
     });
+  }
