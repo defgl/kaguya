@@ -14,7 +14,7 @@
 
   let dnsCache = await getDNSCache();
   let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
-  panel.content = `DNS: ${delay} 𝘮𝘴\n${dnsCache}`;
+  panel.content = `DNS: ${delay} ms\n${dnsCache}`;
 
   $done(panel);
 })();
