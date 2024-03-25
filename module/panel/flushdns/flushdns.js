@@ -1,7 +1,6 @@
 !(async () => {
-  let titlecontent = await new Promise((resolve) => getQuote(resolve));
-  let weathercontent = await new Promise((resolve) => fetchweather(resolve));
-  
+  let titlecontent = await getQuote();
+  let weathercontent = await fetchweather();
   let panel = {
     title: `今日天气：${weathercontent}\n\n${titlecontent}`,
     icon: 'shield.lefthalf.filled.badge.checkmark',
@@ -13,18 +12,16 @@
     await httpAPI("/v1/dns/flush");
   }
 
-  let dnsCache = await new Promise((resolve) => getDNSCache(resolve));
+  let dnsCache = await getDNSCache();
   let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
-  panel.content = `DNS: ${delay} ms\n${dnsCache}`;
+  panel.content = `DNS: ${delay} 𝘮𝘴\n${dnsCache}`;
 
   $done(panel);
 })();
 
-function getDNSCache(callback) {
-  httpAPI("/v1/dns", "GET").then((result) => {
-    let dnsCache = result.dnsCache;
-    callback([...new Set(dnsCache.map((d) => d.server))].join("\n"));
-  });
+async function getDNSCache() {
+  let dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
+  return [...new Set(dnsCache.map((d) => d.server))].join("\n");
 }
 
 function httpAPI(path = "", method = "POST", body = null) {
@@ -35,30 +32,51 @@ function httpAPI(path = "", method = "POST", body = null) {
   });
 }
 
-function getQuote(callback) {
-  $httpClient.get("https://international.v1.hitokoto.cn/?c=j&c=e&c=f&c=e&c=g&max_length=11", function(error, response, data) {
-    if (error) {
-      console.error(`Failed to fetch quote: ${error || '春宵一刻値千金.'}`);
-      callback("");
-    } else {
-      let jsonData = JSON.parse(data);
-      let hitokoto = jsonData.hitokoto;
-      let from = jsonData.from;
-      let from_who = jsonData.from_who;
-      callback(from_who ? `${hitokoto} \n / ${from_who} 《${from}》` : `${hitokoto}\n /《${from}》`);
-    }
-  });
-}
+async function getQuote() {
+	return new Promise((resolve, reject) => {
+	  let url = "https://international.v1.hitokoto.cn/?c=j&c=e&c=f&c=e&c=g&max_length=11";
+	  $httpClient.get(url, function (error, response, data) {
+		if (error) {
+		  reject(error);
+		  return;
+		}
+		if (response.status !== 200) {
+		  reject(new Error(`Failed to fetch data. HTTP Status: ${response.status}`));
+		  return;
+		}
+		let jsonData = JSON.parse(data);
+		let hitokoto = jsonData.hitokoto;
+		let from = jsonData.from;
+		let from_who = jsonData.from_who;
+		let result = `${hitokoto} - 《${from}》 -`;
+		if (from_who) {
+      result = `${hitokoto} \n          / ${from_who} 《${from}》` : `${hitokoto}\n          /《${from}》`;
+		}
+		resolve(result);
+	  });
+	});
+  }
 
-function fetchweather(callback) {
-  $httpClient.get('https://api.vvhan.com/api/weather', function(error, response, data) {
-    if (error || !JSON.parse(data).success) {
-      console.error(`Failed to fetch weather: ${error || '花有淸香月有陰.'}`);
-      callback("");
-    } else {
-      let weatherInfo = JSON.parse(data).info;
-      let week = weatherInfo.week.replace('星期', '周');
-      callback(`${JSON.parse(data).city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${weatherInfo.tip}`);
-    }
-  });
-}
+  async function fetchweather() {
+    return new Promise((resolve, reject) => {
+      let url = 'https://api.vvhan.com/api/weather';
+      $httpClient.get(url, function(error, response, data) {
+        if (error) {
+          reject(`error: ${error.message}`);
+          return;
+        }
+        if (response.status !== 200) {
+          reject(`failed to fetch data. http status: ${response.status}`);
+          return;
+        }
+        let parsedData = JSON.parse(data);
+        if (parsedData.success) {
+          let weatherInfo = parsedData.info;
+          let week = weatherInfo.week.replace('星期', '周');
+          let formattedData = `${parsedData.city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${weatherInfo.tip}`;
+          resolve(formattedData);
+        } else {
+          reject('failed to fetch data');
+        }
+      });
+    });
