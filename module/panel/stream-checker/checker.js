@@ -2362,7 +2362,7 @@ const REQUEST_HEADERS = {
 	}
   
 	console.log(`${title} | ${rating}\n${currentDate} | ${comment}`);
-	return `${currentDate} | ✨ ${rating}\n《${title}》\n${comment}`;
+	return `${currentDate} | ✨ ${rating}\n 🎬：${title}\n 📗：${comment}`;
   }
   
   function timeout(delay = 5000) {
