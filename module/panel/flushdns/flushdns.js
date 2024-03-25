@@ -33,20 +33,17 @@ function httpAPI(path = "", method = "POST", body = null) {
 }
 
 async function getQuote() {
-  return new Promise((resolve, reject) => {
-    $httpClient.get("https://international.v1.hitokoto.cn/?c=j&c=e&c=f&c=e&c=g&max_length=11", function(error, response, data) {
-      if (error) {
-        console.error(`Failed to fetch quote: ${error || '春宵一刻値千金.'}`);
-        reject("");
-      } else {
-        let jsonData = JSON.parse(data);
-        let hitokoto = jsonData.hitokoto;
-        let from = jsonData.from;
-        let from_who = jsonData.from_who;
-        resolve(from_who ? `${hitokoto} \n          / ${from_who} 《${from}》`);
-      }
-    });
-  });
+  try {
+    let response = await $httpClient.get("https://international.v1.hitokoto.cn/?c=j&c=e&c=f&c=e&c=g&max_length=11");
+    let jsonData = JSON.parse(response.data);
+    let hitokoto = jsonData.hitokoto;
+    let from = jsonData.from;
+    let from_who = jsonData.from_who;
+    return from_who ? `${hitokoto} \n / ${from_who} 《${from}》` : `${hitokoto}\n /《${from}》`;
+  } catch (error) {
+    console.error(`Failed to fetch quote: ${error}`);
+    return "";
+  }
 }
 
   async function fetchweather() {
