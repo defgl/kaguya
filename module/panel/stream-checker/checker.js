@@ -423,7 +423,7 @@ const REQUEST_HEADERS = {
 	  const getCountryCode = async () => {
 		return new Promise((resolve, reject) => {
 		  let option = {
-			url: "https://www.cloudflare.com/cdn-cgi/trace",
+			url: "https://api.bilibili.com/x/web-interface/zone",
 			headers: REQUEST_HEADERS,
 		  }
 		  $httpClient.get(option, function (error, response, data) {
@@ -431,16 +431,19 @@ const REQUEST_HEADERS = {
 			  reject("Error")
 			  return
 			}
-			// 从响应中提取国家代码
-			const countryCode = data.split("loc=")[1].split("\n")[0]
-			console.log("Country Code:", countryCode)
-			resolve(countryCode.toUpperCase())
+			let result = JSON.parse(data)
+			if (result.code === 0) {
+			  let countryCode = result.data.country_code
+			  console.log("Country Code:", countryCode)
+			  resolve(countryCode.toUpperCase())
+			} else {
+			  reject("Error")
+			}
 		  })
 		})
 	  }
   
 	  const countryCode = await getCountryCode()
-	  console.log("Country Code:", countryCode)
 	  const flag = getFlagEmoji(countryCode)
 	  console.log("Flag Emoji:", flag)
   
@@ -457,7 +460,7 @@ const REQUEST_HEADERS = {
 	  if (tw === "Available") {
 		bilibili_check_result += `Enjoy watching BILI TW now. | ${flag}`
 	  } else if (hkmctw === "Available") {
-		bilibili_check_result += `Enjoy watching BILI HK/MC/TW now. | ${flag}`  
+		bilibili_check_result += `Enjoy watching BILI HK/MC/TW now. | ${flag}`
 	  } else if (mainland === "Available") {
 		bilibili_check_result += `Enjoy watching BILI CN now. | ${flag}`
 	  } else {
