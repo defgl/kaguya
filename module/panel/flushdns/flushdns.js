@@ -42,7 +42,7 @@ async function getQuote() {
     return from_who ? `${hitokoto} \n          / ${from_who} 《${from}》` : `${hitokoto}\n          /《${from}》`;
   } catch (error) {
     console.error(`Failed to fetch quote: ${error}`);
-    return "";
+    return "見面吧，就現在。";
   }
 }
 
@@ -59,6 +59,6 @@ async function fetchweather() {
     }
   } catch (error) {
     console.error(`Failed to fetch weather: ${error}`);
-    return "";
+    return "天氣好的話，我會去找你。";
   }
 }
