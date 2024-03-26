@@ -502,7 +502,7 @@ const REQUEST_HEADERS = {
 		let from_who = jsonData.from_who;
 		let result = `${hitokoto} - 《${from}》 -`;
 		if (from_who) {
-		  result = `📒： ${hitokoto} - ${from_who}《${from}》 -`;
+		  result = ` 📒：${hitokoto} - ${from_who}《${from}》 -`;
 		}
 		resolve(result);
 	  });
@@ -2362,7 +2362,7 @@ const REQUEST_HEADERS = {
 	}
   
 	console.log(`${title} | ${rating}\n${currentDate} | ${comment}`);
-	return ` 📆： ${currentDate} | ✨ ${rating}\n 🎬：${title}\n 📗：${comment}`;
+	return ` 📆：${currentDate} | ✨ ${rating}\n 🎬：${title}\n 📗：${comment}`;
   }
   
   function timeout(delay = 5000) {
