@@ -822,7 +822,7 @@ async function fetchTimeInfoModified() {
           let cyclicalDay = jsonData.data.lunar.cyclicalDay;
           let hour = jsonData.data.lunar.hour;
   
-          let result = `第${dayInYear}天·第${weekInYear}周 ${astro}月\n${cyclicalYear}·${zodiac}年 农历${cnMonth}${cnDay} \n ${hour} ${cyclicalMonth}月 ${cyclicalDay}日 `;
+          let result = `第${dayInYear}天·第${weekInYear}周 ${astro}月\n${cyclicalYear}·${zodiac}年 农历${cnMonth}${cnDay} \n${hour} ${cyclicalMonth}月 ${cyclicalDay}日 `;
           resolve(result);
         } else {
           reject(new Error("Failed to fetch time data."));
