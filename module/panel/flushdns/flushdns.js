@@ -59,27 +59,25 @@ async function getQuote() {
 
 async function fetchweather() {
   return new Promise((resolve, reject) => {
-    $httpClient.get('https://api.vvhan.com/api/weather', function(error, response, data) {
+    let url = 'https://api.vvhan.com/api/weather';
+    $httpClient.get(url, function(error, response, data) {
       if (error) {
-        console.error(`Failed to fetch weather: ${error}`);
+        //reject(`error: ${error.message}`);
         resolve("天氣好的話，我會去找你。");
         return;
       }
-      
       if (response.status !== 200) {
-        console.error(`Failed to fetch weather. Status code: ${response.status}`);
-        resolve("天氣好的話，我會去找你。");
+        reject(`failed to fetch data. http status: ${response.status}`);
         return;
       }
-      
       let parsedData = JSON.parse(data);
       if (parsedData.success) {
         let weatherInfo = parsedData.info;
         let week = weatherInfo.week.replace('星期', '周');
-        let result = `${parsedData.city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${weatherInfo.tip}`;
-        resolve(result);
+        let formattedData = `${parsedData.city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${weatherInfo.tip}`;
+        resolve(formattedData);
       } else {
-        console.error('Failed to fetch weather data');
+        //reject('failed to fetch data');
         resolve("天氣好的話，我會去找你。");
       }
     });
