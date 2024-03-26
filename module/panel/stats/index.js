@@ -19,13 +19,9 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   }
 
   let { CN_IP = '-', CN_ORG = '-', CN_ORG_EN = '-' } = await getDirectInfo();
-  // 打印原始的 CN_IP 和时间
-  console.log("Original CN_IP: ", CN_IP);
-  console.log("Original Time: ", new Date().toTimeString().split(' ')[0]);
 
   // 获取 SSID、LAN IP 和 Router IP
   const ssid = getSSID();
-  const LOCNET = transformFont(localnetwork, TABLE, INDEX);
   const { lanIP, routerIP } = getNetworkDetails();
   const localnetwork = generateLocalNetwork(lanIP, routerIP);
 
@@ -35,6 +31,7 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   const SSID = transformFont(ssid, TABLE, INDEX);
   const LAN = transformFont(lanIP, TABLE, INDEX);
   const ROUTER = transformFont(routerIP, TABLE, INDEX);
+  const LOCNET = transformFont(localnetwork, TABLE, INDEX);
 
   const quote = await getquote();
 
@@ -56,6 +53,8 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   } else {
     title = '移動網絡已接入 | ℡';
   }
+
+  title += `\n⚡︎  ${quote}`;
 
   // 更新 title 和 content
   title += `${DOMLOC}`;
