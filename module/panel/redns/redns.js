@@ -1,8 +1,9 @@
 !(async () => {
-  let titlecontent = await getQuote();
+  //let titlecontent = await getQuote();
   //let weathercontent = await fetchweather();
   let panel = {
     title: `今日天气：想见你\n\n${titlecontent}`,
+    title: `今日天气：想见你\n\n`,
     icon: 'shield.lefthalf.filled.badge.checkmark',
     'icon-color': '#CD853F',
   };
