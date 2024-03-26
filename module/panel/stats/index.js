@@ -49,15 +49,17 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   icon = isWifi ? 'chart.bar.fill' : 'cellularbars';
 
   if (isWifi) {
-    title = `無線網絡已接入：${ssid} | Ⓦ`;
+    title = `𝐖𝐈𝐅𝐈：✩${SSID} | Ⓦ`;
   } else {
-    title = '移動網絡已接入 | ℡';
+    title = '𝐌𝐨𝐛𝐢𝐥𝐞: | ℡';
   }
+
+  title += `${DOMLOC}`;
 
   title += `\n⚡︎  ${quote}`;
 
   // 更新 title 和 content
-  title += `${DOMLOC}`;
+
   content += `\n𝑷𝑼𝑩𝑳𝑰𝑪: ${DOMIP}`;
   if (isWifi) {
     // 只有在连接 WiFi 时才显示 Router 和 LAN IP
