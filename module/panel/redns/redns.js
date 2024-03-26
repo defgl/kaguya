@@ -11,7 +11,7 @@
     await httpAPI("/v1/profiles/reload");
     await httpAPI("/v1/dns/flush");
   }
-
+  
   let dnsCache = await getDNSCache();
   let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
   panel.content = `DNS: ${delay} ms\n${dnsCache}`;
@@ -74,7 +74,7 @@ async function getWeather() {
       if (parsedData.success) {
         let weatherInfo = parsedData.data;
         let week = weatherInfo.week.replace('星期', '周');
-        let result = `${parsedData.city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${parsedData.tip}`;
+        let result = `${parsedData.city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${parsedData.air.aqi}\n${parsedData.tip}`;
         resolve(result);
       } else {
         console.error('Failed to fetch weather data');
