@@ -51,7 +51,7 @@ async function getQuote() {
       let hitokoto = jsonData.hitokoto;
       let from = jsonData.from;
       let from_who = jsonData.from_who;
-      let result = from_who ? `${hitokoto} \n / ${from_who} 《${from}》` : `${hitokoto}\n /《${from}》`;
+      let result = from_who ? `${hitokoto} \n            / ${from_who} 《${from}》` : `${hitokoto}\n            / ${from}》`;
       resolve(result);
     });
   });
