@@ -116,8 +116,8 @@ const REQUEST_HEADERS = {
 	await Promise.all([
 		check_youtube(),
 		check_netflix(),
-		check_bilibili(),
-		check_disneyplus()
+		check_disneyplus(),
+		check_bilibili()
 	  ]).then((result) => {
 		let [youtube_result, netflix_result, disney_result, bilibili_result ] = result;
 		
