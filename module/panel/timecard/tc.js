@@ -35,7 +35,30 @@ var tlist = {
   //计算输入序号对应的时间与现在的天数间隔
   function tnumcount(num) {
     let dnum = num;
-    return dateDiff(tnowf, tlist[dnum][1]);
+    let daysDiff = dateDiff(tnowf, tlist[dnum][1]);
+    return convertToChineseNum(daysDiff);
+  }
+
+  function convertToChineseNum(num) {
+    const digits = String(num).split('');
+    const chineseDigits = ['零', '壹', '貳', '參', '肆', '伍', '陸', '柒', '捌', '玖'];
+    const units = ['', '拾', '佰', '仟', '萬'];
+  
+    let result = '';
+    let zero = false;
+    for (let i = 0; i < digits.length; i++) {
+      const digit = parseInt(digits[i]);
+      if (digit === 0) {
+        if (!zero) {
+          zero = true;
+          result += chineseDigits[digit];
+        }
+      } else {
+        zero = false;
+        result += chineseDigits[digit] + units[digits.length - i - 1];
+      }
+    }
+    return result;
   }
   
   //获取最接近的日期
@@ -1086,6 +1109,11 @@ async function title_random() {
     }
 }
 
+function tnumcount(num) {
+  const chineseNums = ['零', '壹', '貳', '參', '肆', '伍', '陸', '柒', '捌', '玖', '拾'];
+  return chineseNums[num];
+}
+
 // 使用示例
 title_random()
   .then(title => {
@@ -1095,7 +1123,7 @@ title_random()
       title: title,  // 这里用到了上面 Promise 解析出的 title
       icon: icon_now(tnumcount(Number(nowlist))),
       'icon-color': '#e52b50',
-      content: `${tlist[nowlist][0]}:${today(tnumcount(nowlist))}  ➜  ${tlist[Number(nowlist) + Number(1)][0]}:${tnumcount(Number(nowlist) + Number(1))}天  ➜  ${tlist[Number(nowlist) + Number(2)][0]}:${tnumcount(Number(nowlist) + Number(2))}天`
+      content: `${tlist[nowlist][0]}: ${today(tnumcount(nowlist))}  ➜  ${tlist[Number(nowlist) + Number(1)][0]}: ${tnumcount(Number(nowlist) + Number(1))}天  ➜  ${tlist[Number(nowlist) + Number(2)][0]}: ${tnumcount(Number(nowlist) + Number(2))}天`
     });
   })
   .catch(error => {
