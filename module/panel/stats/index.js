@@ -56,7 +56,7 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
 
   title += `${DOMLOC}`;
 
-  title += `\n⚡︎  ${quote}`;
+  title += `\n⚡︎ | ${quote}`;
 
   // 更新 title 和 content
 
@@ -308,7 +308,7 @@ async function Fetch(request = {}) {
 
 async function getquote() {
     return new Promise((resolve, reject) => {
-      let url = 'https://international.v1.hitokoto.cn/?c=a&c=b&c=j&c=d&min_length=5&max_length=14';
+      let url = 'https://international.v1.hitokoto.cn/?c=a&c=b&c=j&c=d&min_length=7&max_length=18';
       $httpClient.get(url, function(error, response, data) {
         if (error) {
           reject(`error: ${error.message}`);
