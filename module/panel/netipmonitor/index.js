@@ -25,7 +25,9 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
 
   // 获取 SSID、LAN IP 和 Router IP
   const ssid = getSSID();
+  const LOCNET = transformFont(localnetwork, TABLE, INDEX);
   const { lanIP, routerIP } = getNetworkDetails();
+  const localnetwork = generateLocalNetwork(lanIP, routerIP);
 
   const DOMIP = transformFont(CN_IP, TABLE, INDEX);
   const TIME = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
@@ -50,9 +52,9 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   icon = isWifi ? 'chart.bar.fill' : 'cellularbars';
 
   if (isWifi) {
-    title = `無線網絡已接入. | ✦${ssid} | Ⓦ`;
+    title = `無線網絡已接入：${ssid} | Ⓦ`;
   } else {
-    title = '移動網絡已接入. | ℡';
+    title = '移動網絡已接入 | ℡';
   }
 
   // 更新 title 和 content
@@ -60,7 +62,7 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   content += `\n𝑷𝑼𝑩𝑳𝑰𝑪: ${DOMIP}`;
   if (isWifi) {
     // 只有在连接 WiFi 时才显示 Router 和 LAN IP
-    content += `\n𝑳𝑨𝑵 / 𝑹𝑶𝑼𝑻𝑬𝑹: ${LAN}/${ROUTER}`;
+    content += `\n𝑳𝑨𝑵: ${LOCNET}`;
   }
   content += '\n𝑳𝑨𝑺𝑻 𝑪𝑯𝑬𝑪𝑲𝑬𝑫: ' + new Date().toTimeString().split(' ')[0];
 })()
@@ -99,6 +101,25 @@ function getSSID() {
   
 	return details;
   }
+
+  // 生成 localnetwork 的函数
+function generateLocalNetwork(lanIP, routerIP) {
+  const lanParts = lanIP.split('.');
+  const routerParts = routerIP.split('.');
+  
+  let localnetwork = '';
+  
+  for (let i = 0; i < lanParts.length; i++) {
+    if (lanParts[i] === routerParts[i]) {
+      localnetwork += lanParts[i] + '.';
+    } else {
+      localnetwork += routerParts[i] + '/' + lanParts[i].split('/')[0];
+      break;
+    }
+  }
+  
+  return localnetwork;
+}
 
   // 通知
 async function notify(title, subt, desc, opts) {
