@@ -23,10 +23,29 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   console.log("Original CN_IP: ", CN_IP);
   console.log("Original Time: ", new Date().toTimeString().split(' ')[0]);
 
+  const transformedCN_IP = transformFont(CN_IP, TABLE, INDEX);
+  const transformedTime = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
+  const transformedCN_ADDR_EN = transformFont(CN_ADDR_EN, TABLE, INDEX);
   const quote = await getquote();
+  
   // 获取 SSID、LAN IP 和 Router IP
   const ssid = getSSID();
   const { lanIP, routerIP } = getNetworkDetails();
+
+  // 转换字体
+  const transformedSSID = transformFont(ssid, TABLE, INDEX);
+  const transformedLanIP = transformFont(lanIP, TABLE, INDEX);
+  const transformedRouterIP = transformFont(routerIP, TABLE, INDEX);
+
+  // 打印转换后的 CN_IP 和时间
+  console.log("Transformed CN_IP: ", transformedCN_IP);
+  console.log("Transformed Time: ", transformedTime);
+  console.log("Transformed CN_ADDR_EN: ", transformedCN_ADDR_EN);
+    
+  // 输出转换后的值
+  console.log('Transformed SSID:', transformedSSID);
+  console.log('Transformed LAN IP:', transformedLanIP);
+  console.log('Transformed Router IP:', transformedRouterIP);
 
   // 检查是否连接到 WiFi
   const isWifi = $network.wifi.ssid !== undefined;
@@ -63,9 +82,6 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
     $.log($.toStr(result));
     $.done(result);
   });
-
-// 其他函数定义如getSSID, getNetworkDetails, notify, getDirectInfo, getquote等保持不变。
-
 
 // 获取Wi-Fi SSID
 function getSSID() {
