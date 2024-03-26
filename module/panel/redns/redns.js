@@ -1,10 +1,18 @@
 !(async () => {
   let quote = await getQuote();
   let weather = await getWeather();
+
+  let traffic = await httpAPI("/v1/traffic", "GET");
+  let dateNow = new Date();
+  let dateTime = Math.floor(traffic.startTime * 1000);
+  let startTime = timeTransform(dateNow, dateTime);
+
   let panel = {
     title: `❀ ${weather}\n\n${quote}`,
-    icon: 'shield.lefthalf.filled.badge.checkmark',
-    'icon-color': '#CD853F',
+    //icon: 'shield.lefthalf.filled.badge.checkmark',
+    icon: 'opticid.fill',
+    //'icon-color': '#CD853F',
+    'icon-color': '#318ce7',
   };
 
   if ($trigger == "button") {
@@ -14,10 +22,31 @@
   
   let dnsCache = await getDNSCache();
   let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
-  panel.content = `DNS: ${delay} ms\n${dnsCache}`;
+  panel.content = `启动时长〄: ${startTime} | DNS延迟: ${delay} ms\n${dnsCache}`;
 
   $done(panel);
 })();
+
+function timeTransform(dateNow, dateTime) {
+  let dateDiff = dateNow - dateTime;
+  let days = Math.floor(dateDiff / (24 * 3600 * 1000)); //计算出相差天数
+  let leave1 = dateDiff % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
+  let hours = Math.floor(leave1 / (3600 * 1000)); //计算出小时数
+  let leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
+  let minutes = Math.floor(leave2 / (60 * 1000)); //计算相差分钟数
+  let leave3 = leave2 % (60 * 1000); //计算分钟数后剩余的毫秒数
+  let seconds = Math.round(leave3 / 1000);
+
+  if (days == 0) {
+    if (hours == 0) {
+      if (minutes == 0) return `${seconds}`;
+      return `${minutes}:${seconds}`;
+    }
+    return `${hours}:${minutes}:${seconds}`;
+  } else {
+    return `${days} · ${hours}:${minutes}`;
+  }
+}
 
 async function getDNSCache() {
   let dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
