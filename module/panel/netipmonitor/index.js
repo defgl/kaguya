@@ -17,35 +17,31 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   if ($.isTile()) {
     await notify('网络信息', '面板', '开始查询');
   }
-  let { CN_IP = '-', CN_ADDR = '-', CN_ADDR_EN = '-' } = await getDirectInfo();
 
+  let { CN_IP = '-', CN_ORG = '-', CN_ORG_EN = '-' } = await getDirectInfo();
   // 打印原始的 CN_IP 和时间
   console.log("Original CN_IP: ", CN_IP);
   console.log("Original Time: ", new Date().toTimeString().split(' ')[0]);
 
-  const transformedCN_IP = transformFont(CN_IP, TABLE, INDEX);
-  const transformedTime = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
-  const transformedCN_ADDR_EN = transformFont(CN_ADDR_EN, TABLE, INDEX);
-  const quote = await getquote();
-  
   // 获取 SSID、LAN IP 和 Router IP
   const ssid = getSSID();
   const { lanIP, routerIP } = getNetworkDetails();
 
-  // 转换字体
-  const transformedSSID = transformFont(ssid, TABLE, INDEX);
-  const transformedLanIP = transformFont(lanIP, TABLE, INDEX);
-  const transformedRouterIP = transformFont(routerIP, TABLE, INDEX);
+  const DOMIP = transformFont(CN_IP, TABLE, INDEX);
+  const TIME = transformFont(new Date().toTimeString().split(' ')[0], TABLE, INDEX);
+  const DOMLOC = transformFont(CN_ORG_EN, TABLE, INDEX);
+  const SSID = transformFont(ssid, TABLE, INDEX);
+  const LAN = transformFont(lanIP, TABLE, INDEX);
+  const ROUTER = transformFont(routerIP, TABLE, INDEX);
 
-  // 打印转换后的 CN_IP 和时间
-  console.log("Transformed CN_IP: ", transformedCN_IP);
-  console.log("Transformed Time: ", transformedTime);
-  console.log("Transformed CN_ADDR_EN: ", transformedCN_ADDR_EN);
-    
-  // 输出转换后的值
-  console.log('Transformed SSID:', transformedSSID);
-  console.log('Transformed LAN IP:', transformedLanIP);
-  console.log('Transformed Router IP:', transformedRouterIP);
+  const quote = await getquote();
+
+  console.log("CN_IP: ", DOMIP);
+  console.log("Time: ", TIME);
+  console.log("CN_ORG_EN: ", DOMLOC);
+  console.log('SSID:', SSID);
+  console.log('LAN IP:', LAN);
+  console.log('Router IP:', ROUTER);
 
   // 检查是否连接到 WiFi
   const isWifi = $network.wifi.ssid !== undefined;
@@ -53,22 +49,20 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   // 根据网络状态更改图标
   icon = isWifi ? 'chart.bar.fill' : 'cellularbars';
 
-  // 更新 title 和 content
-  title = `®${CN_ADDR_EN}\n`;
-
   if (isWifi) {
-    content = `Wireless Network Connected: ${ssid}`;
+    title = `無線網絡已接入. | ✦${ssid} | Ⓦ`;
   } else {
-    content = 'Cellular Network Connected';
+    title = '移動網絡已接入. | ℡';
   }
 
-  content += `\nPublic: ${CN_IP}`;
+  // 更新 title 和 content
+  title += `${DOMLOC}`;
+  content += `\n𝑷𝑼𝑩𝑳𝑰𝑪: ${DOMIP}`;
   if (isWifi) {
     // 只有在连接 WiFi 时才显示 Router 和 LAN IP
-    content += `\nLAN / Router: ${lanIP}/${routerIP}`;
+    content += `\n𝑳𝑨𝑵 / 𝑹𝑶𝑼𝑻𝑬𝑹: ${LAN}/${ROUTER}`;
   }
-  content += '\nLast Checked: ' + new Date().toTimeString().split(' ')[0];
-
+  content += '\n𝑳𝑨𝑺𝑻 𝑪𝑯𝑬𝑪𝑲𝑬𝑫: ' + new Date().toTimeString().split(' ')[0];
 })()
   .catch(async e => {
     $.logErr(e);
@@ -91,10 +85,7 @@ function getSSID() {
   // 获取局域网IP地址和路由器IP地址
   function getNetworkDetails() {
 	const { v4 } = $network;
-	let details = {
-	  lanIP: '未获取到IP地址',
-	  routerIP: '未获取到路由器IP'
-	};
+  let details = { lanIP: 'Failed.', routerIP: 'Failed.' };
   
 	// 如果有IPv4信息，从中提取设备IP和路由器IP
 	if (v4) {
@@ -120,8 +111,8 @@ async function notify(title, subt, desc, opts) {
 
 async function getDirectInfo() {
 	let CN_IP;
-	let CN_ADDR;
-	let CN_ADDR_EN;
+	let CN_ORG;
+	let CN_ORG_EN;
 
 try {
     const res1 = await $.http.get({
@@ -138,24 +129,24 @@ try {
     }
 
     let CN_IP = data.myip;
-    let CN_ADDR = data.location;
+    let CN_ORG = data.location;
 
     // 删除第一个 "中国" 并替换第一个 "\t" 为 "，" 和 "区" 变为 "区 ・"
     // 判断IP类型
     if (CN_IP.includes(':')) { // IPv6
-        CN_ADDR = data.location;
+        CN_ORG = data.location;
         // 删除第一个 "中国" 并替换第一个 "\t" 为 "，" 和 "区" 变为 "区 • "
-        CN_ADDR = CN_ADDR.replace(/^中国\t/, '').replace(/\t/, '，').replace(/\t/, '').replace('区 ', '区 • ');
+        CN_ORG = CN_ORG.replace(/^中国\t/, '').replace(/\t/, '，').replace(/\t/, '').replace('区 ', '区 • ');
     } else { // IPv4
         // 提取country和local的内容组合
-        CN_ADDR = data.country + data.local;
+        CN_ORG = data.country + data.local;
     }
 
-    // 翻译CN_ADDR
-    let CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '7dda8ddf-e4c2-52a2-c350-09660439db14:fx' }))[0];
+    // 翻译CN_ORG
+    let CN_ORG_EN = (await Translator('DeepL', 'zh', 'en', CN_ORG, { key: '7dda8ddf-e4c2-52a2-c350-09660439db14:fx' }))[0];
 
-    if (CN_IP && CN_ADDR) {
-        return { CN_IP, CN_ADDR, CN_ADDR_EN };
+    if (CN_IP && CN_ORG) {
+        return { CN_IP, CN_ORG, CN_ORG_EN };
     }
 } catch (e) {
     $.logErr(e);
@@ -172,14 +163,18 @@ try {
       });
       const data = JSON.parse(res1.body).data;
       CN_IP = data.myip;
-      CN_ADDR = data.local + ' | ' + data.country;
+      CN_ORG = data.local + ' | ' + data.country;
       if (['电信', '移动', '联通'].includes(data.local)) {
-          CN_ADDR = '中国' + CN_ADDR;
+          CN_ORG = '中国' + CN_ORG;
       }
-      // 翻译CN_ADDR
-      CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '7dda8ddf-e4c2-52a2-c350-09660439db14:fx' }))[0];
-      if (CN_IP && CN_ADDR) {
-          return { CN_IP, CN_ADDR, CN_ADDR_EN };
+      if (CN_ORG.includes('电信/电信CN2')) {
+        CN_ORG = CN_ORG.replace('电信/电信CN2', '电信CN2');
+      }
+    
+      // 翻译CN_ORG
+      CN_ORG_EN = (await Translator('DeepL', 'zh', 'en', CN_ORG, { key: '7dda8ddf-e4c2-52a2-c350-09660439db14:fx' }))[0];
+      if (CN_IP && CN_ORG) {
+          return { CN_IP, CN_ORG, CN_ORG_EN };
       }
   } catch (e) {
       $.logErr(e);
@@ -195,20 +190,20 @@ try {
 		});
 		const info = JSON.parse(res2.body);
 		CN_IP = info.ip;
-		CN_ADDR = [info.province, info.city, info.isp].filter(Boolean).join(' ');
-		// 翻译CN_ADDR
-		CN_ADDR_EN = (await Translator('DeepL', 'zh', 'en', CN_ADDR, { key: '17bd2d86-a5df-9998-ff34-28075a83bc49:fx' }))[0];
-		if (CN_IP && CN_ADDR) {
-		  return { CN_IP, CN_ADDR, CN_ADDR_EN };
+		CN_ORG = [info.province, info.city, info.isp].filter(Boolean).join(' ');
+		// 翻译CN_ORG
+		CN_ORG_EN = (await Translator('DeepL', 'zh', 'en', CN_ORG, { key: '17bd2d86-a5df-9998-ff34-28075a83bc49:fx' }))[0];
+		if (CN_IP && CN_ORG) {
+		  return { CN_IP, CN_ORG, CN_ORG_EN };
 		}
 	  } catch (e) {
 		$.logErr(e);
 		$.logErr($.toStr(e));
 		CN_IP = '';
-		CN_ADDR = '';
-		CN_ADDR_EN = '';
+		CN_ORG = '';
+		CN_ORG_EN = '';
 	  }
-	return { CN_IP, CN_ADDR, CN_ADDR_EN };
+	return { CN_IP, CN_ORG, CN_ORG_EN };
   }
 
 async function Translator(type = "DeepL", source = "", target = "", text = "", api = {key: "17bd2d86-a5df-9998-ff34-28075a83bc49:fx"}, database) {
