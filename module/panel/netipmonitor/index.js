@@ -64,7 +64,7 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
     // 只有在连接 WiFi 时才显示 Router 和 LAN IP
     content += `\n𝑳𝑨𝑵: ${LOCNET}`;
   }
-  content += '\n𝑳𝑨𝑺𝑻 𝑪𝑯𝑬𝑪𝑲𝑬𝑫: ' + new Date().toTimeString().split(' ')[0];
+  content += `\n𝑳𝑨𝑺𝑻 𝑪𝑯𝑬𝑪𝑲𝑬𝑫: ${TIME}`;
 })()
   .catch(async e => {
     $.logErr(e);
