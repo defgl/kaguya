@@ -2,7 +2,7 @@
   let quote = await getQuote();
   let weather = await getWeather();
   let panel = {
-    title: `今日天气：${weather}\n\n${quote}`,
+    title: `❀ ${weather}\n\n${quote}`,
     icon: 'shield.lefthalf.filled.badge.checkmark',
     'icon-color': '#CD853F',
   };
@@ -34,7 +34,7 @@ function httpAPI(path = "", method = "POST", body = null) {
 
 async function getQuote() {
   return new Promise((resolve, reject) => {
-    $httpClient.get("https://international.v1.hitokoto.cn/?c=j&c=e&c=f&c=e&c=g&max_length=11", function(error, response, data) {
+    $httpClient.get("https://international.v1.hitokoto.cn/?c=j&c=e&c=f&c=e&c=g&max_length=15", function(error, response, data) {
       if (error) {
         console.error(`Failed to fetch quote: ${error}`);
         resolve("見面吧，就現在。");
@@ -51,7 +51,7 @@ async function getQuote() {
       let hitokoto = jsonData.hitokoto;
       let from = jsonData.from;
       let from_who = jsonData.from_who;
-      let result = from_who ? `${hitokoto} \n            / ${from_who} 《${from}》` : `${hitokoto}\n            / ${from}》`;
+      let result = from_who ? `${hitokoto} \n                  / ${from_who} 《${from}》` : `${hitokoto}\n                  / ${from}》`;
       resolve(result);
     });
   });
