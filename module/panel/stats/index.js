@@ -49,7 +49,7 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   icon = isWifi ? 'chart.bar.fill' : 'cellularbars';
 
   if (isWifi) {
-    title = `🛜:${SSID} | `;
+    title = `🛜: ${SSID} | `;
   } else {
     title = '📶 | ';
   }
@@ -114,7 +114,7 @@ function generateLocalNetwork(lanIP, routerIP) {
     if (lanParts[i] === routerParts[i]) {
       localnetwork += lanParts[i] + '.';
     } else {
-      localnetwork += routerParts[i] + '/' + lanParts[i].split('/')[0];
+      localnetwork += routerParts[i] + ' / ' + lanParts[i].split('/')[0];
       break;
     }
   }
