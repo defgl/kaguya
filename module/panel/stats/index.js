@@ -47,7 +47,8 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
 
   // 根据网络状态更改图标
   icon = isWifi ? 'chart.bar.fill' : 'cellularbars';
-
+  iconColor = isWifi ? '#3498db' : '#2ecc71';  
+  
   if (isWifi) {
     title = `✿ | ${SSID} | `;
   } else {
@@ -75,7 +76,7 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
     await notify('网络信息', title, content);
   })
   .finally(() => {
-    const result = { title, content, ...arg };
+    const result = { title, content, icon, iconColor, ...arg };
     $.log($.toStr(result));
     $.done(result);
   });
