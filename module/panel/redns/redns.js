@@ -103,7 +103,7 @@ async function getWeather() {
       if (parsedData.success) {
         let weatherInfo = parsedData.data;
         let week = weatherInfo.week.replace('星期', '周');
-        let result = `${parsedData.city.replace(/市$/, '')}·${week}·${weatherInfo.type}·${weatherInfo.low}-${weatherInfo.high}·AQI:${parsedData.air.aqi}\n柔柔:${parsedData.tip}`;
+        let result = `${parsedData.city.replace(/市$/, '')}·${week}·${weatherInfo.type} · ${weatherInfo.low}-${weatherInfo.high} · AQI:${parsedData.air.aqi}\n❀ | ${parsedData.tip}`;
         resolve(result);
       } else {
         console.error('Failed to fetch weather data');
