@@ -1,11 +1,18 @@
-#!name=Internet outlet IP monitor (Higher priority 4domestic)
-#!desc=Monitor internet outlet IP address change, Highest priority for tracking domestic network IP address.
+#!name= NETWORK STATS
+#!desc= network monitor in your panel tarking domestic network and local area network.
+
+[RULE]
+DOMAIN-SUFFIX,zxinc.org,DIRECT
 
 [Script]
-# Panel
-netpad = type=generic,timeout=60,script-path=https://github.com/iyqgrl/kaguya/blob/Master/module/panel/netipmonitor/index.js?raw=true,argument=icon=licenseplate.fill&icon-color=#ffff00
 # Notification
-netnotification = type=event,event-name=network-changed,timeout=30,script-update-interval=3600,debug=false,enable=true,script-path=https://raw.githubusercontent.com/xream/scripts/main/surge/modules/network-info/index.js,
+network-changed script-path=https://raw.githubusercontent.com/xream/scripts/main/surge/modules/network-info/event.beta.js
+
+# Event
+# {{{EVENT_SCRIPT_NAME}}} = type=event,event-name=network-changed,timeout=120,script-path=https://raw.githubusercontent.com/xream/scripts/main/surge/modules/network-info/net-lsp-beta.js,argument="TYPE=EVENT&icon={{{ICON}}}&icon-color={{{ICON-COLOR}}}&LAN={{{LAN}}}&SSID={{{SSID}}}&IPv6={{{IPv6}}}&MASK={{{MASK}}}&DOMESTIC_IPv4={{{DOMESTIC_IPv4}}}&DOMESTIC_IPv6={{{DOMESTIC_IPv6}}}&LANDING_IPv4={{{LANDING_IPv4}}}&LANDING_IPv6={{{LANDING_IPv6}}}&PRIVACY={{{PRIVACY}}}&FLAG={{{FLAG}}}&ENTRANCE_DELAY={{{ENTRANCE_DELAY}}}&EVENT_DELAY={{{EVENT_DELAY}}}"
+
+# Panel
+netstats = type=generic,timeout=60,script-path=https://github.com/iyqgrl/kaguya/raw/Master/module/panel/netipmonitor/index.js,argument=icon=licenseplate.fill&icon-color=#ffff00
 
 [Panel]
-netpad = script-name=netpad,update-interval=1
+netstats = script-name=netpad,update-interval=1
