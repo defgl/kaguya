@@ -6,9 +6,13 @@
   let dateNow = new Date();
   let dateTime = Math.floor(traffic.startTime * 1000);
   let startTime = timeTransform(dateNow, dateTime);
+  const DNS = transformFont(dnsCache, TABLE, INDEX);
+  const DELAY = transformFont(delay, TABLE, INDEX);
+  const STARTTIME = transformFont(startTime, TABLE, INDEX);
+  const WEATHER = transformFont(weather, TABLE, INDEX);
 
   let panel = {
-    title: `❀ | ${weather}\n❀ | ${quote}`,
+    title: `❀ | ${WEATHER}\n❀ | ${quote}`,
     //icon: 'shield.lefthalf.filled.badge.checkmark',
     icon: 'opticid.fill',
     //'icon-color': '#CD853F',
@@ -23,9 +27,6 @@
   let dnsCache = await getDNSCache();
   let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
 
-  const DNS = transformFont(dnsCache, TABLE, INDEX);
-  const DELAY = transformFont(delay, TABLE, INDEX);
-  const STARTTIME = transformFont(startTime, TABLE, INDEX);
 
   panel.content = `𝑺𝑻𝑨𝑹𝑻𝑬𝑫: ${STARTTIME} | 𝑫𝑵𝑺: ${DELAY} 𝒎𝒔${DNS}`;
 
