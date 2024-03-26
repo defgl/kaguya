@@ -109,7 +109,7 @@ const REQUEST_HEADERS = {
 	}
   
 	  const [movieInfo, quote] = await Promise.all([getMovieInfo(), getQuote()]);
-	  panel_result.title = `📒: ${quote}\n${movieInfo}`;
+	  panel_result.title = ` 📒: ${quote}\n${movieInfo}`;
   
 	let [{ region, status }] = await Promise.all([check_disneyplus()])
 
