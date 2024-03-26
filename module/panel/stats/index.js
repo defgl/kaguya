@@ -49,9 +49,9 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   icon = isWifi ? 'chart.bar.fill' : 'cellularbars';
 
   if (isWifi) {
-    title = `𝐖𝐈𝐅𝐈：✩${SSID} | Ⓦ`;
+    title = `無線網絡:${SSID} | 🛜 `;
   } else {
-    title = '𝐌𝐨𝐛𝐢𝐥𝐞: | ℡';
+    title = '手机/機網絡 | 📶 ';
   }
 
   title += `${DOMLOC}`;
