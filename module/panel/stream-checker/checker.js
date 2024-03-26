@@ -109,7 +109,7 @@ const REQUEST_HEADERS = {
 	}
   
 	  const [movieInfo, quote] = await Promise.all([getMovieInfo(), getQuote()]);
-	  panel_result.title = `${quote}\n${movieInfo}`;
+	  panel_result.title = `📒:${quote}\n${movieInfo}`;
   
 	let [{ region, status }] = await Promise.all([check_disneyplus()])
 
@@ -502,7 +502,7 @@ const REQUEST_HEADERS = {
 		let from_who = jsonData.from_who;
 		let result = `${hitokoto} - 《${from}》 -`;
 		if (from_who) {
-		  result = ` 📒：${hitokoto} - ${from_who}《${from}》 -`;
+		  result = `${hitokoto} - ${from_who}《${from}》 -`;
 		}
 		resolve(result);
 	  });
