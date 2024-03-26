@@ -60,7 +60,7 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
 
   // 更新 title 和 content
 
-  content += `\n𝑷𝑼𝑩𝑳𝑰𝑪: ${DOMIP}`;
+  content += `𝑷𝑼𝑩𝑳𝑰𝑪: ${DOMIP}`;
   if (isWifi) {
     // 只有在连接 WiFi 时才显示 Router 和 LAN IP
     content += `\n𝑳𝑨𝑵: ${LOCNET}`;
