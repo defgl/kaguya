@@ -22,7 +22,7 @@
   
   let dnsCache = await getDNSCache();
   let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
-  panel.content = `启动时长⏱️ : ${startTime} | DNS延迟: ${delay} ms${dnsCache}`;
+  panel.content = `已启动: ${startTime} | 域名系统延迟: ${delay} ms${dnsCache}`;
 
   $done(panel);
 })();
