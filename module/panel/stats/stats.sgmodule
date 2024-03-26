@@ -16,4 +16,4 @@ net-notify = type=event,event-name=network-changed,timeout=30,script-update-inte
 netstats = type=generic,timeout=60,script-path=https://github.com/iyqgrl/kaguya/raw/Master/module/panel/stats/index.js,argument=icon=licenseplate.fill&icon-color=#ffff00
 
 [Panel]
-netstats = script-name=netpad,update-interval=1
+netstats = script-name=netstats,update-interval=1
