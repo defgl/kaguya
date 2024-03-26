@@ -49,14 +49,14 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
   icon = isWifi ? 'chart.bar.fill' : 'cellularbars';
 
   if (isWifi) {
-    title = `無線網絡:${SSID} | 🛜 `;
+    title = `🛜:${SSID} | `;
   } else {
-    title = '手机/機網絡 | 📶 ';
+    title = '📶 | ';
   }
 
   title += `${DOMLOC}`;
 
-  title += `\n⚡︎ | ${quote}`;
+  title += `\n${quote}`;
 
   // 更新 title 和 content
 
