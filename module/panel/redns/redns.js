@@ -1,9 +1,8 @@
 !(async () => {
-  //let titlecontent = await getQuote();
-  //let weathercontent = await fetchweather();
+  let quote = await getQuote();
+  let weather = await getWeather();
   let panel = {
-    title: `今日天气：想见你\n\n${titlecontent}`,
-    title: `今日天气：想见你\n\n`,
+    title: `今日天气：${weather}\n\n${quote}`,
     icon: 'shield.lefthalf.filled.badge.checkmark',
     'icon-color': '#CD853F',
   };
@@ -58,27 +57,27 @@ async function getQuote() {
   });
 }
 
-async function fetchweather() {
+async function getWeather() {
   return new Promise((resolve, reject) => {
-    let url = 'https://api.vvhan.com/api/weather';
-    $httpClient.get(url, function(error, response, data) {
+    $httpClient.get('https://api.vvhan.com/api/weather', function(error, response, data) {
       if (error) {
-        //reject(`error: ${error.message}`);
+        console.error(`Failed to fetch weather: ${error}`);
         resolve("天氣好的話，我會去找你。");
         return;
       }
       if (response.status !== 200) {
-        reject(`failed to fetch data. http status: ${response.status}`);
+        console.error(`Failed to fetch weather. Status code: ${response.status}`);
+        resolve("天氣好的話，我會去找你。");
         return;
       }
       let parsedData = JSON.parse(data);
       if (parsedData.success) {
-        let weatherInfo = parsedData.info;
+        let weatherInfo = parsedData.data;
         let week = weatherInfo.week.replace('星期', '周');
-        let formattedData = `${parsedData.city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${weatherInfo.tip}`;
-        resolve(formattedData);
+        let result = `${parsedData.city.replace(/市$/, '')} · ${week}\n${weatherInfo.type} · ${weatherInfo.low} — ${weatherInfo.high} · AQI:${weatherInfo.air.aqi}\n${parsedData.tip}`;
+        resolve(result);
       } else {
-        //reject('failed to fetch data');
+        console.error('Failed to fetch weather data');
         resolve("天氣好的話，我會去找你。");
       }
     });
