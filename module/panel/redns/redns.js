@@ -8,7 +8,7 @@
   let startTime = timeTransform(dateNow, dateTime);
 
   let panel = {
-    title: `❀ ${weather}\n\n${quote}`,
+    title: `❀ ${weather}\n❀ ${quote}`,
     //icon: 'shield.lefthalf.filled.badge.checkmark',
     icon: 'opticid.fill',
     //'icon-color': '#CD853F',
