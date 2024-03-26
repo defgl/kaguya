@@ -60,12 +60,12 @@ let iconColor = '#ffff00'  // 替换成你想要的颜色
 
   // 更新 title 和 content
 
-  content += `區域網絡: ${DOMIP}`;
+  content += `𝙒𝘼𝙉: ${DOMIP}`;
   if (isWifi) {
     // 只有在连接 WiFi 时才显示 Router 和 LAN IP
-    content += `\n局部區域網絡: ${LOCNET}`;
+    content += `\n𝙇𝘼𝙉: ${LOCNET}`;
   }
-  content += `\n測試時間: ${TIME}`;
+  content += `\n𝘾𝙝𝙚𝙘𝙠𝙚𝙙: ${TIME}`;
 })()
   .catch(async e => {
     $.logErr(e);

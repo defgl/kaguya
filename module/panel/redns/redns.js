@@ -22,7 +22,12 @@
   
   let dnsCache = await getDNSCache();
   let delay = ((await httpAPI("/v1/test/dns_delay")).delay * 1000).toFixed(0);
-  panel.content = `已启动: ${startTime} | 域名系统延迟: ${delay} ms${dnsCache}`;
+
+  const DNS = transformFont(dnsCache, TABLE, INDEX);
+  const DELAY = transformFont(delay, TABLE, INDEX);
+  const STARTTIME = transformFont(startTime, TABLE, INDEX);
+
+  panel.content = `𝑺𝑻𝑨𝑹𝑻𝑬𝑫: ${STARTTIME} | 𝑫𝑵𝑺: ${DELAY} 𝒎𝒔${DNS}`;
 
   $done(panel);
 })();
@@ -112,3 +117,40 @@ async function getWeather() {
     });
   });
 }
+
+// const TABLE = {
+// 	"monospace-regular": ["𝟶", "𝟷", "𝟸", "𝟹", "𝟺", "𝟻", "𝟼", "𝟽", "𝟾", "𝟿", 
+//  "𝘢", "𝘣", "𝘤", "𝘥", "𝘦", "𝘧", "𝘨", "𝘩", "𝘪", "𝘫", // a-j
+//  "𝘬", "𝘭", "𝘮", "𝘯", "𝘰", "𝘱", "𝘲", "𝘳", "𝘴", "𝘵", // k-t
+//  "𝘶", "𝘷", "𝘸", "𝘹", "𝘺", "𝘻", // u-z
+//  "𝘈", "𝘉", "𝘊", "𝘋", "𝘌", "𝘍", "𝘎", "𝘏", "𝘐", "𝘑", // A-J
+//  "𝘒", "𝘓", "𝘔", "𝘕", "𝘖", "𝘗", "𝘘", "𝘙", "𝘚", "𝘛", // K-T
+//  "𝘜", "𝘝", "𝘞", "𝘟", "𝘠", "𝘡"  // U-Z
+// ]
+// };
+const TABLE = {
+	"monospace-regular": [
+	  "𝟎", "𝟏", "𝟐", "𝟑", "𝟒", "𝟓", "𝟔", "𝟕", "𝟖", "𝟗", // 0-9
+	  "𝒂", "𝒃", "𝒄", "𝒅", "𝒆", "𝒇", "𝒈", "𝒉", "𝒊", "𝒋", // a-j
+	  "𝒌", "𝒍", "𝒎", "𝒏", "𝒐", "𝒑", "𝒒", "𝒓", "𝒔", "𝒕", // k-t
+	  "𝒖", "𝒗", "𝒘", "𝒙", "𝒚", "𝒛", // u-z
+	  "𝑨", "𝑩", "𝑪", "𝑫", "𝑬", "𝑭", "𝑮", "𝑯", "𝑰", "𝑱", // A-J
+	  "𝑲", "𝑳", "𝑴", "𝑵", "𝑶", "𝑷", "𝑸", "𝑹", "𝑺", "𝑻", // K-T
+	  "𝑼", "𝑽", "𝑾", "𝑿", "𝒀", "𝒁"  // U-Z
+	]
+  };
+  
+  // 索引对象
+  const INDEX = {};
+  for (let i = 48; i <= 57; i++) INDEX[i] = i - 48; // 数字 0-9
+  for (let i = 65; i <= 90; i++) INDEX[i] = i - 65 + 36; // 大写字母 A-Z
+  for (let i = 97; i <= 122; i++) INDEX[i] = i - 97 + 10; // 小写字母 a-z
+  
+  // 字体转换函数
+  function transformFont(str, table, index) {
+	return [...(str || '')].map(c => {
+	  const code = c.charCodeAt(0).toString();
+	  const idx = index[code];
+	  return table["monospace-regular"][idx] || c;
+	}).join('');
+  }
