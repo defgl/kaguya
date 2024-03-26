@@ -10,9 +10,9 @@
   const DELAY = transformFont(delay, TABLE, INDEX);
   const STARTTIME = transformFont(startTime, TABLE, INDEX);
   const WEATHER = transformFont(weather, TABLE, INDEX);
-
+  
   let panel = {
-    title: `❀ | ${WEATHER}\n❀ | ${quote}`,
+    title: `❀ | ${weather}\n❀ | ${quote}`,
     //icon: 'shield.lefthalf.filled.badge.checkmark',
     icon: 'opticid.fill',
     //'icon-color': '#CD853F',
@@ -149,9 +149,9 @@ const TABLE = {
   
   // 字体转换函数
   function transformFont(str, table, index) {
-	return [...(str || '')].map(c => {
-	  const code = c.charCodeAt(0).toString();
-	  const idx = index[code];
-	  return table["monospace-regular"][idx] || c;
-	}).join('');
+    return str.replace(/[a-zA-Z0-9]/g, c => {
+      const code = c.charCodeAt(0).toString();
+      const idx = index[code];
+      return table["monospace-regular"][idx] || c;
+    });
   }
