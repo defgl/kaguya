@@ -813,14 +813,16 @@ async function fetchTimeInfoModified() {
         if (jsonData.errno === 0 && jsonData.data) {
           let dayInYear = jsonData.data.dayInYear;
           let weekInYear = jsonData.data.weekInYear;
-          let astro = jsonData.data.astro;
+          let astro = jsonData.data.astro.replace('座', '');
           let cyclicalYear = jsonData.data.lunar.cyclicalYear;
           let zodiac = jsonData.data.lunar.zodiac;
+          let cnMonth = jsonData.data.lunar.cnMonth;
+          let cnDay = jsonData.data.lunar.cnDay;
           let cyclicalMonth = jsonData.data.lunar.cyclicalMonth;
           let cyclicalDay = jsonData.data.lunar.cyclicalDay;
           let hour = jsonData.data.lunar.hour;
   
-          let result = `第${dayInYear}天 · 第${weekInYear}周 ${astro}月\n${cyclicalYear} · ${zodiac}年 ${cyclicalMonth}月 ${cyclicalDay}日 ${hour}`;
+          let result = `第${dayInYear}天·第${weekInYear}周 ${astro}月\n${cyclicalYear}·${zodiac}年 农历${cnMonth}${cnDay} \n ${hour} ${cyclicalMonth}月 ${cyclicalDay}日 `;
           resolve(result);
         } else {
           reject(new Error("Failed to fetch time data."));
