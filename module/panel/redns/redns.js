@@ -50,8 +50,8 @@ function timeTransform(dateNow, dateTime) {
 
 async function getDNSCache() {
   let dnsCache = (await httpAPI("/v1/dns", "GET")).dnsCache;
-  return [...new Set(dnsCache.map((d) => d.server))].join("\n");
-}
+  return [...new Set(dnsCache.map((d) => "\n" + d.server))].join("");
+  }
 
 function httpAPI(path = "", method = "POST", body = null) {
   return new Promise((resolve) => {
